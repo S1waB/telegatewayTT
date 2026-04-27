@@ -1,0 +1,68 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\DeviceTypeController;
+use App\Http\Controllers\Operator\DashboardController as OperatorDashboardController;
+use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\CommandController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    
+    // Global dashboard redirect
+    Route::get('/dashboard', function () {
+        if (auth()->user()->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('operator.dashboard');
+    })->name('dashboard');
+
+    // Admin Routes
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        
+        Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+        Route::resource('users', UserController::class);
+        
+        Route::resource('roles', RoleController::class);
+        Route::resource('device-types', DeviceTypeController::class);
+        
+        Route::patch('/devices/{device}/assign', [DeviceController::class, 'assignUser'])->name('devices.assign');
+        Route::resource('devices', DeviceController::class);
+        
+        Route::post('/devices/{device}/commands', [CommandController::class, 'store'])->name('commands.store');
+        Route::get('/commands', [CommandController::class, 'history'])->name('commands.history');
+    });
+
+    // Operator Routes
+    Route::middleware(['role:operator'])->prefix('operator')->name('operator.')->group(function () {
+        Route::get('/dashboard', [OperatorDashboardController::class, 'index'])->name('dashboard');
+        
+        Route::get('/devices', [DeviceController::class, 'index'])->name('devices.index');
+        Route::get('/devices/{device}', [DeviceController::class, 'show'])->name('devices.show');
+        
+        Route::post('/devices/{device}/commands', [CommandController::class, 'store'])->name('commands.store');
+        
+        Route::get('/commands', [CommandController::class, 'history'])->name('commands.history');
+    });
+
+    // Profile Routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
