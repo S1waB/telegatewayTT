@@ -25,6 +25,11 @@ class DeviceController extends Controller
             $query->assignedTo(auth()->id());
         }
 
+        // Stats calculation
+        $totalDevices = (clone $query)->count();
+        $activeDevices = (clone $query)->where('status', 'active')->count();
+        $activePercentage = $totalDevices > 0 ? round(($activeDevices / $totalDevices) * 100) : 0;
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -43,8 +48,9 @@ class DeviceController extends Controller
 
         $devices = $query->paginate(10)->withQueryString();
         $deviceTypes = DeviceType::all();
+        $users = User::role('operator')->get();
 
-        return view('devices.index', compact('devices', 'deviceTypes'));
+        return view('devices.index', compact('devices', 'deviceTypes', 'users', 'activePercentage', 'totalDevices', 'activeDevices'));
     }
 
     public function create()
