@@ -10,10 +10,24 @@ use App\Http\Requests\UpdateRoleRequest;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $roles = Role::withCount('users')->paginate(10);
-        return view('admin.roles.index', compact('roles'));
+        $query = Role::withCount('users')->with('permissions');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('permission')) {
+            $query->whereHas('permissions', function ($q) use ($request) {
+                $q->where('id', $request->permission);
+            });
+        }
+
+        $roles = $query->paginate(10)->withQueryString();
+        $permissions = Permission::all();
+
+        return view('admin.roles.index', compact('roles', 'permissions'));
     }
 
     public function create()
