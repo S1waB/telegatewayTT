@@ -17,6 +17,7 @@ class StoreDeviceTypeRequest extends FormRequest
             'name' => 'required|string|max:255|unique:device_types,name',
             'description' => 'nullable|string',
             'icon' => 'nullable|string|max:50',
+            'custom_icon' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:1024',
         ];
     }
 }

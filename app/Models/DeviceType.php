@@ -16,8 +16,17 @@ class DeviceType extends Model
         'name',
         'description',
         'icon',
+        'image_path',
         'created_by',
     ];
+
+    public function getImageUrlAttribute()
+    {
+        if ($this->image_path) {
+            return asset('storage/' . $this->image_path);
+        }
+        return null;
+    }
 
     public function creator(): BelongsTo
     {
