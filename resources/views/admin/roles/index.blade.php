@@ -128,11 +128,8 @@
             <form action="{{ route('admin.roles.store') }}" method="POST">
                 @csrf
                 <div class="modal-header border-bottom-0 p-4">
-                    <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3 me-3">
-                        <i class="bi bi-shield-plus fs-4"></i>
-                    </div>
                     <div>
-                        <h5 class="modal-title fw-bold">Define New Role</h5>
+                        <h5 class="modal-title fw-bold text-primary">Define New Role</h5>
                         <p class="text-muted small mb-0">Set identity and access levels for the system</p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -207,11 +204,8 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-header border-bottom-0 p-4">
-                    <div class="bg-dark bg-opacity-10 text-dark rounded-3 p-3 me-3">
-                        <i class="bi bi-shield-shaded fs-4"></i>
-                    </div>
                     <div>
-                        <h5 class="modal-title fw-bold">Modify Role Access</h5>
+                        <h5 class="modal-title fw-bold text-dark">Modify Role Access</h5>
                         <p class="text-muted small mb-0">Update permissions and details for this role</p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
