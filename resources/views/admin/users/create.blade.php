@@ -40,11 +40,26 @@
 
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password" required>
-                                <label for="password">Password</label>
-                                @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <input type="tel" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" placeholder="+216 XX XXX XXX">
+                                <label for="phone_number">Phone Number</label>
+                                @error('phone_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select @error('gender') is-invalid @enderror" id="gender" name="gender">
+                                    <option value="" disabled selected>Select gender</option>
+                                    <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
+                                    <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
+                                    <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other</option>
+                                </select>
+                                <label for="gender">Gender</label>
+                                @error('gender')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+
 
                         <div class="col-md-6">
                             <div class="form-floating">
@@ -56,6 +71,21 @@
                                 </select>
                                 <label for="role">Assign Role</label>
                                 @error('role')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" style="height: 100px" placeholder="Address">{{ old('address') }}</textarea>
+                                <label for="address">Address</label>
+                                @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="alert alert-info d-flex align-items-start gap-2 py-2 px-3 mb-0" style="font-size:13px;border-color:#B5D4F4;background:#E8F1FA">
+                                <i class="bi bi-envelope-check-fill mt-1" style="color:#1A6FBF;flex-shrink:0"></i>
+                                <span>Login credentials will be emailed automatically to the user after account creation.</span>
                             </div>
                         </div>
 

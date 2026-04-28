@@ -10,20 +10,30 @@ use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewUserWelcomeMail;
+use Illuminate\Support\Facades\Storage;
+
 class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::with('roles');
-        
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-        }
-        
-        $users = $query->paginate(15);
-        return view('admin.users.index', compact('users'));
+        $query = User::with('roles')
+            ->search($request->get('search'))
+            ->filterByRole($request->get('role'))
+            ->filterByStatus($request->get('status'))
+            ->when($request->get('sort') === 'last_active', fn($q) => $q->orderByDesc('last_active_at'))
+            ->when($request->get('sort') === 'name',        fn($q) => $q->orderBy('name'))
+            ->when($request->get('sort') === 'newest',      fn($q) => $q->orderByDesc('created_at'))
+            ->when(!$request->get('sort'),                  fn($q) => $q->orderByDesc('created_at'));
+
+        $users     = $query->paginate(15)->withQueryString();
+        $roles     = Role::all();
+        $totalUsers   = User::count();
+        $activeUsers  = User::where('is_active', true)->count();
+        $activePct    = $totalUsers > 0 ? round(($activeUsers / $totalUsers) * 100, 1) : 0;
+
+        return view('admin.users.index', compact('users', 'roles', 'totalUsers', 'activeUsers', 'activePct'));
     }
 
     public function create()
@@ -34,18 +44,22 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-        $data = $request->validated();
-        $data['password'] = Hash::make($data['password']);
-        $data['is_active'] = $request->has('is_active');
-        
+        $validated = $request->validated();
+        $plainPassword = \Illuminate\Support\Str::random(10);
+        $validated['password'] = Hash::make($plainPassword);
+        $validated['is_active'] = $request->boolean('is_active', true);
+
         if ($request->hasFile('avatar')) {
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
-        $user = User::create($data);
+        $user = User::create($validated);
         $user->assignRole($request->role);
 
-        session()->flash('success', 'User created successfully.');
+        // Send welcome email with credentials
+        Mail::to($user->email)->queue(new NewUserWelcomeMail($user, $plainPassword));
+
+        session()->flash('success', "User {$user->name} created. Welcome email sent to {$user->email}.");
         return redirect()->route('admin.users.index');
     }
 
@@ -57,21 +71,24 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
-        $data = $request->validated();
+        $validated = $request->validated();
         
         if ($request->filled('password')) {
-            $data['password'] = Hash::make($data['password']);
+            $validated['password'] = Hash::make($request->password);
         } else {
-            unset($data['password']);
+            unset($validated['password']);
         }
         
-        $data['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('avatar')) {
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
-        $user->update($data);
+        $user->update($validated);
         $user->syncRoles([$request->role]);
 
         session()->flash('success', 'User updated successfully.');
@@ -83,6 +100,10 @@ class UserController extends Controller
         if (auth()->id() === $user->id) {
             session()->flash('error', 'You cannot delete yourself.');
             return back();
+        }
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
         }
 
         $user->delete();
@@ -99,6 +120,20 @@ class UserController extends Controller
         
         $user->update(['is_active' => !$user->is_active]);
         session()->flash('success', 'User status toggled.');
+        return back();
+    }
+
+    public function resetPassword(User $user)
+    {
+        $newPassword = \Illuminate\Support\Str::random(10);
+        
+        $user->update([
+            'password' => Hash::make($newPassword)
+        ]);
+
+        Mail::to($user->email)->queue(new \App\Mail\AdminPasswordResetMail($user, $newPassword));
+
+        session()->flash('success', "A new temporary password has been generated and emailed to {$user->email}.");
         return back();
     }
 }
