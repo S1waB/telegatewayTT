@@ -27,7 +27,7 @@ class UserController extends Controller
             ->when($request->get('sort') === 'newest',      fn($q) => $q->orderByDesc('created_at'))
             ->when(!$request->get('sort'),                  fn($q) => $q->orderByDesc('created_at'));
 
-        $users     = $query->paginate(15)->withQueryString();
+        $users     = $query->paginate(10)->withQueryString();
         $roles     = Role::all();
         $totalUsers   = User::count();
         $activeUsers  = User::where('is_active', true)->count();

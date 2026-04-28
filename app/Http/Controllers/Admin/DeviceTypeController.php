@@ -11,7 +11,7 @@ class DeviceTypeController extends Controller
 {
     public function index()
     {
-        $deviceTypes = DeviceType::withCount('devices')->paginate(15);
+        $deviceTypes = DeviceType::withCount('devices')->paginate(10);
         return view('admin.device-types.index', compact('deviceTypes'));
     }
 

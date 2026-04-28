@@ -69,8 +69,13 @@
         </table>
     </div>
     
-    <div class="p-4 border-top bg-white">
+    @if($roles->hasPages())
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
+        <span class="text-muted small">
+            Showing {{ $roles->firstItem() }}–{{ $roles->lastItem() }} of {{ $roles->total() }} roles
+        </span>
         {{ $roles->links() }}
     </div>
+    @endif
 </div>
 @endsection

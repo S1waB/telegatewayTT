@@ -124,8 +124,13 @@
         </table>
     </div>
     
-    <div class="p-4 border-top bg-white">
+    @if($devices->hasPages())
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
+        <span class="text-muted small">
+            Showing {{ $devices->firstItem() }}–{{ $devices->lastItem() }} of {{ $devices->total() }} devices
+        </span>
         {{ $devices->links() }}
     </div>
+    @endif
 </div>
 @endsection

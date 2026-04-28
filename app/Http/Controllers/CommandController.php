@@ -69,7 +69,7 @@ class CommandController extends Controller
             $query->dateRange($request->from, $request->to);
         }
 
-        $commands = $query->paginate(20)->withQueryString();
+        $commands = $query->paginate(10)->withQueryString();
         
         $devices = auth()->user()->hasRole('admin') 
             ? Device::all() 

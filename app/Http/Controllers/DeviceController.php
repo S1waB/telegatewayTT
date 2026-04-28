@@ -41,7 +41,7 @@ class DeviceController extends Controller
             $query->where('status', $request->status);
         }
 
-        $devices = $query->paginate(15)->withQueryString();
+        $devices = $query->paginate(10)->withQueryString();
         $deviceTypes = DeviceType::all();
 
         return view('devices.index', compact('devices', 'deviceTypes'));

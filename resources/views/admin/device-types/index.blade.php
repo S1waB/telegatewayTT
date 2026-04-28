@@ -58,8 +58,13 @@
         </table>
     </div>
     
-    <div class="p-4 border-top bg-white">
+    @if($deviceTypes->hasPages())
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
+        <span class="text-muted small">
+            Showing {{ $deviceTypes->firstItem() }}–{{ $deviceTypes->lastItem() }} of {{ $deviceTypes->total() }} types
+        </span>
         {{ $deviceTypes->links() }}
     </div>
+    @endif
 </div>
 @endsection
