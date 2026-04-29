@@ -3,7 +3,7 @@
 @section('content')
 <div class="card tg-card p-4 border-0">
     <div class="text-center mb-4">
-        <h1 class="h3 mb-3 fw-bold text-primary">TeleGateway</h1>
+        <img src="{{ asset('assets/images/logo.png') }}" alt="TeleGateway" class="login-logo">
         <p class="text-muted">Sign in to your account to continue</p>
     </div>
 

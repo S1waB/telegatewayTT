@@ -153,3 +153,22 @@ body {
 .pagination .page-link {
   color: var(--tg-primary);
 }
+
+/* Logo Styles */
+.tg-logo-container {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  margin-bottom: 1rem;
+}
+
+.tg-logo-img {
+  max-width: 100%;
+  height: auto;
+
+}
+
+.login-logo {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
