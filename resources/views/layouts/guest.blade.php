@@ -17,6 +17,9 @@
     
     <!-- Custom CSS -->
     <link href="{{ asset('css/telegateway.css') }}" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
 </head>
 <body class="d-flex align-items-center py-4 bg-light" style="min-height: 100vh;">
     
