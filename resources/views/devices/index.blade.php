@@ -22,39 +22,48 @@
     <div class="col-md-9">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0 fw-bold">Platform Overview</h6>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-gear-wide-connected me-2 text-primary"></i>Platform Overview</h6>
                     @role('admin')
-                    <button type="button" class="btn btn-primary d-flex align-items-center gap-2 px-4" data-bs-toggle="modal" data-bs-target="#createDeviceModal">
+                    <button type="button" class="btn btn-primary d-flex align-items-center gap-2 px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#createDeviceModal">
                         <i class="bi bi-plus-lg"></i> Add New Device
                     </button>
                     @endrole
                 </div>
-                <form action="{{ request()->url() }}" method="GET" class="row g-2">
+                <form action="{{ request()->url() }}" method="GET" class="row g-2 align-items-center mt-2">
                     <div class="col-md-5">
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
-                            <input type="text" name="search" class="form-control border-start-0 bg-light" placeholder="Search devices..." value="{{ request('search') }}">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i class="bi bi-search"></i></span>
+                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Search by name, serial, or operator..." value="{{ request('search') }}" style="font-size: 0.9rem; height: 42px;">
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <select name="type" class="form-select bg-light border-0">
+                    <div class="col-md-2">
+                        <select name="type" class="form-select form-select-sm border-secondary-subtle" style="height: 42px; font-size: 0.85rem;">
                             <option value="">All Types</option>
                             @foreach($deviceTypes as $type)
                                 <option value="{{ $type->id }}" {{ request('type') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <select name="status" class="form-select bg-light border-0">
+                    <div class="col-md-2">
+                        <select name="status" class="form-select form-select-sm border-secondary-subtle" style="height: 42px; font-size: 0.85rem;">
                             <option value="">All Statuses</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                             <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                             <option value="maintenance" {{ request('status') == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
                         </select>
                     </div>
-                    <div class="col-md-1 text-end">
-                        <button type="submit" class="btn btn-dark w-100"><i class="bi bi-funnel"></i></button>
+                    <div class="col-md-3">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center px-3" style="height: 42px; min-width: 100px;">
+                                <i class="bi bi-funnel me-2"></i>Filter
+                            </button>
+                            @if(request()->anyFilled(['search', 'type', 'status']))
+                                <a href="{{ request()->url() }}" class="btn btn-light border d-flex align-items-center justify-content-center px-3" style="height: 42px;" title="Reset">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </a>
+                            @endif
+                        </div>
                     </div>
                 </form>
             </div>

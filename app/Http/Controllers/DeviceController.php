@@ -34,7 +34,10 @@ class DeviceController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('serial_number', 'like', "%{$search}%");
+                  ->orWhere('serial_number', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%");
+                  });
             });
         }
 
