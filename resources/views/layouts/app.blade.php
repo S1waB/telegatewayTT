@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'TeleGateway') }}</title>
+    
+    <script>
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('tg-theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+    </script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,6 +49,10 @@
                 <h5 class="mb-0 text-muted fw-bold">@yield('title', 'Dashboard')</h5>
             </div>
             <div class="d-flex align-items-center gap-3">
+                <div class="theme-switch shadow-sm" id="themeToggler" title="Toggle Somber/Light Mode">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                </div>
+
                 <a href="#" class="text-secondary position-relative">
                     <i data-feather="bell"></i>
                     <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
@@ -145,6 +155,32 @@
             overlay.addEventListener('click', () => {
                 sidebar.classList.remove('show');
                 overlay.classList.remove('show');
+            });
+        }
+        // Theme Toggle Logic
+        const themeToggler = document.getElementById('themeToggler');
+        const themeIcon = document.getElementById('themeIcon');
+        const htmlRoot = document.documentElement;
+
+        // Initialize icon on load
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.replace('bi-moon-stars-fill', 'bi-sun-fill');
+            } else {
+                themeIcon.classList.replace('bi-sun-fill', 'bi-moon-stars-fill');
+            }
+        }
+        
+        updateThemeIcon(htmlRoot.getAttribute('data-bs-theme'));
+
+        if (themeToggler) {
+            themeToggler.addEventListener('click', () => {
+                const currentTheme = htmlRoot.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                htmlRoot.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('tg-theme', newTheme);
+                updateThemeIcon(newTheme);
             });
         }
     </script>
