@@ -3,6 +3,76 @@
 
 @section('content')
 <div class="row g-4 mb-4">
+    {{-- Total Alerts --}}
+    <div class="col-md-3">
+        <div class="card tg-card border-0 tg-stat-card">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="bg-primary-light text-primary rounded-circle p-3">
+                        <i class="bi bi-bell-fill fs-4"></i>
+                    </div>
+                    <span class="badge bg-soft-primary text-primary px-2 py-1">Overall</span>
+                </div>
+                <h3 class="fw-bold mb-1">{{ $totalAlerts }}</h3>
+                <p class="text-muted small mb-0">Total Incident Reports</p>
+            </div>
+        </div>
+    </div>
+
+    {{-- Viewed Percentage --}}
+    <div class="col-md-3">
+        <div class="card tg-card border-0 tg-stat-card" style="--tg-primary: #3A8FE8;">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="bg-info-light text-info rounded-circle p-3">
+                        <i class="bi bi-eye-fill fs-4"></i>
+                    </div>
+                    <div class="text-info fw-bold small">{{ $viewedPercentage }}%</div>
+                </div>
+                <h3 class="fw-bold mb-1">{{ $viewedAlerts }}</h3>
+                <p class="text-muted small mb-0">Engagement Rate</p>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar bg-info" style="width: {{ $viewedPercentage }}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Traited Alerts (Responded) --}}
+    <div class="col-md-3">
+        <div class="card tg-card border-0 tg-stat-card" style="--tg-primary: #10B981;">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="bg-success-light text-success rounded-circle p-3">
+                        <i class="bi bi-check-all fs-4"></i>
+                    </div>
+                    <span class="badge bg-success text-white px-2 py-1">Resolved</span>
+                </div>
+                <h3 class="fw-bold mb-1">{{ $respondedAlerts }}</h3>
+                <p class="text-muted small mb-0">Processed Alerts</p>
+            </div>
+        </div>
+    </div>
+
+    {{-- Response Rate --}}
+    <div class="col-md-3">
+        <div class="card tg-card border-0 tg-stat-card" style="--tg-primary: #F59E0B;">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="bg-warning-light text-warning rounded-circle p-3">
+                        <i class="bi bi-chat-left-dots-fill fs-4"></i>
+                    </div>
+                    <div class="text-warning fw-bold small">{{ $responseRate }}%</div>
+                </div>
+                <h3 class="fw-bold mb-1">Response</h3>
+                <p class="text-muted small mb-0">Administrative Rate</p>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar bg-warning" style="width: {{ $responseRate }}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-12">
         <div class="card tg-card border-0">
             <div class="card-body p-4">

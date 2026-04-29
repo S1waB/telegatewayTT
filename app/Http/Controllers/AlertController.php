@@ -47,12 +47,33 @@ class AlertController extends Controller
 
         $alerts = $query->latest()->paginate(10)->withQueryString();
 
+        // Statistics Calculation
+        $statsQuery = Alert::query();
+        if (!$user->hasRole('admin')) {
+            $statsQuery->where('user_id', $user->id);
+        }
+
+        $totalAlerts = (clone $statsQuery)->count();
+        $viewedAlerts = (clone $statsQuery)->whereIn('status', ['pending', 'viewed'])->count();
+        $respondedAlerts = (clone $statsQuery)->whereNotNull('admin_response')->count();
+        
+        $viewedPercentage = $totalAlerts > 0 ? round(($viewedAlerts / $totalAlerts) * 100) : 0;
+        $responseRate = $totalAlerts > 0 ? round(($respondedAlerts / $totalAlerts) * 100) : 0;
+
         $devices = Device::where('user_id', $user->id)->get();
         if ($user->hasRole('admin')) {
             $devices = Device::all();
         }
 
-        return view('alerts.index', compact('alerts', 'devices'));
+        return view('alerts.index', compact(
+            'alerts', 
+            'devices', 
+            'totalAlerts', 
+            'viewedAlerts', 
+            'respondedAlerts', 
+            'viewedPercentage', 
+            'responseRate'
+        ));
     }
 
     public function store(Request $request)
