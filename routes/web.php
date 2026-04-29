@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DeviceTypeController;
 use App\Http\Controllers\Operator\DashboardController as OperatorDashboardController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\CommandController;
+use App\Http\Controllers\AlertController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +30,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }
         return redirect()->route('operator.dashboard');
     })->name('dashboard');
+
+    // Alerts Routes (Shared)
+    Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.index');
+    Route::post('/alerts', [AlertController::class, 'store'])->name('alerts.store');
+    Route::get('/alerts/{alert}', [AlertController::class, 'show'])->name('alerts.show');
+    Route::patch('/alerts/{alert}/status', [AlertController::class, 'updateStatus'])->name('alerts.update-status');
+    Route::post('/alerts/{alert}/respond', [AlertController::class, 'respond'])->name('alerts.respond');
 
     // Admin Routes
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {

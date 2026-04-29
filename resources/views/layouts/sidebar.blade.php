@@ -42,6 +42,13 @@
                     Roles
                 </a>
             </li>
+            <li class="sidebar-heading">Reporting</li>
+            <li>
+                <a href="{{ route('alerts.index') }}" class="nav-link {{ request()->routeIs('alerts.*') ? 'active' : '' }}">
+                    <i data-feather="alert-circle" class="me-2" style="width: 18px;"></i>
+                    Alert Center
+                </a>
+            </li>
         @endrole
 
         @role('operator')
@@ -62,6 +69,12 @@
                 <a href="{{ route('operator.commands.history') }}" class="nav-link {{ request()->routeIs('operator.commands.*') ? 'active' : '' }}">
                     <i data-feather="activity" class="me-2" style="width: 18px;"></i>
                     My Commands
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('alerts.index') }}" class="nav-link {{ request()->routeIs('alerts.*') ? 'active' : '' }}">
+                    <i data-feather="alert-circle" class="me-2" style="width: 18px;"></i>
+                    My Alerts
                 </a>
             </li>
         @endrole
