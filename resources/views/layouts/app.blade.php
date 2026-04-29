@@ -28,11 +28,15 @@
 <body>
     
     @include('layouts.sidebar')
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="main-content">
         <!-- Topbar -->
         <header class="tg-topbar d-flex align-items-center justify-content-between px-4 sticky-top">
-            <div>
+            <div class="d-flex align-items-center gap-3">
+                <button type="button" class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                    <i class="bi bi-list fs-2"></i>
+                </button>
                 <h5 class="mb-0 text-muted fw-bold">@yield('title', 'Dashboard')</h5>
             </div>
             <div class="d-flex align-items-center gap-3">
@@ -122,6 +126,24 @@
                 });
             }, 3000);
         });
+        // Sidebar Toggle Logic
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.tg-sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            });
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            });
+        }
     </script>
     @stack('scripts')
 </body>

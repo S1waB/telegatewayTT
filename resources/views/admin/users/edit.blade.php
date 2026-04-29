@@ -2,6 +2,11 @@
 @section('title', 'Edit User')
 
 @section('content')
+<div class="mb-4">
+    <a href="{{ route('admin.users.index') }}" class="text-decoration-none text-muted small fw-bold text-uppercase">
+        <i class="bi bi-arrow-left me-1"></i> Back to Users
+    </a>
+</div>
 <div class="row justify-content-center">
     <div class="col-md-8">
         {{-- Main Edit Card --}}

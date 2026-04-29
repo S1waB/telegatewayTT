@@ -2,6 +2,11 @@
 @section('title', 'Device Details')
 
 @section('content')
+<div class="mb-4">
+    <a href="{{ auth()->user()->hasRole('admin') ? route('admin.devices.index') : route('operator.devices.index') }}" class="text-decoration-none text-muted small fw-bold text-uppercase">
+        <i class="bi bi-arrow-left me-1"></i> Back to Fleet
+    </a>
+</div>
 <div class="row g-4 mb-4">
     <!-- Device Info Card -->
     <div class="col-md-4">

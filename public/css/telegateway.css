@@ -12,6 +12,7 @@
 body {
   background-color: var(--tg-bg-light);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
 }
 
 /* Sidebar Styles */
@@ -23,8 +24,8 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
-  transition: all 0.3s;
+  z-index: 1050;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tg-sidebar .nav-link {
@@ -57,6 +58,7 @@ body {
 .main-content {
   margin-left: 260px;
   min-height: 100vh;
+  transition: margin 0.3s ease;
 }
 
 /* Topbar Styles */
@@ -64,6 +66,38 @@ body {
   background-color: #ffffff;
   border-bottom: 1px solid var(--tg-primary-light);
   height: 70px;
+  z-index: 1000;
+}
+
+/* Responsive Sidebar */
+@media (max-width: 991.98px) {
+  .tg-sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .tg-sidebar.show {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.4);
+    z-index: 1040;
+    backdrop-filter: blur(2px);
+  }
+  
+  .sidebar-overlay.show {
+    display: block;
+  }
 }
 
 /* Cards */
@@ -164,7 +198,6 @@ body {
 .tg-logo-img {
   max-width: 100%;
   height: auto;
-
 }
 
 .login-logo {
