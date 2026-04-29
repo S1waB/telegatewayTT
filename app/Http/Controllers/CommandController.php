@@ -53,6 +53,13 @@ class CommandController extends Controller
             $query->byUser(auth()->id());
         }
 
+        // Stats calculation (before filters to get global overview or scoped to user)
+        $statsQuery = clone $query;
+        $totalCommands = $statsQuery->count();
+        $succeededCommands = (clone $statsQuery)->where('status', 'success')->count();
+        $failedCommands = (clone $statsQuery)->where('status', 'failed')->count();
+        $successPercentage = $totalCommands > 0 ? round(($succeededCommands / $totalCommands) * 100) : 0;
+
         if ($request->filled('device_id')) {
             $query->byDevice($request->device_id);
         }
@@ -69,12 +76,19 @@ class CommandController extends Controller
             $query->dateRange($request->from, $request->to);
         }
 
-        $commands = $query->paginate(10)->withQueryString();
+        $commands = $query->paginate(15)->withQueryString();
         
         $devices = auth()->user()->hasRole('admin') 
             ? Device::all() 
             : Device::assignedTo(auth()->id())->get();
 
-        return view('commands.index', compact('commands', 'devices'));
+        return view('commands.index', compact(
+            'commands', 
+            'devices', 
+            'totalCommands', 
+            'succeededCommands', 
+            'failedCommands', 
+            'successPercentage'
+        ));
     }
 }

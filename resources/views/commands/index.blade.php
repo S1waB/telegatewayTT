@@ -2,34 +2,93 @@
 @section('title', 'Command History')
 
 @section('content')
-<div class="tg-table-container">
-    <div class="p-4 border-bottom bg-white">
+{{-- Stats Row --}}
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 overflow-hidden">
+            <div class="card-body p-4 position-relative">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 fw-bold text-dark opacity-75">Total Operations</h6>
+                </div>
+                <h2 class="fw-bold mb-0">{{ number_format($totalCommands) }}</h2>
+                <div class="text-muted small mt-1">System-wide requests</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 overflow-hidden">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 fw-bold text-dark opacity-75">Success Rate</h6>
+                    <div class="bg-success bg-opacity-10 text-success rounded-3 p-2">
+                        <i class="bi bi-check-circle fs-5"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold mb-0 text-success">{{ $successPercentage }}%</h2>
+                <div class="progress mt-2 bg-light" style="height: 6px;">
+                    <div class="progress-bar bg-success" style="width: {{ $successPercentage }}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 overflow-hidden">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 fw-bold text-dark opacity-75">Completed</h6>
+                    <div class="bg-info bg-opacity-10 text-info rounded-3 p-2">
+                        <i class="bi bi-lightning-charge fs-5"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold mb-0">{{ number_format($succeededCommands) }}</h2>
+                <div class="text-muted small mt-1 text-nowrap">Successfully executed</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 overflow-hidden">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 fw-bold text-dark opacity-75">Failed</h6>
+                    <div class="bg-danger bg-opacity-10 text-danger rounded-3 p-2">
+                        <i class="bi bi-exclamation-triangle fs-5"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold mb-0 text-danger">{{ number_format($failedCommands) }}</h2>
+                <div class="text-muted small mt-1">Execution errors</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="tg-table-container shadow-sm border-0">
+    <div class="p-4 border-bottom bg-white rounded-top-4">
         <form action="{{ request()->url() }}" method="GET" class="row g-3 align-items-end">
             <div class="col-md-3">
-                <label class="form-label small text-muted mb-1">Device</label>
+                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Device Selection</label>
                 <select name="device_id" class="form-select select2">
                     <option value="">All Devices</option>
                     @foreach($devices as $device)
-                        <option value="{{ $device->id }}" {{ request('device_id') == $device->id ? 'selected' : '' }}>{{ $device->name }} ({{ $device->serial_number }})</option>
+                        <option value="{{ $device->id }}" {{ request('device_id') == $device->id ? 'selected' : '' }}>{{ $device->name }}</option>
                     @endforeach
                 </select>
             </div>
             
             @role('admin')
-            <div class="col-md-3">
-                <label class="form-label small text-muted mb-1">User</label>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Operator</label>
                 <select name="user_id" class="form-select select2">
                     <option value="">All Users</option>
-                    @php $users = \App\Models\User::all(); @endphp
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                    @php $allUsers = \App\Models\User::all(); @endphp
+                    @foreach($allUsers as $u)
+                        <option value="{{ $u->id }}" {{ request('user_id') == $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
                     @endforeach
                 </select>
             </div>
             @endrole
 
-            <div class="col-md-{{ auth()->user()->hasRole('admin') ? '2' : '3' }}">
-                <label class="form-label small text-muted mb-1">Status</label>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Status</label>
                 <select name="status" class="form-select">
                     <option value="">All Statuses</option>
                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
@@ -39,80 +98,151 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label small text-muted mb-1">Date</label>
+                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Since</label>
                 <input type="date" name="from" class="form-control" value="{{ request('from') }}">
             </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            <div class="col-md-{{ auth()->user()->hasRole('admin') ? '3' : '3' }}">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-dark px-4 w-100">
+                        <i class="bi bi-funnel me-2"></i>Filter
+                    </button>
+                    @if(request()->anyFilled(['device_id', 'user_id', 'status', 'from']))
+                        <a href="{{ request()->url() }}" class="btn btn-outline-secondary px-3"><i class="bi bi-x-lg"></i></a>
+                    @endif
+                </div>
             </div>
         </form>
     </div>
 
     <div class="table-responsive">
-        <table class="table tg-table mb-0">
+        <table class="table tg-table mb-0 align-middle">
             <thead>
                 <tr>
-                    <th>Command ID</th>
-                    <th>Device</th>
-                    <th>Sent By</th>
-                    <th>Payload</th>
+                    <th class="ps-4">ID</th>
+                    <th>Asset & Operator</th>
+                    <th>Instruction Payload</th>
                     <th>Status</th>
-                    <th>Sent At</th>
-                    <th>Response</th>
+                    <th>Execution Time</th>
+                    <th class="text-end pe-4">Response</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($commands as $command)
                 <tr>
-                    <td class="text-muted small">#{{ $command->id }}</td>
-                    <td>
-                        <a href="{{ auth()->user()->hasRole('admin') ? route('admin.devices.show', $command->device) : route('operator.devices.show', $command->device) }}" class="text-decoration-none fw-medium text-dark">
-                            {{ $command->device->name }}
-                        </a>
+                    <td class="ps-4">
+                        <span class="text-muted small">#{{ $command->id }}</span>
                     </td>
-                    <td>{{ $command->user->name }}</td>
-                    <td><code class="text-secondary">{{ json_encode($command->payload) }}</code></td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light rounded-3 p-2 me-3">
+                                <i class="bi bi-cpu text-primary"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold text-dark">{{ $command->device->name }}</div>
+                                <div class="text-muted small">By: {{ $command->user->name }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light border px-2 py-1 rounded small d-flex align-items-center overflow-hidden" style="max-width: 180px;">
+                                <i class="bi bi-code-slash text-muted me-2"></i>
+                                <code class="text-dark text-truncate" style="font-size: 0.75rem;">
+                                    {{ $payloadJson = json_encode($command->payload) }}
+                                </code>
+                            </div>
+                            @if(strlen($payloadJson) > 25)
+                                <button type="button" class="btn btn-link btn-sm text-decoration-none p-0 ms-2 small" data-bs-toggle="modal" data-bs-target="#payloadModal{{ $command->id }}">
+                                    View
+                                </button>
+                                
+                                <!-- Payload Modal -->
+                                <div class="modal fade" id="payloadModal{{ $command->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 shadow-lg rounded-4">
+                                            <div class="modal-header border-bottom-0 p-4 pb-0">
+                                                <h5 class="modal-title fw-bold">Full Instruction Payload</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body p-4">
+                                                <div class="bg-light text-dark p-3 rounded-3 font-monospace small mb-0" style="white-space: pre-wrap; word-break: break-all;">
+                                                    {{ json_encode($command->payload, JSON_PRETTY_PRINT) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </td>
                     <td>{!! $command->status_badge !!}</td>
                     <td class="small">
                         @if($command->sent_at)
-                            {{ $command->sent_at->format('M d, H:i:s') }}
+                            <div class="fw-medium">{{ $command->sent_at->diffForHumans() }}</div>
+                            <div class="text-muted opacity-75">{{ $command->sent_at->format('M d, H:i:s') }}</div>
                         @else
-                            <span class="text-muted">-</span>
+                            <span class="text-muted">In Queue</span>
                         @endif
                     </td>
-                    <td>
+                    <td class="text-end pe-4">
                         @if($command->response)
-                            <button type="button" class="btn btn-sm btn-light border" data-bs-toggle="modal" data-bs-target="#responseModal{{ $command->id }}">
-                                View
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-none border-opacity-25 d-flex align-items-center gap-1 ms-auto" data-bs-toggle="modal" data-bs-target="#responseModal{{ $command->id }}">
+                                <i class="bi bi-terminal"></i> View Result
                             </button>
                             
                             <!-- Response Modal -->
                             <div class="modal fade" id="responseModal{{ $command->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content border-0 shadow">
-                                        <div class="modal-header border-bottom-0">
-                                            <h5 class="modal-title fw-bold">Command Response</h5>
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                                        <div class="modal-header bg-white border-bottom p-4">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-terminal-fill fs-4 text-primary me-3"></i>
+                                                <div>
+                                                    <h5 class="modal-title fw-bold mb-0 text-dark">Execution Output</h5>
+                                                    <span class="text-muted small">Asset: {{ $command->device->name }} | ID: #{{ $command->id }}</span>
+                                                </div>
+                                            </div>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body pt-0">
-                                            <div class="bg-light p-3 rounded font-monospace small" style="white-space: pre-wrap; word-break: break-all;">
-                                                {{ $command->response }}
+                                        <div class="modal-body p-4 bg-light bg-opacity-50">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <span class="badge bg-{{ $command->status === 'success' ? 'success' : 'danger' }} bg-opacity-10 text-{{ $command->status === 'success' ? 'success' : 'danger' }} border border-{{ $command->status === 'success' ? 'success' : 'danger' }} border-opacity-25 px-3">
+                                                    <i class="bi bi-{{ $command->status === 'success' ? 'check-circle' : 'exclamation-circle' }} me-1"></i>
+                                                    {{ ucfirst($command->status) }}
+                                                </span>
+                                                <span class="text-muted small">
+                                                    <i class="bi bi-clock me-1"></i> {{ $command->response_at ? $command->response_at->format('M d, Y H:i:s') : 'N/A' }}
+                                                </span>
                                             </div>
-                                            <div class="text-muted small mt-2">
-                                                Received: {{ $command->response_at ? $command->response_at->format('M d, Y H:i:s') : 'N/A' }}
+                                            <div class="bg-white rounded-3 p-3 border shadow-sm">
+                                                <pre class="text-dark mb-0 font-monospace small text-start" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">{{ $command->response }}</pre>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
+                                            <div class="text-muted small">
+                                                <i class="bi bi-shield-check me-1"></i> Verified IoT Response
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="navigator.clipboard.writeText(`{{ addslashes($command->response) }}`).then(() => alert('Copied to clipboard!'))">
+                                                    <i class="bi bi-clipboard me-1"></i> Copy
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-dark rounded-pill px-4" data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         @else
-                            <span class="text-muted small">No response</span>
+                            <span class="badge bg-light text-muted fw-normal border">In Flight...</span>
                         @endif
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center py-5 text-muted">No commands found matching your criteria.</td>
+                    <td colspan="6" class="text-center py-5">
+                        <i class="bi bi-journal-x display-4 text-muted opacity-25 d-block mb-3"></i>
+                        <p class="text-muted mb-0">No instruction history available for these parameters.</p>
+                    </td>
                 </tr>
                 @endforelse
             </tbody>
@@ -120,10 +250,10 @@
     </div>
     
     @if($commands->hasPages())
-    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
-        <span class="text-muted small">
-            Showing {{ $commands->firstItem() }}–{{ $commands->lastItem() }} of {{ $commands->total() }} commands
-        </span>
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top rounded-bottom-4">
+        <div class="text-muted small">
+            Displaying <span class="fw-bold">{{ $commands->firstItem() }}</span> to <span class="fw-bold">{{ $commands->lastItem() }}</span> of <span class="fw-bold">{{ $commands->total() }}</span> commands
+        </div>
         {{ $commands->links() }}
     </div>
     @endif
