@@ -67,10 +67,10 @@
         @endrole
     </ul>
     
-    <div class="p-3">
+    <div class="p-3 mt-auto">
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="btn btn-outline-light w-100 text-start border-0">
+            <button type="submit" class="nav-link w-100 border-0" style="background: transparent; color: rgba(255,255,255,0.6);">
                 <i data-feather="log-out" class="me-2" style="width: 18px;"></i> Sign out
             </button>
         </form>
