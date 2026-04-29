@@ -137,4 +137,15 @@ class DeviceController extends Controller
         session()->flash('success', 'Device assignment updated.');
         return back();
     }
+
+    public function toggleStatus(Device $device)
+    {
+        $this->authorize('update', $device);
+        
+        $newStatus = $device->status === 'active' ? 'inactive' : 'active';
+        $device->update(['status' => $newStatus]);
+        
+        session()->flash('success', "Device " . ($newStatus === 'active' ? 'activated' : 'deactivated') . " successfully.");
+        return back();
+    }
 }

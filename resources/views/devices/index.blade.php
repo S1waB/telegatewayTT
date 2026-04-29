@@ -141,21 +141,45 @@
                     </td>
                     <td class="text-end pe-4">
                         <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ auth()->user()->hasRole('admin') ? route('admin.devices.show', $device) : route('operator.devices.show', $device) }}" class="btn btn-sm btn-outline-info" title="Intelligence Dashboard">
+                            <a href="{{ auth()->user()->hasRole('admin') ? route('admin.devices.show', $device) : route('operator.devices.show', $device) }}" class="btn btn-sm btn-outline-info shadow-sm" title="Intelligence Dashboard">
                                 <i class="bi bi-graph-up"></i>
                             </a>
                             
                             @can('update', $device)
-                            <a href="{{ route('admin.devices.edit', $device) }}" class="btn btn-sm btn-outline-primary">
+                            {{-- Activation Toggle --}}
+                            <form action="{{ route('admin.devices.toggle-status', $device) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-sm {{ $device->status === 'active' ? 'btn-outline-warning' : 'btn-outline-success' }} shadow-sm" title="{{ $device->status === 'active' ? 'Deactivate' : 'Activate' }}">
+                                    <i class="bi bi-{{ $device->status === 'active' ? 'power' : 'lightning-charge' }}"></i>
+                                </button>
+                            </form>
+
+                            {{-- Edit Modal Trigger --}}
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-primary shadow-sm edit-device-btn" 
+                                    title="Modify Device"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editDeviceModal"
+                                    data-device="{{ json_encode([
+                                        'id' => $device->id,
+                                        'name' => $device->name,
+                                        'serial_number' => $device->serial_number,
+                                        'device_type_id' => $device->device_type_id,
+                                        'user_id' => $device->user_id,
+                                        'status' => $device->status,
+                                        'description' => $device->description,
+                                        'avatar_url' => $device->avatar_url
+                                    ]) }}">
                                 <i class="bi bi-pencil"></i>
-                            </a>
+                            </button>
                             @endcan
                             
                             @can('delete', $device)
                             <form action="{{ route('admin.devices.destroy', $device) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this device permanently?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm">
                                     <i class="bi bi-trash3"></i>
                                 </button>
                             </form>
@@ -254,4 +278,115 @@
     </div>
 </div>
 @endrole
+{{-- ── Edit Device Modal ── --}}
+@role('admin')
+<div class="modal fade" id="editDeviceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <form id="editDeviceForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-header border-0 p-4">
+                    <div>
+                        <h5 class="modal-title fw-bold text-primary">Modify Device Configuration</h5>
+                        <p class="text-muted small mb-0">Update the parameters for this IoT asset</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 pt-0">
+                    <div class="row g-4">
+                        <div class="col-md-12 text-center mb-2">
+                            <div class="position-relative d-inline-block">
+                                <img id="editAvatarPreview" src="" class="rounded-3 shadow-sm" width="80" height="80" style="object-fit: cover; border: 3px solid #E8F1FA;">
+                                <label for="editAvatar" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1 cursor-pointer shadow" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                    <i class="bi bi-camera-fill" style="font-size: 12px;"></i>
+                                </label>
+                                <input type="file" id="editAvatar" name="avatar" class="d-none" accept="image/*" onchange="previewEditImage(this)">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Device Name</label>
+                            <input type="text" name="name" id="edit_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Serial Number</label>
+                            <input type="text" name="serial_number" id="edit_serial" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Model/Type</label>
+                            <select name="device_type_id" id="edit_type" class="form-select" required>
+                                @foreach($deviceTypes as $type)
+                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Assigned Operator</label>
+                            <select name="user_id" id="edit_user" class="form-select">
+                                <option value="">Unassigned</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label small fw-bold">Current Status</label>
+                            <select name="status" id="edit_status" class="form-select" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="maintenance">Maintenance</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold">Internal Notes</label>
+                            <textarea name="description" id="edit_description" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0 mt-3">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow">Update Configuration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endrole
+
+@push('scripts')
+<script>
+document.querySelectorAll('.edit-device-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const d = JSON.parse(this.dataset.device);
+        const form = document.getElementById('editDeviceForm');
+        
+        // Set action URL
+        form.action = `/admin/devices/${d.id}`;
+        
+        // Populate fields
+        document.getElementById('edit_name').value = d.name;
+        document.getElementById('edit_serial').value = d.serial_number;
+        document.getElementById('edit_type').value = d.device_type_id;
+        document.getElementById('edit_user').value = d.user_id || '';
+        document.getElementById('edit_status').value = d.status;
+        document.getElementById('edit_description').value = d.description || '';
+        
+        // Preview avatar
+        document.getElementById('editAvatarPreview').src = d.avatar_url;
+    });
+});
+
+function previewEditImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('editAvatarPreview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+@endpush
+
 @endsection

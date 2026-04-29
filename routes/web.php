@@ -42,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('device-types', DeviceTypeController::class);
         
         Route::patch('/devices/{device}/assign', [DeviceController::class, 'assignUser'])->name('devices.assign');
+        Route::patch('/devices/{device}/toggle-status', [DeviceController::class, 'toggleStatus'])->name('devices.toggle-status');
         Route::resource('devices', DeviceController::class);
         
         Route::post('/devices/{device}/commands', [CommandController::class, 'store'])->name('commands.store');
