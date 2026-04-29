@@ -35,6 +35,11 @@ class Alert extends Model
         return $this->hasMany(AlertAttachment::class);
     }
 
+    public function messages(): HasMany
+    {
+        return $this->hasMany(AlertMessage::class)->oldest();
+    }
+
     public function getStatusBadgeAttribute(): string
     {
         return match($this->status) {

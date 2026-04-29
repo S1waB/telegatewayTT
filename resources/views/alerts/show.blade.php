@@ -37,25 +37,78 @@
             </div>
         </div>
 
-        {{-- Admin Response Section --}}
-        @if($alert->admin_response)
-            <div class="card border-0 shadow-sm" style="background: var(--tg-primary-light); border-left: 4px solid var(--tg-primary) !important;">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="bg-primary text-white rounded-circle p-2 me-3">
-                            <i class="bi bi-person-badge-fill"></i>
+        {{-- Conversation / Messaging Section --}}
+        <div class="card tg-card border-0 mb-4">
+            <div class="card-header bg-transparent p-4 border-bottom">
+                <h6 class="fw-bold mb-0">Conversation History</h6>
+            </div>
+            <div class="card-body p-4">
+                {{-- Initial Admin Response (Legacy / Main) --}}
+                @if($alert->admin_response)
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
                         </div>
-                        <h6 class="mb-0 fw-bold">Admin Response</h6>
+                        <div class="flex-grow-1">
+                            <div class="p-3 rounded-3 shadow-sm" style="background: var(--tg-primary-light); border-left: 4px solid var(--tg-primary);">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-bold small text-primary">System Resolution</span>
+                                    <span class="text-muted" style="font-size: 10px;">{{ $alert->updated_at->format('M d, H:i') }}</span>
+                                </div>
+                                <p class="mb-0 small text-dark" style="white-space: pre-line;">{{ $alert->admin_response }}</p>
+                            </div>
+                        </div>
                     </div>
-                    <p class="mb-0 text-dark" style="white-space: pre-line;">{{ $alert->admin_response }}</p>
-                </div>
+                @endif
+
+                {{-- Threaded Messages --}}
+                @foreach($alert->messages as $message)
+                    <div class="d-flex gap-3 mb-4 {{ $message->user_id === auth()->id() ? 'flex-row-reverse' : '' }}">
+                        <div class="flex-shrink-0">
+                            <x-avatar :url="$message->user->avatar_url" :size="40" class="shadow-sm border" />
+                        </div>
+                        <div class="flex-grow-1" style="max-width: 80%;">
+                            <div class="p-3 rounded-3 shadow-sm {{ $message->user_id === auth()->id() ? 'bg-primary text-white' : 'bg-light border' }}">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-bold small {{ $message->user_id === auth()->id() ? 'text-white' : 'text-primary' }}">
+                                        {{ $message->user->name }}
+                                        @if($message->user->hasRole('admin'))
+                                            <i class="bi bi-patch-check-fill ms-1" title="Official Admin"></i>
+                                        @endif
+                                    </span>
+                                    <span class="{{ $message->user_id === auth()->id() ? 'text-white-50' : 'text-muted' }}" style="font-size: 10px;">{{ $message->created_at->format('M d, H:i') }}</span>
+                                </div>
+                                <p class="mb-0 small" style="white-space: pre-line;">{{ $message->message }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+
+                @if($alert->messages->count() === 0 && !$alert->admin_response)
+                    <div class="text-center py-4 text-muted small">
+                        <i class="bi bi-chat-dots mb-2 d-block fs-4 opacity-50"></i>
+                        No messages yet. Start the conversation below.
+                    </div>
+                @endif
+
+                <hr class="my-4 opacity-10">
+
+                {{-- Reply Form --}}
+                <form action="{{ route('alerts.messages.store', $alert) }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <textarea name="message" class="form-control bg-light border-0" rows="3" placeholder="Type your message here..." required style="resize: none;"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm">
+                            <i class="bi bi-send-fill me-2"></i> Send Reply
+                        </button>
+                    </div>
+                </form>
             </div>
-        @elseif(!auth()->user()->hasRole('admin'))
-            <div class="text-center py-4 text-muted bg-light rounded-3 border">
-                <i class="bi bi-clock-history mb-2 d-block"></i>
-                Waiting for administrative review...
-            </div>
-        @endif
+        </div>
     </div>
 
     <div class="col-md-4">

@@ -37,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/alerts/{alert}', [AlertController::class, 'show'])->name('alerts.show');
     Route::patch('/alerts/{alert}/status', [AlertController::class, 'updateStatus'])->name('alerts.update-status');
     Route::post('/alerts/{alert}/respond', [AlertController::class, 'respond'])->name('alerts.respond');
+    Route::post('/alerts/{alert}/messages', [AlertController::class, 'storeMessage'])->name('alerts.messages.store');
 
     // Admin Routes
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {

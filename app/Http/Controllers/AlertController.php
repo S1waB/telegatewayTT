@@ -158,6 +158,29 @@ class AlertController extends Controller
         return back();
     }
 
+    public function storeMessage(Request $request, Alert $alert)
+    {
+        $this->authorizeView($alert);
+
+        $request->validate([
+            'message' => 'required|string',
+        ]);
+
+        $alert->messages()->create([
+            'user_id' => auth()->id(),
+            'message' => $request->message,
+        ]);
+
+        // If it's a user replying, mark as not_viewed or pending?
+        // Let's mark as pending if an admin was already involved
+        if (!auth()->user()->hasRole('admin') && $alert->status === 'viewed') {
+            $alert->update(['status' => 'pending']);
+        }
+
+        session()->flash('success', 'Message sent.');
+        return back();
+    }
+
     private function authorizeView(Alert $alert)
     {
         $user = auth()->user();
