@@ -43,6 +43,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         
+        // Analytics & Export Routes
+        Route::get('/users-analytics', [UserController::class, 'analytics'])->name('users.analytics');
+        Route::get('/users-export', [UserController::class, 'export'])->name('users.export');
+        
+        Route::get('/devices-analytics', [DeviceController::class, 'analytics'])->name('devices.analytics');
+        Route::get('/devices-export', [DeviceController::class, 'export'])->name('devices.export');
+        
+        Route::get('/device-types-analytics', [DeviceTypeController::class, 'analytics'])->name('device-types.analytics');
+        Route::get('/device-types-export', [DeviceTypeController::class, 'export'])->name('device-types.export');
+
         Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
         Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
         Route::resource('users', UserController::class);

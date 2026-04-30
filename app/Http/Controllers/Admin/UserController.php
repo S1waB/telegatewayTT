@@ -136,4 +136,56 @@ class UserController extends Controller
         session()->flash('success', "A new temporary password has been generated and emailed to {$user->email}.");
         return back();
     }
+
+    public function analytics()
+    {
+        $totalUsers = User::count();
+        $activeUsers = User::where('is_active', true)->count();
+        $roleDistribution = \DB::table('model_has_roles')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->select('roles.name', \DB::raw('count(*) as total'))
+            ->groupBy('roles.name')
+            ->get();
+            
+        $recentLogins = User::whereNotNull('last_active_at')->orderByDesc('last_active_at')->take(10)->get();
+
+        return view('admin.users.analytics', compact('totalUsers', 'activeUsers', 'roleDistribution', 'recentLogins'));
+    }
+
+    public function export()
+    {
+        $fileName = 'users_export_' . date('Y-m-d') . '.csv';
+        $users = User::with('roles')->get();
+
+        $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+
+        $columns = array('ID', 'Name', 'Email', 'Phone', 'Role', 'Status', 'Joined');
+
+        $callback = function() use($users, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($users as $user) {
+                $row['ID']    = $user->id;
+                $row['Name']  = $user->name;
+                $row['Email'] = $user->email;
+                $row['Phone'] = $user->phone_number;
+                $row['Role']  = $user->roles->pluck('name')->implode(', ');
+                $row['Status']= $user->is_active ? 'Active' : 'Inactive';
+                $row['Joined']= $user->created_at->format('Y-m-d');
+
+                fputcsv($file, array($row['ID'], $row['Name'], $row['Email'], $row['Phone'], $row['Role'], $row['Status'], $row['Joined']));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

@@ -33,18 +33,18 @@ body {
 
 /* ── Sidebar Redesign ── */
 .tg-sidebar {
-  background: linear-gradient(180deg, #0D1B2A 0%, #16222E 100%);
-  color: var(--tg-sidebar-text);
+  background: linear-gradient(180deg, #1A6FBF 0%, #0D4A8A 100%);
+  color: rgba(255, 255, 255, 0.8);
   min-height: 100vh;
   width: 270px;
   position: fixed;
   z-index: 1050;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tg-sidebar .nav-link {
-  color: var(--tg-sidebar-text);
+  color: rgba(255, 255, 255, 0.7);
   padding: 0.9rem 1.75rem;
   font-weight: 500;
   font-size: 0.925rem;
@@ -69,9 +69,9 @@ body {
 }
 
 .tg-sidebar .nav-link.active {
-  color: var(--tg-sidebar-active-text);
-  background: linear-gradient(90deg, var(--tg-primary) 0%, #3A8FE8 100%);
-  box-shadow: 0 4px 12px rgba(26, 111, 191, 0.3);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
 }
 
 .tg-sidebar .nav-link.active i,
@@ -80,7 +80,7 @@ body {
 }
 
 .tg-sidebar .sidebar-heading {
-  color: rgba(148, 163, 184, 0.4);
+  color: rgba(255, 255, 255, 0.3);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;

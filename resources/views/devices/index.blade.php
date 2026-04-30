@@ -25,9 +25,14 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-gear-wide-connected me-2 text-primary"></i>Platform Overview</h6>
                     @role('admin')
-                    <button type="button" class="btn btn-primary d-flex align-items-center gap-2 px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#createDeviceModal">
-                        <i class="bi bi-plus-lg"></i> Add New Device
-                    </button>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('admin.devices.analytics') }}" class="btn btn-outline-primary d-flex align-items-center gap-2 px-3 rounded-pill shadow-sm">
+                            <i class="bi bi-pie-chart"></i> Fleet Analytics
+                        </a>
+                        <button type="button" class="btn btn-primary d-flex align-items-center gap-2 px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#createDeviceModal">
+                            <i class="bi bi-plus-lg"></i> Add New Device
+                        </button>
+                    </div>
                     @endrole
                 </div>
                 <form action="{{ request()->url() }}" method="GET" class="row g-2 align-items-center mt-2">

@@ -94,4 +94,49 @@ class DeviceTypeController extends Controller
         session()->flash('success', 'Device type deleted successfully.');
         return redirect()->route('admin.device-types.index');
     }
+
+    public function analytics()
+    {
+        $deviceTypes = DeviceType::withCount('devices')
+            ->withCount(['devices as active_count' => function($q) {
+                $q->where('status', 'active');
+            }])->get();
+            
+        return view('admin.device-types.analytics', compact('deviceTypes'));
+    }
+
+    public function export()
+    {
+        $fileName = 'device_types_export_' . date('Y-m-d') . '.csv';
+        $types = DeviceType::withCount('devices')->get();
+
+        $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+
+        $columns = array('ID', 'Name', 'Description', 'Devices Count', 'Created At');
+
+        $callback = function() use($types, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($types as $type) {
+                fputcsv($file, array(
+                    $type->id,
+                    $type->name,
+                    $type->description,
+                    $type->devices_count,
+                    $type->created_at->format('Y-m-d')
+                ));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

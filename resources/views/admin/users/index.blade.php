@@ -113,9 +113,14 @@
         <span class="badge rounded-pill ms-2" style="background:#E8F1FA;color:#1A6FBF;font-size:11px">{{ $users->total() }}</span>
       @endif
     </span>
-    <button type="button" class="btn btn-sm btn-primary" style="background:#1A6FBF;color:#fff;border-radius:6px" data-bs-toggle="modal" data-bs-target="#createUserModal">
-      <i class="bi bi-plus-lg me-1"></i>Add user
-    </button>
+    <div class="d-flex gap-2">
+      <a href="{{ route('admin.users.analytics') }}" class="btn btn-sm btn-outline-primary shadow-sm d-flex align-items-center px-3" style="border-radius:6px">
+        <i class="bi bi-bar-chart-fill me-2"></i>View Analytics
+      </a>
+      <button type="button" class="btn btn-sm btn-primary shadow-sm d-flex align-items-center px-3" style="background:#1A6FBF;color:#fff;border-radius:6px" data-bs-toggle="modal" data-bs-target="#createUserModal">
+        <i class="bi bi-plus-lg me-1"></i>Add user
+      </button>
+    </div>
   </div>
   <div class="card-body p-0">
     <div class="table-responsive">

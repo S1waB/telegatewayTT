@@ -6,9 +6,14 @@
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="mb-0 fw-bold">Device Types Library</h5>
-            <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#createTypeModal">
-                <i class="bi bi-plus-lg"></i> Add New Type
-            </button>
+            <div class="d-flex gap-2">
+                <a href="{{ route('admin.device-types.analytics') }}" class="btn btn-outline-primary d-flex align-items-center gap-2">
+                    <i class="bi bi-collection-play"></i> Type Analytics
+                </a>
+                <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#createTypeModal">
+                    <i class="bi bi-plus-lg"></i> Add New Type
+                </button>
+            </div>
         </div>
 
         {{-- Filters/Search --}}

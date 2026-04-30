@@ -15,13 +15,16 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <!-- Custom CSS -->
     <link href="{{ asset('css/telegateway.css') }}" rel="stylesheet">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
 </head>
-<body class="d-flex align-items-center py-4 bg-light" style="min-height: 100vh;">
+<body class="d-flex align-items-center py-4" style="min-height: 100vh; background: linear-gradient(135deg, #1A6FBF 0%, #0D4A8A 100%);">
     
     <main class="w-100 m-auto" style="max-width: 450px;">
         @yield('content')

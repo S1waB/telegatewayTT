@@ -188,4 +188,57 @@ class DeviceController extends Controller
         session()->flash('success', "Device " . ($newStatus === 'active' ? 'activated' : 'deactivated') . " successfully.");
         return back();
     }
+
+    public function analytics()
+    {
+        $totalDevices = Device::count();
+        $statusDistribution = Device::select('status', \DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->get();
+        $typeDistribution = Device::join('device_types', 'devices.device_type_id', '=', 'device_types.id')
+            ->select('device_types.name', \DB::raw('count(*) as total'))
+            ->groupBy('device_types.name')
+            ->get();
+            
+        $recentDevices = Device::with(['type', 'user'])->latest()->take(10)->get();
+
+        return view('admin.devices.analytics', compact('totalDevices', 'statusDistribution', 'typeDistribution', 'recentDevices'));
+    }
+
+    public function export()
+    {
+        $fileName = 'fleet_export_' . date('Y-m-d') . '.csv';
+        $devices = Device::with(['type', 'user'])->get();
+
+        $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+
+        $columns = array('ID', 'Name', 'Serial Number', 'Type', 'Status', 'Operator', 'Created At');
+
+        $callback = function() use($devices, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($devices as $device) {
+                fputcsv($file, array(
+                    $device->id,
+                    $device->name,
+                    $device->serial_number,
+                    $device->type->name,
+                    ucfirst($device->status),
+                    $device->user ? $device->user->name : 'Unassigned',
+                    $device->created_at->format('Y-m-d')
+                ));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

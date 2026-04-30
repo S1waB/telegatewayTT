@@ -23,9 +23,12 @@
             @enderror
         </div>
 
-        <div class="form-floating mb-3">
-            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password" required autocomplete="current-password">
+        <div class="form-floating mb-3 position-relative">
+            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password" required autocomplete="current-password" style="padding-right: 45px;">
             <label for="password">Password</label>
+            <button type="button" id="togglePassword" class="btn border-0 position-absolute end-0 top-50 translate-middle-y me-2 text-muted" style="z-index: 5;">
+                <i class="bi bi-eye" id="eyeIcon"></i>
+            </button>
             @error('password')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -60,4 +63,19 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordField = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    });
+</script>
 @endsection
