@@ -90,10 +90,21 @@ class DeviceController extends Controller
         }
     }
 
-    public function show(Device $device)
+    public function show(Device $device, Request $request)
     {
         $device->load(['type', 'user']);
-        $recentCommands = $device->commands()->with('user')->latest()->take(10)->get();
+        
+        $query = $device->commands()->with('user')->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('from')) {
+            $query->whereDate('sent_at', '>=', $request->from);
+        }
+
+        $commands = $query->paginate(10)->withQueryString();
         
         // Simple data aggregation for charts
         $chartData = $device->data()
@@ -103,7 +114,7 @@ class DeviceController extends Controller
             ->reverse()
             ->values();
 
-        return view('devices.show', compact('device', 'recentCommands', 'chartData'));
+        return view('devices.show', compact('device', 'commands', 'chartData'));
     }
 
     public function edit(Device $device)
