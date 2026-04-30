@@ -9,6 +9,16 @@
                 <form action="{{ route('admin.devices.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
+                    @if ($errors->any())
+                        <div class="alert alert-danger mb-4">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    
                     <div class="row g-4">
                         <div class="col-md-12 text-center mb-3">
                             <div class="position-relative d-inline-block">

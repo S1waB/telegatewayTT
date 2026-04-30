@@ -78,6 +78,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Notification Routes
+    Route::get('/notifications/unread', function () {
+        return response()->json([
+            'count' => auth()->user()->unreadNotifications->count(),
+            'notifications' => auth()->user()->unreadNotifications()->take(5)->get()
+        ]);
+    })->name('notifications.unread');
+
+    Route::post('/notifications/{id}/mark-read', function ($id) {
+        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification->markAsRead();
+        return response()->json(['success' => true]);
+    })->name('notifications.mark-read');
 });
 
 require __DIR__.'/auth.php';

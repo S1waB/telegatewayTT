@@ -53,10 +53,26 @@
                     <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                 </div>
 
-                <a href="#" class="text-secondary position-relative">
-                    <i data-feather="bell"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
-                </a>
+                <div class="dropdown">
+                    <a href="#" class="text-secondary position-relative dropdown-toggle" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                        <i data-feather="bell"></i>
+                        <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
+                            0
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-0" aria-labelledby="notificationDropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                        <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                            <h6 class="mb-0 fw-bold">Notifications</h6>
+                            <span id="notificationCountText" class="badge bg-primary rounded-pill">0 New</span>
+                        </li>
+                        <div id="notificationList">
+                            <li class="p-4 text-center text-muted small">
+                                <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div><br>
+                                Loading notifications...
+                            </li>
+                        </div>
+                    </ul>
+                </div>
                 
                 <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -183,6 +199,85 @@
                 updateThemeIcon(newTheme);
             });
         }
+        // Notifications Polling
+        function fetchNotifications() {
+            $.ajax({
+                url: '{{ route('notifications.unread') }}',
+                method: 'GET',
+                success: function(response) {
+                    let count = response.count;
+                    let notifications = response.notifications;
+                    
+                    let badge = $('#notificationBadge');
+                    let countText = $('#notificationCountText');
+                    let list = $('#notificationList');
+                    
+                    if (count > 0) {
+                        badge.removeClass('d-none').text(count > 99 ? '99+' : count);
+                        countText.text(count + ' New');
+                    } else {
+                        badge.addClass('d-none');
+                        countText.text('0 New');
+                    }
+                    
+                    list.empty();
+                    
+                    if (notifications.length > 0) {
+                        notifications.forEach(function(notif) {
+                            let data = notif.data;
+                            let date = new Date(notif.created_at).toLocaleDateString() + ' ' + new Date(notif.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                            
+                            let html = `
+                                <li>
+                                    <a class="dropdown-item p-3 border-bottom text-wrap" href="javascript:void(0)" onclick="markNotificationAsRead('${notif.id}', '${data.url}')">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <div class="bg-primary-light text-primary rounded-circle p-2 mt-1">
+                                                <i class="bi bi-info-circle"></i>
+                                            </div>
+                                            <div>
+                                                <p class="mb-1 small text-dark fw-medium" style="line-height: 1.4;">${data.message}</p>
+                                                <span class="text-muted" style="font-size: 10px;">${date}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            `;
+                            list.append(html);
+                        });
+                        
+                        list.append(`
+                            <li><a class="dropdown-item text-center small text-primary fw-bold py-2 bg-light" href="#">View All</a></li>
+                        `);
+                    } else {
+                        list.append(`
+                            <li class="p-4 text-center text-muted small">
+                                <i class="bi bi-bell-slash fs-3 d-block mb-2 text-secondary opacity-50"></i>
+                                No new notifications
+                            </li>
+                        `);
+                    }
+                }
+            });
+        }
+
+        window.markNotificationAsRead = function(id, url) {
+            $.ajax({
+                url: `/notifications/${id}/mark-read`,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function() {
+                    window.location.href = url;
+                }
+            });
+        };
+
+        // Initial fetch
+        fetchNotifications();
+        
+        // Poll every 15 seconds
+        setInterval(fetchNotifications, 15000);
     </script>
     @stack('scripts')
 </body>

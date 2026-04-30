@@ -65,16 +65,29 @@ class DeviceController extends Controller
 
     public function store(StoreDeviceRequest $request)
     {
-        $data = $request->validated();
+        try {
+            $data = $request->validated();
 
-        if ($request->hasFile('avatar')) {
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            }
+
+            $device = Device::create($data);
+
+            if ($device->user_id) {
+                $user = User::find($device->user_id);
+                if ($user) {
+                    $user->notify(new \App\Notifications\DeviceAssignedNotification($device, auth()->user()));
+                }
+            }
+
+            session()->flash('success', 'Device created successfully.');
+            return redirect()->route('admin.devices.index');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Device Creation Failed: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
+            session()->flash('error', 'Error creating device: ' . $e->getMessage());
+            return back()->withInput();
         }
-
-        Device::create($data);
-
-        session()->flash('success', 'Device created successfully.');
-        return redirect()->route('admin.devices.index');
     }
 
     public function show(Device $device)
@@ -103,6 +116,7 @@ class DeviceController extends Controller
     public function update(UpdateDeviceRequest $request, Device $device)
     {
         $data = $request->validated();
+        $oldUserId = $device->user_id;
 
         if ($request->hasFile('avatar')) {
             if ($device->avatar) {
@@ -112,6 +126,13 @@ class DeviceController extends Controller
         }
 
         $device->update($data);
+
+        if ($device->user_id && $device->user_id !== $oldUserId) {
+            $user = User::find($device->user_id);
+            if ($user) {
+                $user->notify(new \App\Notifications\DeviceAssignedNotification($device, auth()->user()));
+            }
+        }
 
         session()->flash('success', 'Device updated successfully.');
         return redirect()->route('admin.devices.index');
@@ -132,8 +153,16 @@ class DeviceController extends Controller
             'user_id' => 'nullable|exists:users,id'
         ]);
 
+        $oldUserId = $device->user_id;
         $device->update(['user_id' => $request->user_id]);
         
+        if ($device->user_id && $device->user_id !== $oldUserId) {
+            $user = User::find($device->user_id);
+            if ($user) {
+                $user->notify(new \App\Notifications\DeviceAssignedNotification($device, auth()->user()));
+            }
+        }
+
         session()->flash('success', 'Device assignment updated.');
         return back();
     }
