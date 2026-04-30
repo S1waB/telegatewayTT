@@ -37,6 +37,13 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+                    <i data-feather="megaphone" class="me-2" style="width: 18px;"></i>
+                    Broadcast Center
+                </a>
+            </li>
+            <li class="sidebar-heading">Governance</li>
+            <li>
                 <a href="{{ route('admin.roles.index') }}" class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
                     <i data-feather="shield" class="me-2" style="width: 18px;"></i>
                     Roles

@@ -56,6 +56,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         Route::post('/devices/{device}/commands', [CommandController::class, 'store'])->name('commands.store');
         Route::get('/commands', [CommandController::class, 'history'])->name('commands.history');
+
+        // Announcements
+        Route::get('/announcements', [\App\Http\Controllers\Admin\AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::post('/announcements/send', [\App\Http\Controllers\Admin\AnnouncementController::class, 'send'])->name('announcements.send');
     });
 
     // Operator Routes
