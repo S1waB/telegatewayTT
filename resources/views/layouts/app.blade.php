@@ -46,12 +46,14 @@
                 <button type="button" class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
                     <i class="bi bi-list fs-2"></i>
                 </button>
-                <h5 class="mb-0 text-muted fw-bold">@yield('title', 'Dashboard')</h5>
+                <h5 class="mb-0 text-muted fw-bold">@yield('title', __('messages.dashboard'))</h5>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <div class="theme-switch shadow-sm" id="themeToggler" title="Toggle Somber/Light Mode">
+                <div class="theme-switch shadow-sm" id="themeToggler" title="{{ __('messages.toggle_theme') }}">
                     <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                 </div>
+
+                <x-lang-switcher />
 
                 <div class="dropdown">
                     <a href="#" class="text-secondary position-relative dropdown-toggle" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
@@ -62,13 +64,13 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-0" aria-labelledby="notificationDropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
                         <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
-                            <h6 class="mb-0 fw-bold">Notifications</h6>
-                            <span id="notificationCountText" class="badge bg-primary rounded-pill">0 New</span>
+                            <h6 class="mb-0 fw-bold">{{ __('messages.notifications') }}</h6>
+                            <span id="notificationCountText" class="badge bg-primary rounded-pill">0 {{ __('messages.new') }}</span>
                         </li>
                         <div id="notificationList">
                             <li class="p-4 text-center text-muted small">
                                 <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div><br>
-                                Loading notifications...
+                                Loading...
                             </li>
                         </div>
                     </ul>
@@ -80,12 +82,12 @@
                         <span class="d-none d-md-inline ms-2 fw-medium">{{ auth()->user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser1">
-                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">{{ __('messages.profile') }}</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item">Sign out</button>
+                                <button type="submit" class="dropdown-item">{{ __('messages.sign_out') }}</button>
                             </form>
                         </li>
                     </ul>
@@ -214,10 +216,10 @@
                     
                     if (count > 0) {
                         badge.removeClass('d-none').text(count > 99 ? '99+' : count);
-                        countText.text(count + ' New');
+                        countText.text(count + ' {{ __('messages.new') }}');
                     } else {
                         badge.addClass('d-none');
-                        countText.text('0 New');
+                        countText.text('0 {{ __('messages.new') }}');
                     }
                     
                     list.empty();
@@ -246,13 +248,13 @@
                         });
                         
                         list.append(`
-                            <li><a class="dropdown-item text-center small text-primary fw-bold py-2 bg-light" href="#">View All</a></li>
+                            <li><a class="dropdown-item text-center small text-primary fw-bold py-2 bg-light" href="#">{{ __('messages.view_all') }}</a></li>
                         `);
                     } else {
                         list.append(`
                             <li class="p-4 text-center text-muted small">
                                 <i class="bi bi-bell-slash fs-3 d-block mb-2 text-secondary opacity-50"></i>
-                                No new notifications
+                                {{ __('messages.no_notifications') }}
                             </li>
                         `);
                     }

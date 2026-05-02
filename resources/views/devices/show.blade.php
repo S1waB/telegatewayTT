@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Device Details')
+@section('title', __('messages.device_details'))
 
 @section('content')
 <div class="mb-4">
     <a href="{{ auth()->user()->hasRole('admin') ? route('admin.devices.index') : route('operator.devices.index') }}" class="text-decoration-none text-muted small fw-bold text-uppercase">
-        <i class="bi bi-arrow-left me-1"></i> Back to Fleet
+        <i class="bi bi-arrow-left me-1"></i> {{ __('messages.back_to_fleet') }}
     </a>
 </div>
 <div class="row g-4 mb-4">
@@ -25,7 +25,7 @@
                     <div class="mb-3 d-flex align-items-center">
                         <div class="bg-light p-2 rounded me-3 text-primary"><i data-feather="{{ $device->type->icon ?? 'box' }}"></i></div>
                         <div>
-                            <div class="small text-muted">Type</div>
+                            <div class="small text-muted">{{ __('messages.type') }}</div>
                             <div class="fw-medium">{{ $device->type->name }}</div>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                     <div class="mb-3 d-flex align-items-center">
                         <div class="bg-light p-2 rounded me-3 text-primary"><i data-feather="map-pin"></i></div>
                         <div>
-                            <div class="small text-muted">Location</div>
+                            <div class="small text-muted">{{ __('messages.location') }}</div>
                             <div class="fw-medium">{{ $device->location ?? 'Not specified' }}</div>
                         </div>
                     </div>
@@ -41,7 +41,7 @@
                     <div class="mb-3 d-flex align-items-center">
                         <div class="bg-light p-2 rounded me-3 text-primary"><i data-feather="wifi"></i></div>
                         <div>
-                            <div class="small text-muted">IP Address</div>
+                            <div class="small text-muted">{{ __('messages.ip_address') }}</div>
                             <div class="fw-medium">{{ $device->ip_address ?? 'Not specified' }}</div>
                         </div>
                     </div>
@@ -49,8 +49,8 @@
                     <div class="d-flex align-items-center">
                         <div class="bg-light p-2 rounded me-3 text-primary"><i data-feather="user"></i></div>
                         <div>
-                            <div class="small text-muted">Assigned To</div>
-                            <div class="fw-medium">{{ $device->user ? $device->user->name : 'Unassigned' }}</div>
+                            <div class="small text-muted">{{ __('messages.assigned_to') }}</div>
+                            <div class="fw-medium">{{ $device->user ? $device->user->name : __('messages.unassigned') }}</div>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
             @can('sendCommand', $device)
             <div class="card-footer bg-white p-3 border-top">
                 <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#sendCommandModal">
-                    <i data-feather="terminal" class="me-2" style="width: 16px;"></i> Send Command
+                    <i data-feather="terminal" class="me-2" style="width: 16px;"></i> {{ __('messages.send_command') }}
                 </button>
             </div>
             @endcan
@@ -70,11 +70,11 @@
     <div class="col-md-8">
         <div class="card tg-card h-100 border-0">
             <div class="card-header bg-white p-4 border-bottom d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0">Recent Telemetry Data</h6>
+                <h6 class="fw-bold mb-0">{{ __('messages.recent_telemetry_data') }}</h6>
                 @if($device->last_seen_at)
-                    <span class="badge bg-light text-dark border">Last seen: {{ $device->last_seen_at->diffForHumans() }}</span>
+                    <span class="badge bg-light text-dark border">{{ __('messages.last_seen') }}: {{ $device->last_seen_at->diffForHumans() }}</span>
                 @else
-                    <span class="badge bg-light text-dark border">Never seen</span>
+                    <span class="badge bg-light text-dark border">{{ __('messages.never_seen') }}</span>
                 @endif
             </div>
             <div class="card-body p-4">
@@ -83,7 +83,7 @@
                 @else
                     <div class="d-flex flex-column align-items-center justify-content-center h-100 py-5 text-muted">
                         <i data-feather="bar-chart-2" style="width: 48px; height: 48px; opacity: 0.2;" class="mb-3"></i>
-                        <p>No telemetry data available for this device.</p>
+                        <p>{{ __('messages.no_telemetry_data') }}</p>
                     </div>
                 @endif
             </div>
@@ -97,31 +97,31 @@
         <div class="tg-table-container shadow-sm border-0">
             <div class="p-4 border-bottom bg-white rounded-top-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0 fw-bold">Command History</h6>
+                    <h6 class="mb-0 fw-bold">{{ __('messages.command_history') }}</h6>
                     <div class="text-muted small">
-                        Total: {{ $commands->total() }} operations
+                        {{ __('messages.total_operations', ['count' => $commands->total()]) }}
                     </div>
                 </div>
                 
                 <form action="{{ request()->url() }}" method="GET" class="row g-2 align-items-end">
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold text-muted text-uppercase mb-1" style="font-size: 0.65rem;">Status</label>
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1" style="font-size: 0.65rem;">{{ __('messages.status') }}</label>
                         <select name="status" class="form-select form-select-sm">
-                            <option value="">All Statuses</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="sent" {{ request('status') == 'sent' ? 'selected' : '' }}>Sent</option>
-                            <option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>Success</option>
-                            <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
+                            <option value="">{{ __('messages.all_statuses') }}</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>{{ __('messages.pending') }}</option>
+                            <option value="sent" {{ request('status') == 'sent' ? 'selected' : '' }}>{{ __('messages.sent') }}</option>
+                            <option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>{{ __('messages.success') }}</option>
+                            <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>{{ __('messages.failed') }}</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold text-muted text-uppercase mb-1" style="font-size: 0.65rem;">Since</label>
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1" style="font-size: 0.65rem;">{{ __('messages.since') }}</label>
                         <input type="date" name="from" class="form-control form-control-sm" value="{{ request('from') }}">
                     </div>
                     <div class="col-md-4">
                         <div class="d-flex gap-1">
                             <button type="submit" class="btn btn-dark btn-sm px-3 w-100">
-                                <i class="bi bi-funnel me-1"></i> Filter
+                                <i class="bi bi-funnel me-1"></i> {{ __('messages.filter') }}
                             </button>
                             @if(request()->anyFilled(['status', 'from']))
                                 <a href="{{ request()->url() }}" class="btn btn-outline-secondary btn-sm px-2"><i class="bi bi-x-lg"></i></a>
@@ -135,12 +135,12 @@
                 <table class="table tg-table mb-0 align-middle">
                     <thead>
                         <tr>
-                            <th class="ps-4">ID</th>
-                            <th>Sent By</th>
-                            <th>Instruction Payload</th>
-                            <th>Status</th>
-                            <th>Execution Time</th>
-                            <th class="text-end pe-4">Response</th>
+                            <th class="ps-4">{{ __('messages.id') }}</th>
+                            <th>{{ __('messages.sent_by') }}</th>
+                            <th>{{ __('messages.instruction_payload') }}</th>
+                            <th>{{ __('messages.status') }}</th>
+                            <th>{{ __('messages.execution_time') }}</th>
+                            <th class="text-end pe-4">{{ __('messages.response') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -165,7 +165,7 @@
                                     </div>
                                     @if(strlen($payloadJson) > 25)
                                         <button type="button" class="btn btn-link btn-sm text-decoration-none p-0 ms-2 small" data-bs-toggle="modal" data-bs-target="#payloadModal{{ $command->id }}">
-                                            View
+                                            {{ __('messages.view') }}
                                         </button>
                                         
                                         <!-- Payload Modal -->
@@ -173,7 +173,7 @@
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content border-0 shadow-lg rounded-4">
                                                     <div class="modal-header border-bottom-0 p-4 pb-0">
-                                                        <h5 class="modal-title fw-bold">Full Instruction Payload</h5>
+                                                        <h5 class="modal-title fw-bold">{{ __('messages.full_instruction_payload') }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body p-4">
@@ -193,13 +193,13 @@
                                     <div class="fw-medium">{{ $command->sent_at->diffForHumans() }}</div>
                                     <div class="text-muted opacity-75" style="font-size: 0.7rem;">{{ $command->sent_at->format('M d, H:i:s') }}</div>
                                 @else
-                                    <span class="text-muted">In Queue</span>
+                                    <span class="text-muted">{{ __('messages.in_queue') }}</span>
                                 @endif
                             </td>
                             <td class="text-end pe-4">
                                 @if($command->response)
                                     <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-none border-opacity-25 d-flex align-items-center gap-1 ms-auto" data-bs-toggle="modal" data-bs-target="#responseModal{{ $command->id }}">
-                                        <i class="bi bi-terminal"></i> View Result
+                                        <i class="bi bi-terminal"></i> {{ __('messages.view_result') }}
                                     </button>
                                     
                                     <!-- Response Modal -->
@@ -210,7 +210,7 @@
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-terminal-fill fs-4 text-primary me-3"></i>
                                                         <div>
-                                                            <h5 class="modal-title fw-bold mb-0 text-dark">Execution Output</h5>
+                                                            <h5 class="modal-title fw-bold mb-0 text-dark">{{ __('messages.execution_output') }}</h5>
                                                             <span class="text-muted small">Asset: {{ $device->name }} | ID: #{{ $command->id }}</span>
                                                         </div>
                                                     </div>
@@ -232,20 +232,20 @@
                                                 </div>
                                                 <div class="modal-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
                                                     <div class="text-muted small">
-                                                        <i class="bi bi-shield-check me-1"></i> Verified IoT Response
+                                                        <i class="bi bi-shield-check me-1"></i> {{ __('messages.verified_iot_response') }}
                                                     </div>
                                                     <div class="d-flex gap-2">
                                                         <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="navigator.clipboard.writeText(`{{ addslashes($command->response) }}`).then(() => alert('Copied to clipboard!'))">
-                                                            <i class="bi bi-clipboard me-1"></i> Copy
+                                                            <i class="bi bi-clipboard me-1"></i> {{ __('messages.copy') }}
                                                         </button>
-                                                        <button type="button" class="btn btn-sm btn-dark rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-sm btn-dark rounded-pill px-4" data-bs-dismiss="modal">{{ __('messages.close') }}</button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 @else
-                                    <span class="badge bg-light text-muted fw-normal border">In Flight...</span>
+                                    <span class="badge bg-light text-muted fw-normal border">{{ __('messages.in_flight') }}</span>
                                 @endif
                             </td>
                         </tr>
@@ -253,7 +253,7 @@
                         <tr>
                             <td colspan="6" class="text-center py-5 text-muted">
                                 <i class="bi bi-journal-x display-6 d-block mb-3 opacity-25"></i>
-                                No commands have been sent to this device yet.
+                                {{ __('messages.no_commands_to_device') }}
                             </td>
                         </tr>
                         @endforelse
@@ -264,7 +264,7 @@
             @if($commands->hasPages())
             <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top rounded-bottom-4">
                 <div class="text-muted small">
-                    Showing <span class="fw-bold">{{ $commands->firstItem() }}</span> to <span class="fw-bold">{{ $commands->lastItem() }}</span> of <span class="fw-bold">{{ $commands->total() }}</span> commands
+                    {{ __('messages.showing_count', ['first' => $commands->firstItem(), 'last' => $commands->lastItem(), 'total' => $commands->total()]) }}
                 </div>
                 {{ $commands->links() }}
             </div>
@@ -279,11 +279,11 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bold">Send Command</h5>
+                <h5 class="modal-title fw-bold">{{ __('messages.send_command') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p class="text-muted small mb-4">Send a JSON payload to <strong>{{ $device->name }}</strong>. The device must be online to process the command.</p>
+                <p class="text-muted small mb-4">{{ __('messages.payload_notice', ['name' => $device->name]) }}</p>
                 
                 @if(auth()->user()->hasRole('admin'))
                     <form action="{{ route('admin.commands.store', ['device' => $device]) }}" method="POST" id="commandForm">
@@ -294,16 +294,16 @@
                     <input type="hidden" name="device_id" value="{{ $device->id }}">
                     
                     <div class="mb-3">
-                        <label class="form-label fw-medium">JSON Payload</label>
+                        <label class="form-label fw-medium">{{ __('messages.json_payload') }}</label>
                         <textarea name="payload" class="form-control font-monospace @error('payload') is-invalid @enderror" rows="5" required>{{ old('payload', "{\n  \"action\": \"ping\"\n}") }}</textarea>
                         @error('payload')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </form>
             </div>
             <div class="modal-footer border-top-0 pt-0">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
                 <button type="submit" form="commandForm" class="btn btn-primary d-flex align-items-center">
-                    <i data-feather="send" class="me-2" style="width: 16px;"></i> Send Now
+                    <i data-feather="send" class="me-2" style="width: 16px;"></i> {{ __('messages.send_now') }}
                 </button>
             </div>
         </div>

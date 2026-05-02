@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Alerts & Reports')
+@section('title', __('messages.alerts_and_reports'))
 
 @section('content')
 <div class="row g-4 mb-4">
@@ -11,10 +11,10 @@
                     <div class="bg-primary-light text-primary rounded-circle p-3">
                         <i class="bi bi-bell-fill fs-4"></i>
                     </div>
-                    <span class="badge bg-soft-primary text-primary px-2 py-1">Overall</span>
+                    <span class="badge bg-soft-primary text-primary px-2 py-1">{{ __('messages.overall') }}</span>
                 </div>
                 <h3 class="fw-bold mb-1">{{ $totalAlerts }}</h3>
-                <p class="text-muted small mb-0">Total Incident Reports</p>
+                <p class="text-muted small mb-0">{{ __('messages.incident_reports') }}</p>
             </div>
         </div>
     </div>
@@ -30,7 +30,7 @@
                     <div class="text-info fw-bold small">{{ $viewedPercentage }}%</div>
                 </div>
                 <h3 class="fw-bold mb-1">{{ $viewedAlerts }}</h3>
-                <p class="text-muted small mb-0">Engagement Rate</p>
+                <p class="text-muted small mb-0">{{ __('messages.engagement_rate') }}</p>
                 <div class="progress mt-2" style="height: 4px;">
                     <div class="progress-bar bg-info" style="width: {{ $viewedPercentage }}%"></div>
                 </div>
@@ -46,10 +46,10 @@
                     <div class="bg-success-light text-success rounded-circle p-3">
                         <i class="bi bi-check-all fs-4"></i>
                     </div>
-                    <span class="badge bg-success text-white px-2 py-1">Resolved</span>
+                    <span class="badge bg-success text-white px-2 py-1">{{ __('messages.resolved') }}</span>
                 </div>
                 <h3 class="fw-bold mb-1">{{ $respondedAlerts }}</h3>
-                <p class="text-muted small mb-0">Processed Alerts</p>
+                <p class="text-muted small mb-0">{{ __('messages.processed_alerts') }}</p>
             </div>
         </div>
     </div>
@@ -65,7 +65,7 @@
                     <div class="text-warning fw-bold small">{{ $responseRate }}%</div>
                 </div>
                 <h3 class="fw-bold mb-1">Response</h3>
-                <p class="text-muted small mb-0">Administrative Rate</p>
+                <p class="text-muted small mb-0">{{ __('messages.administrative_rate') }}</p>
                 <div class="progress mt-2" style="height: 4px;">
                     <div class="progress-bar bg-warning" style="width: {{ $responseRate }}%"></div>
                 </div>
@@ -78,11 +78,11 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="fw-bold mb-1 text-primary">Alert Center</h5>
-                        <p class="text-muted small mb-0">Report issues, device malfunctions, or general platform feedback.</p>
+                        <h5 class="fw-bold mb-1 text-primary">{{ __('messages.alert_center') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('messages.report_issue_notice') }}</p>
                     </div>
                     <button type="button" class="btn btn-primary d-flex align-items-center gap-2 px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#createAlertModal">
-                        <i class="bi bi-exclamation-triangle-fill"></i> Raise New Alert
+                        <i class="bi bi-exclamation-triangle-fill"></i> {{ __('messages.raise_new_alert') }}
                     </button>
                 </div>
 
@@ -91,28 +91,28 @@
                     <div class="col-md-5">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i class="bi bi-search"></i></span>
-                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Search by subject, description or user..." value="{{ request('search') }}" style="height: 45px;">
+                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="{{ __('messages.search') }}..." value="{{ request('search') }}" style="height: 45px;">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <select name="status" class="form-select" style="height: 45px;">
-                            <option value="">All Statuses</option>
-                            <option value="not_viewed" {{ request('status') === 'not_viewed' ? 'selected' : '' }}>Not Viewed</option>
-                            <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="viewed" {{ request('status') === 'viewed' ? 'selected' : '' }}>Viewed</option>
+                            <option value="">{{ __('messages.all_statuses') }}</option>
+                            <option value="not_viewed" {{ request('status') === 'not_viewed' ? 'selected' : '' }}>{{ __('messages.not_viewed') }}</option>
+                            <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>{{ __('messages.pending') }}</option>
+                            <option value="viewed" {{ request('status') === 'viewed' ? 'selected' : '' }}>{{ __('messages.viewed') }}</option>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <select name="type" class="form-select" style="height: 45px;">
-                            <option value="">All Types</option>
-                            <option value="general" {{ request('type') === 'general' ? 'selected' : '' }}>General Alerts</option>
-                            <option value="device" {{ request('type') === 'device' ? 'selected' : '' }}>Device Alerts</option>
+                            <option value="">{{ __('messages.all_types') }}</option>
+                            <option value="general" {{ request('type') === 'general' ? 'selected' : '' }}>{{ __('messages.general_alerts') }}</option>
+                            <option value="device" {{ request('type') === 'device' ? 'selected' : '' }}>{{ __('messages.device_alerts') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary w-100 shadow-sm" style="height: 45px;">
-                                <i class="bi bi-funnel me-2"></i>Apply Filters
+                                <i class="bi bi-funnel me-2"></i>{{ __('messages.filter') }}
                             </button>
                             @if(request()->anyFilled(['search', 'status', 'type']))
                                 <a href="{{ request()->url() }}" class="btn btn-light border shadow-sm" style="height: 45px;" title="Reset Filters">
@@ -132,11 +132,11 @@
         <table class="table tg-table mb-0">
             <thead>
                 <tr>
-                    <th class="ps-4">Subject & User</th>
-                    <th>Related Device</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th class="text-end pe-4">Actions</th>
+                    <th class="ps-4">{{ __('messages.subject_user') }}</th>
+                    <th>{{ __('messages.related_device') }}</th>
+                    <th>{{ __('messages.status') }}</th>
+                    <th>{{ __('messages.created_at') }}</th>
+                    <th class="text-end pe-4">{{ __('messages.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -154,7 +154,7 @@
                                 <i class="bi bi-cpu me-1"></i> {{ $alert->device->name }}
                             </div>
                         @else
-                            <span class="text-muted small">General Alert</span>
+                            <span class="text-muted small">{{ __('messages.general_alert') }}</span>
                         @endif
                     </td>
                     <td>
@@ -165,7 +165,7 @@
                     </td>
                     <td class="text-end pe-4">
                         <a href="{{ route('alerts.show', $alert) }}" class="btn btn-sm btn-outline-primary shadow-sm">
-                            <i class="bi bi-eye-fill me-1"></i> Details
+                            <i class="bi bi-eye-fill me-1"></i> {{ __('messages.details') }}
                         </a>
                     </td>
                 </tr>
@@ -173,7 +173,7 @@
                 <tr>
                     <td colspan="5" class="text-center py-5 text-muted">
                         <i class="bi bi-bell-slash display-4 opacity-25 mb-3 d-block"></i>
-                        No alerts found.
+                        {{ __('messages.no_alerts_found') }}
                     </td>
                 </tr>
                 @endforelse
@@ -198,22 +198,22 @@
                 @csrf
                 <div class="modal-header border-0 p-4 pb-0">
                     <div>
-                        <h5 class="modal-title fw-bold text-primary">Report an Issue</h5>
-                        <p class="text-muted small mb-0">Provide details and attach images to help us resolve the problem.</p>
+                        <h5 class="modal-title fw-bold text-primary">{{ __('messages.report_issue') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('messages.report_issue_detail') }}</p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="row g-4">
                         <div class="col-md-12">
-                            <label class="form-label small fw-bold">Subject</label>
+                            <label class="form-label small fw-bold">{{ __('messages.subject') }}</label>
                             <input type="text" name="subject" class="form-control" placeholder="Briefly describe the issue..." required>
                         </div>
                         
                         <div class="col-md-12">
-                            <label class="form-label small fw-bold">Related Device (Optional)</label>
+                            <label class="form-label small fw-bold">{{ __('messages.related_device') }} ({{ __('messages.new') }})</label>
                             <select name="device_id" class="form-select">
-                                <option value="">General Platform Alert</option>
+                                <option value="">{{ __('messages.general_alert') }}</option>
                                 @foreach($devices as $device)
                                     <option value="{{ $device->id }}">{{ $device->name }} ({{ $device->serial_number }})</option>
                                 @endforeach
@@ -221,20 +221,20 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label class="form-label small fw-bold">Detailed Description</label>
+                            <label class="form-label small fw-bold">{{ __('messages.detailed_description') }}</label>
                             <textarea name="description" class="form-control" rows="5" placeholder="Please provide as much detail as possible..." required></textarea>
                         </div>
 
                         <div class="col-md-12">
-                            <label class="form-label small fw-bold">Attach Screenshots/Photos</label>
+                            <label class="form-label small fw-bold">{{ __('messages.attach_photos') }}</label>
                             <input type="file" name="attachments[]" class="form-control" multiple accept="image/*">
                             <div class="form-text small">You can select multiple images (JPG, PNG, max 5MB each).</div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Discard</button>
-                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow">Submit Alert</button>
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">{{ __('messages.discard') }}</button>
+                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow">{{ __('messages.submit_alert') }}</button>
                 </div>
             </form>
         </div>

@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Hardware Library Intelligence')
+@section('title', __('messages.hardware_library_intelligence'))
 
 @section('content')
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <a href="{{ route('admin.device-types.index') }}" class="btn btn-sm btn-light border">
-        <i class="bi bi-arrow-left me-1"></i> Back to Library
+        <i class="bi bi-arrow-left me-1"></i> {{ __('messages.back_to_library') }}
     </a>
     <a href="{{ route('admin.device-types.export') }}" class="btn btn-sm btn-dark shadow-sm">
         <i class="bi bi-download me-1"></i> Export Data (CSV)
@@ -15,7 +15,7 @@
     <div class="col-md-12">
         <div class="card tg-card border-0">
             <div class="card-header bg-white p-4 border-bottom">
-                <h6 class="fw-bold mb-0">Hardware Utilization by Category</h6>
+                <h6 class="fw-bold mb-0">{{ __('messages.hardware_utilization_by_category') }}</h6>
             </div>
             <div class="card-body p-4">
                 <canvas id="utilizationChart" style="max-height: 400px;"></canvas>
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
-                    <span class="small text-muted">Active / Total</span>
+                    <span class="small text-muted">{{ __('messages.active_vs_total') }}</span>
                     <span class="small fw-bold">{{ $type->active_count }} / {{ $type->devices_count }}</span>
                 </div>
                 <div class="progress" style="height: 6px;">
@@ -65,13 +65,13 @@
                 labels: @json($deviceTypes->pluck('name')),
                 datasets: [
                     {
-                        label: 'Active Hardware',
+                        label: '{{ __('messages.active_hardware') }}',
                         data: @json($deviceTypes->pluck('active_count')),
                         backgroundColor: '#198754',
                         borderRadius: 6
                     },
                     {
-                        label: 'Inactive Hardware',
+                        label: '{{ __('messages.inactive_hardware') }}',
                         data: @json($deviceTypes->map(function($t) { return $t->devices_count - $t->active_count; })),
                         backgroundColor: '#dee2e6',
                         borderRadius: 6

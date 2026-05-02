@@ -1,15 +1,15 @@
 @extends('layouts.app')
-@section('title', 'Broadcast Center')
+@section('title', __('messages.broadcast_center'))
 
 @section('content')
 <div class="row mb-4 align-items-center">
     <div class="col-md-4">
-        <h3 class="fw-bold mb-0 text-dark">Broadcast Center</h3>
-        <p class="text-muted small mb-0">Manage and send system announcements.</p>
+        <h3 class="fw-bold mb-0 text-dark">{{ __('messages.broadcast_center') }}</h3>
+        <p class="text-muted small mb-0">{{ __('messages.manage_announcements_notice') }}</p>
     </div>
     <div class="col-md-8 text-md-end mt-3 mt-md-0">
         <button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-medium d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addAnnouncementModal">
-            <i class="bi bi-plus-lg"></i> Add Announcement
+            <i class="bi bi-plus-lg"></i> {{ __('messages.add_announcement') }}
         </button>
     </div>
 </div>
@@ -21,28 +21,28 @@
             <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0 bg-light" placeholder="Search announcements..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control border-start-0 bg-light" placeholder="{{ __('messages.search_announcements') }}" value="{{ request('search') }}">
                 </div>
             </div>
             <div class="col-md-3">
                 <select name="status" class="form-select bg-light border-0">
-                    <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>All Statuses</option>
-                    <option value="sent" {{ request('status') == 'sent' ? 'selected' : '' }}>Sent</option>
-                    <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                    <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>{{ __('messages.all_statuses') }}</option>
+                    <option value="sent" {{ request('status') == 'sent' ? 'selected' : '' }}>{{ __('messages.sent') }}</option>
+                    <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>{{ __('messages.scheduled') }}</option>
+                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>{{ __('messages.draft') }}</option>
                 </select>
             </div>
             <div class="col-md-3">
                 <select name="category" class="form-select bg-light border-0">
-                    <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>All Categories</option>
-                    <option value="General" {{ request('category') == 'General' ? 'selected' : '' }}>General</option>
-                    <option value="Update" {{ request('category') == 'Update' ? 'selected' : '' }}>Update</option>
-                    <option value="Maintenance" {{ request('category') == 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
-                    <option value="Alert" {{ request('category') == 'Alert' ? 'selected' : '' }}>Alert</option>
+                    <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>{{ __('messages.all_categories') }}</option>
+                    <option value="General" {{ request('category') == 'General' ? 'selected' : '' }}>{{ __('messages.general') }}</option>
+                    <option value="Update" {{ request('category') == 'Update' ? 'selected' : '' }}>{{ __('messages.update') }}</option>
+                    <option value="Maintenance" {{ request('category') == 'Maintenance' ? 'selected' : '' }}>{{ __('messages.maintenance') }}</option>
+                    <option value="Alert" {{ request('category') == 'Alert' ? 'selected' : '' }}>{{ __('messages.alert') }}</option>
                 </select>
             </div>
             <div class="col-md-2 d-grid">
-                <button type="submit" class="btn btn-light fw-medium">Filter</button>
+                <button type="submit" class="btn btn-light fw-medium">{{ __('messages.filter') }}</button>
             </div>
         </form>
     </div>
@@ -55,11 +55,11 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th class="ps-4 border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">Title</th>
-                        <th class="border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">Date</th>
-                        <th class="border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">Status</th>
-                        <th class="border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">Audience</th>
-                        <th class="pe-4 border-0 text-uppercase small fw-bold text-muted tracking-wider py-3 text-end">Actions</th>
+                        <th class="ps-4 border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">{{ __('messages.title') }}</th>
+                        <th class="border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">{{ __('messages.date') }}</th>
+                        <th class="border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">{{ __('messages.status') }}</th>
+                        <th class="border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">{{ __('messages.audience') }}</th>
+                        <th class="pe-4 border-0 text-uppercase small fw-bold text-muted tracking-wider py-3 text-end">{{ __('messages.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,11 +77,11 @@
                             </td>
                             <td class="py-3">
                                 @if($announcement->status === 'sent')
-                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-medium"><i class="bi bi-check-circle me-1"></i> Sent</span>
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-medium"><i class="bi bi-check-circle me-1"></i> {{ __('messages.sent') }}</span>
                                 @elseif($announcement->status === 'scheduled')
-                                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2 fw-medium"><i class="bi bi-clock me-1"></i> Scheduled</span>
+                                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2 fw-medium"><i class="bi bi-clock me-1"></i> {{ __('messages.scheduled') }}</span>
                                 @else
-                                    <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-2 fw-medium"><i class="bi bi-pencil-square me-1"></i> Draft</span>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-2 fw-medium"><i class="bi bi-pencil-square me-1"></i> {{ __('messages.draft') }}</span>
                                 @endif
                             </td>
                             <td class="py-3">
@@ -90,13 +90,13 @@
                                         <i class="bi bi-{{ $announcement->target_type === 'role' ? 'shield-lock' : 'person' }} small"></i>
                                     </div>
                                     <div>
-                                        <div class="small fw-medium">{{ ucfirst($announcement->target_type) }}s</div>
-                                        <div class="small text-muted" style="font-size: 11px;">{{ is_array($announcement->target_ids) ? count($announcement->target_ids) : 0 }} Selected</div>
+                                        <div class="small fw-medium">{{ $announcement->target_type === 'role' ? __('messages.roles') : __('messages.specific_users') }}</div>
+                                        <div class="small text-muted" style="font-size: 11px;">{{ __('messages.selected_count', ['count' => is_array($announcement->target_ids) ? count($announcement->target_ids) : 0]) }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="pe-4 py-3 text-end">
-                                <button class="btn btn-sm btn-light rounded-circle p-2 text-muted hover-primary" onclick='viewAnnouncement(@json($announcement))' title="View Details">
+                                <button class="btn btn-sm btn-light rounded-circle p-2 text-muted hover-primary" onclick='viewAnnouncement(@json($announcement))' title="{{ __('messages.view_details') }}">
                                     <i class="bi bi-eye"></i>
                                 </button>
                             </td>
@@ -108,8 +108,8 @@
                                     <div class="bg-light rounded-circle d-inline-flex p-4 mb-3">
                                         <i class="bi bi-inbox fs-2 text-secondary"></i>
                                     </div>
-                                    <h6 class="fw-bold text-dark">No announcements found</h6>
-                                    <p class="small mb-0">Try adjusting your filters or create a new announcement.</p>
+                                    <h6 class="fw-bold text-dark">{{ __('messages.no_announcements_found') }}</h6>
+                                    <p class="small mb-0">{{ __('messages.adjust_filters_notice') }}</p>
                                 </div>
                             </td>
                         </tr>
@@ -130,7 +130,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg border-radius-xl">
             <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
-                <h5 class="modal-title fw-bold">New Announcement</h5>
+                <h5 class="modal-title fw-bold">{{ __('messages.new_announcement') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
@@ -139,40 +139,40 @@
                     
                     <div class="row g-3 mb-4">
                         <div class="col-md-8">
-                            <label class="form-label small fw-bold">Title</label>
-                            <input type="text" name="subject" class="form-control bg-light border-0 py-2" placeholder="Announcement subject..." required>
+                            <label class="form-label small fw-bold">{{ __('messages.title') }}</label>
+                            <input type="text" name="subject" class="form-control bg-light border-0 py-2" placeholder="{{ __('messages.announcement_subject_placeholder') }}" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold">Category</label>
+                            <label class="form-label small fw-bold">{{ __('messages.category') }}</label>
                             <select name="category" class="form-select bg-light border-0 py-2">
-                                <option value="General">General</option>
-                                <option value="Update">Update</option>
-                                <option value="Maintenance">Maintenance</option>
-                                <option value="Alert">Alert</option>
+                                <option value="General">{{ __('messages.general') }}</option>
+                                <option value="Update">{{ __('messages.update') }}</option>
+                                <option value="Maintenance">{{ __('messages.maintenance') }}</option>
+                                <option value="Alert">{{ __('messages.alert') }}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label small fw-bold">Message Content</label>
-                        <textarea name="message" class="form-control bg-light border-0 py-2" rows="6" placeholder="Write your message here..." required></textarea>
+                        <label class="form-label small fw-bold">{{ __('messages.message_content') }}</label>
+                        <textarea name="message" class="form-control bg-light border-0 py-2" rows="6" placeholder="{{ __('messages.write_message_placeholder') }}" required></textarea>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label small fw-bold d-block">Audience</label>
+                        <label class="form-label small fw-bold d-block">{{ __('messages.audience') }}</label>
                         <div class="d-flex gap-3 mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="target_type" id="modal_target_role" value="role" checked onchange="toggleModalTarget('role')">
-                                <label class="form-check-label" for="modal_target_role">Roles</label>
+                                <label class="form-check-label" for="modal_target_role">{{ __('messages.roles') }}</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="target_type" id="modal_target_user" value="user" onchange="toggleModalTarget('user')">
-                                <label class="form-check-label" for="modal_target_user">Specific Users</label>
+                                <label class="form-check-label" for="modal_target_user">{{ __('messages.specific_users') }}</label>
                             </div>
                         </div>
 
                         <div id="modal_role_selection">
-                            <select name="role_ids[]" class="form-select select2-modal w-100" multiple="multiple" data-placeholder="Choose roles...">
+                            <select name="role_ids[]" class="form-select select2-modal w-100" multiple="multiple" data-placeholder="{{ __('messages.choose_roles') }}">
                                 @foreach($roles as $role)
                                     <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
                                 @endforeach
@@ -180,7 +180,7 @@
                         </div>
 
                         <div id="modal_user_selection" class="d-none">
-                            <select name="user_ids[]" class="form-select select2-modal w-100" multiple="multiple" data-placeholder="Search users...">
+                            <select name="user_ids[]" class="form-select select2-modal w-100" multiple="multiple" data-placeholder="{{ __('messages.search_users') }}">
                                 @foreach($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
                                 @endforeach
@@ -190,28 +190,28 @@
                     
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Action</label>
+                            <label class="form-label small fw-bold">{{ __('messages.action') }}</label>
                             <select name="status" id="statusSelect" class="form-select bg-light border-0 py-2" onchange="toggleSchedule()">
-                                <option value="sent">Send Now</option>
-                                <option value="scheduled">Schedule for Later</option>
-                                <option value="draft">Save as Draft</option>
+                                <option value="sent">{{ __('messages.send_now') }}</option>
+                                <option value="scheduled">{{ __('messages.schedule_later') }}</option>
+                                <option value="draft">{{ __('messages.save_as_draft') }}</option>
                             </select>
                         </div>
                         <div class="col-md-6 d-none" id="scheduleContainer">
-                            <label class="form-label small fw-bold">Schedule Date & Time</label>
+                            <label class="form-label small fw-bold">{{ __('messages.schedule_datetime') }}</label>
                             <input type="datetime-local" name="scheduled_at" class="form-control bg-light border-0 py-2">
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label small fw-bold">Attachments (Optional)</label>
+                        <label class="form-label small fw-bold">{{ __('messages.attachments_optional') }}</label>
                         <input type="file" name="attachments[]" class="form-control bg-light border-0 py-2" multiple>
                         <div class="form-text small">Max size: 5MB per file.</div>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary fw-medium px-4">Save & Submit</button>
+                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+                        <button type="submit" class="btn btn-primary fw-medium px-4">{{ __('messages.save_submit') }}</button>
                     </div>
                 </form>
             </div>
@@ -235,27 +235,27 @@
                 
                 <div class="d-flex align-items-center gap-4 mb-4 p-3 bg-light rounded-3">
                     <div>
-                        <div class="small text-muted text-uppercase fw-bold tracking-wider mb-1" style="font-size: 10px;">Date</div>
+                        <div class="small text-muted text-uppercase fw-bold tracking-wider mb-1" style="font-size: 10px;">{{ __('messages.date') }}</div>
                         <div id="viewDate" class="small fw-medium"></div>
                     </div>
                     <div class="border-start ps-4">
-                        <div class="small text-muted text-uppercase fw-bold tracking-wider mb-1" style="font-size: 10px;">Audience</div>
+                        <div class="small text-muted text-uppercase fw-bold tracking-wider mb-1" style="font-size: 10px;">{{ __('messages.audience') }}</div>
                         <div id="viewAudience" class="small fw-medium"></div>
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <div class="small text-muted text-uppercase fw-bold tracking-wider mb-2" style="font-size: 10px;">Message</div>
+                    <div class="small text-muted text-uppercase fw-bold tracking-wider mb-2" style="font-size: 10px;">{{ __('messages.message') }}</div>
                     <div id="viewMessage" class="text-dark" style="white-space: pre-wrap; font-size: 15px; line-height: 1.6;"></div>
                 </div>
 
                 <div id="viewAttachmentsContainer" class="d-none border-top pt-4">
-                    <div class="small text-muted text-uppercase fw-bold tracking-wider mb-3" style="font-size: 10px;">Attachments</div>
+                    <div class="small text-muted text-uppercase fw-bold tracking-wider mb-3" style="font-size: 10px;">{{ __('messages.attachments') }}</div>
                     <div id="viewAttachmentsList" class="d-flex flex-wrap gap-2"></div>
                 </div>
             </div>
             <div class="modal-footer border-top-0 px-4 pb-4">
-                <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal">{{ __('messages.close') }}</button>
             </div>
         </div>
     </div>
@@ -328,13 +328,13 @@
         statusBadge.className = 'badge rounded-pill px-3 py-2 fw-medium ';
         if (data.status === 'sent') {
             statusBadge.classList.add('bg-success', 'bg-opacity-10', 'text-success');
-            statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i> Sent';
+            statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i> {{ __('messages.sent') }}';
         } else if (data.status === 'scheduled') {
             statusBadge.classList.add('bg-warning', 'bg-opacity-10', 'text-warning');
-            statusBadge.innerHTML = '<i class="bi bi-clock me-1"></i> Scheduled';
+            statusBadge.innerHTML = '<i class="bi bi-clock me-1"></i> {{ __('messages.scheduled') }}';
         } else {
             statusBadge.classList.add('bg-secondary', 'bg-opacity-10', 'text-secondary');
-            statusBadge.innerHTML = '<i class="bi bi-pencil-square me-1"></i> Draft';
+            statusBadge.innerHTML = '<i class="bi bi-pencil-square me-1"></i> {{ __('messages.draft') }}';
         }
 
         // Attachments

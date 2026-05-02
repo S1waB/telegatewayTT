@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title', 'Roles Management')
+@section('title', __('messages.roles_management'))
 
 @section('content')
 <div class="tg-table-container">
     <div class="p-4 border-bottom bg-white">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h5 class="mb-0 fw-bold text-dark">Access Control</h5>
-                <p class="text-muted small mb-0">Define and manage system permissions for user roles</p>
+                <h5 class="mb-0 fw-bold text-dark">{{ __('messages.access_control') }}</h5>
+                <p class="text-muted small mb-0">{{ __('messages.permissions_notice') }}</p>
             </div>
             <button type="button" class="btn btn-primary d-flex align-items-center gap-2 px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#createRoleModal">
-                <i class="bi bi-plus-lg"></i> Create Role
+                <i class="bi bi-plus-lg"></i> {{ __('messages.create_role') }}
             </button>
         </div>
         
@@ -18,12 +18,12 @@
             <div class="col-md-5">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search by role name..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control border-start-0" placeholder="{{ __('messages.search') }}..." value="{{ request('search') }}">
                 </div>
             </div>
             <div class="col-md-5">
-                <select name="permission" class="form-select select2" data-placeholder="Filter by permission">
-                    <option value="">All Permissions</option>
+                <select name="permission" class="form-select select2" data-placeholder="{{ __('messages.filter_by_permission') }}">
+                    <option value="">{{ __('messages.all_permissions') }}</option>
                     @foreach($permissions as $permission)
                         <option value="{{ $permission->id }}" {{ request('permission') == $permission->id ? 'selected' : '' }}>
                             {{ $permission->name }}
@@ -33,9 +33,9 @@
             </div>
             <div class="col-md-2">
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-dark w-100">Filter</button>
+                    <button type="submit" class="btn btn-dark w-100">{{ __('messages.filter') }}</button>
                     @if(request()->anyFilled(['search', 'permission']))
-                        <a href="{{ route('admin.roles.index') }}" class="btn btn-outline-secondary" title="Clear"><i class="bi bi-arrow-counterclockwise"></i></a>
+                        <a href="{{ route('admin.roles.index') }}" class="btn btn-outline-secondary" title="{{ __('messages.clear') }}"><i class="bi bi-arrow-counterclockwise"></i></a>
                     @endif
                 </div>
             </div>
@@ -46,11 +46,11 @@
         <table class="table tg-table mb-0">
             <thead>
                 <tr>
-                    <th class="ps-4">Role Identity</th>
-                    <th>Description</th>
-                    <th class="text-center">Users</th>
-                    <th>Permissions Overview</th>
-                    <th class="text-end pe-4">Actions</th>
+                    <th class="ps-4">{{ __('messages.role_identity') }}</th>
+                    <th>{{ __('messages.description') }}</th>
+                    <th class="text-center">{{ __('messages.users') }}</th>
+                    <th>{{ __('messages.permissions_overview') }}</th>
+                    <th class="text-end pe-4">{{ __('messages.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,16 +59,16 @@
                     <td class="ps-4">
                         <div>
                             <div class="fw-bold text-dark">{{ ucfirst($role->name) }}</div>
-                            <div class="text-muted small">System Role</div>
+                            <div class="text-muted small">{{ __('messages.system_role') }}</div>
                         </div>
                     </td>
-                    <td class="text-muted">{{ $role->description ?? 'No detailed description' }}</td>
+                    <td class="text-muted">{{ $role->description ?? __('messages.no_detailed_description') }}</td>
                     <td class="text-center">
                         <span class="badge bg-light text-dark border rounded-pill px-3">{{ $role->users_count }}</span>
                     </td>
                     <td>
                         @if($role->name === 'admin')
-                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">Full System Access</span>
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">{{ __('messages.full_system_access') }}</span>
                         @else
                             <div class="d-flex flex-wrap gap-1">
                                 @foreach($role->permissions->take(3) as $permission)
@@ -86,12 +86,12 @@
                                     data-role="{{ json_encode($role) }}"
                                     data-permissions="{{ json_encode($role->permissions->pluck('id')) }}"
                                     data-bs-toggle="modal" data-bs-target="#editRoleModal"
-                                    title="Edit Configuration">
+                                    title="{{ __('messages.edit_configuration') }}">
                                 <i class="bi bi-pencil-square" style="font-size: 1.1rem;"></i>
                             </button>
                             
                             @if($role->name !== 'admin')
-                            <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure? This will remove access for all users with this role.');">
+                            <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.confirm_delete_role') }}');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-outline-danger border-0 shadow-none">
@@ -104,7 +104,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center py-5 text-muted">No roles matching your criteria were found.</td>
+                    <td colspan="5" class="text-center py-5 text-muted">{{ __('messages.no_roles_found') }}</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -129,22 +129,22 @@
                 @csrf
                 <div class="modal-header border-bottom-0 p-4">
                     <div>
-                        <h5 class="modal-title fw-bold text-primary">Define New Role</h5>
-                        <p class="text-muted small mb-0">Set identity and access levels for the system</p>
+                        <h5 class="modal-title fw-bold text-primary">{{ __('messages.define_new_role') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('messages.identity_access_notice') }}</p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4 pt-0">
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted text-uppercase mb-2">Role Identity</label>
+                            <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ __('messages.role_identity') }}</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-tag text-muted"></i></span>
                                 <input type="text" name="name" class="form-control border-start-0 bg-light" placeholder="e.g. Technician" required>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted text-uppercase mb-2">Functional Description</label>
+                            <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ __('messages.functional_description') }}</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-card-text text-muted"></i></span>
                                 <input type="text" name="description" class="form-control border-start-0 bg-light" placeholder="Role responsibilities...">
@@ -154,8 +154,8 @@
 
                     <div class="col-12">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <label class="form-label small fw-bold text-muted text-uppercase mb-0">Permission Matrix</label>
-                            <span class="badge bg-light text-muted border fw-normal">Select applicable permissions</span>
+                            <label class="form-label small fw-bold text-muted text-uppercase mb-0">{{ __('messages.permission_matrix') }}</label>
+                            <span class="badge bg-light text-muted border fw-normal">{{ __('messages.select_permissions_notice') }}</span>
                         </div>
                         <div class="row g-3">
                             @foreach($permissions->groupBy(fn($p) => explode('-', $p->name)[1] ?? 'other') as $group => $groupPermissions)
@@ -188,8 +188,8 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-link text-muted text-decoration-none px-4" data-bs-dismiss="modal">Discard Changes</button>
-                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow">Save Configuration</button>
+                    <button type="button" class="btn btn-link text-muted text-decoration-none px-4" data-bs-dismiss="modal">{{ __('messages.discard_changes') }}</button>
+                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow">{{ __('messages.save_configuration') }}</button>
                 </div>
             </form>
         </div>
@@ -205,22 +205,22 @@
                 @method('PUT')
                 <div class="modal-header border-bottom-0 p-4">
                     <div>
-                        <h5 class="modal-title fw-bold text-dark">Modify Role Access</h5>
-                        <p class="text-muted small mb-0">Update permissions and details for this role</p>
+                        <h5 class="modal-title fw-bold text-dark">{{ __('messages.modify_role_access') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('messages.update_permissions_notice') }}</p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4 pt-0">
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted text-uppercase mb-2">Role Identity</label>
+                            <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ __('messages.role_identity') }}</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-tag text-muted"></i></span>
                                 <input type="text" name="name" id="edit_role_name" class="form-control border-start-0 bg-light" required>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted text-uppercase mb-2">Functional Description</label>
+                            <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ __('messages.functional_description') }}</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-card-text text-muted"></i></span>
                                 <input type="text" name="description" id="edit_role_description" class="form-control border-start-0 bg-light">
@@ -230,8 +230,8 @@
 
                     <div class="col-12">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <label class="form-label small fw-bold text-muted text-uppercase mb-0">Permission Matrix</label>
-                            <span id="edit_permission_count" class="badge bg-primary px-3 rounded-pill">0 selected</span>
+                            <label class="form-label small fw-bold text-muted text-uppercase mb-0">{{ __('messages.permission_matrix') }}</label>
+                            <span id="edit_permission_count" class="badge bg-primary px-3 rounded-pill">0 {{ __('messages.selected') }}</span>
                         </div>
                         <div class="row g-3">
                             @foreach($permissions->groupBy(fn($p) => explode('-', $p->name)[1] ?? 'other') as $group => $groupPermissions)
@@ -264,8 +264,8 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-link text-muted text-decoration-none px-4" data-bs-dismiss="modal">Keep Original</button>
-                    <button type="submit" class="btn btn-dark px-5 rounded-pill shadow">Commit Updates</button>
+                    <button type="button" class="btn btn-link text-muted text-decoration-none px-4" data-bs-dismiss="modal">{{ __('messages.keep_original') }}</button>
+                    <button type="submit" class="btn btn-dark px-5 rounded-pill shadow">{{ __('messages.commit_updates') }}</button>
                 </div>
             </form>
         </div>
@@ -313,7 +313,7 @@
     function updatePermCount() {
         const count = document.querySelectorAll('.edit-perm-check:checked').length;
         const badge = document.getElementById('edit_permission_count');
-        if(badge) badge.textContent = `${count} selected`;
+        if(badge) badge.textContent = `${count} {{ __('messages.selected') }}`;
     }
 
     document.querySelectorAll('.edit-perm-check').forEach(cb => {

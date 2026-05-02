@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'User Management')
+@section('title', __('messages.users'))
 
 @section('content')
 
@@ -13,7 +13,7 @@
           <i class="bi bi-people-fill" style="color:#1A6FBF;font-size:20px"></i>
         </div>
         <div>
-          <div class="text-muted" style="font-size:12px">Total users</div>
+          <div class="text-muted" style="font-size:12px">{{ __('messages.total_users_count') }}</div>
           <div style="font-size:22px;font-weight:600;color:#0D4A8A">{{ $totalUsers }}</div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <i class="bi bi-person-check-fill" style="color:#198754;font-size:20px"></i>
         </div>
         <div>
-          <div class="text-muted" style="font-size:12px">Active users</div>
+          <div class="text-muted" style="font-size:12px">{{ __('messages.active_users') }}</div>
           <div style="font-size:22px;font-weight:600;color:#0D4A8A">{{ $activeUsers }}</div>
         </div>
       </div>
@@ -37,7 +37,7 @@
     <div class="card border-0 shadow-sm h-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-1">
-          <span class="text-muted" style="font-size:12px">Platform activation rate</span>
+          <span class="text-muted" style="font-size:12px">{{ __('messages.activation_rate') }}</span>
           <span style="font-size:13px;font-weight:600;color:#1A6FBF">{{ $activePct }}%</span>
         </div>
         <div class="progress" style="height:10px;border-radius:5px">
@@ -46,7 +46,7 @@
                aria-valuenow="{{ $activePct }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         <div style="font-size:11px;color:#888;margin-top:4px">
-          {{ $activeUsers }} of {{ $totalUsers }} users currently active
+          {{ __('messages.online_status', ['active' => $activeUsers, 'total' => $totalUsers]) }}
         </div>
       </div>
     </div>
@@ -58,17 +58,17 @@
   <div class="card-body">
     <form method="GET" action="{{ route('admin.users.index') }}" class="row g-2 align-items-end">
       <div class="col-md-4">
-        <label class="form-label mb-1" style="font-size:12px;color:#666">Search</label>
+        <label class="form-label mb-1" style="font-size:12px;color:#666">{{ __('messages.search') }}</label>
         <div class="input-group input-group-sm">
           <span class="input-group-text bg-white"><i class="bi bi-search" style="color:#1A6FBF"></i></span>
           <input type="text" name="search" value="{{ request('search') }}"
-                 class="form-control" placeholder="Name, email or phone...">
+                 class="form-control" placeholder="{{ __('messages.name') }}, {{ __('messages.email') }}...">
         </div>
       </div>
       <div class="col-md-2">
-        <label class="form-label mb-1" style="font-size:12px;color:#666">Role</label>
+        <label class="form-label mb-1" style="font-size:12px;color:#666">{{ __('messages.role') }}</label>
         <select name="role" class="form-select form-select-sm">
-          <option value="">All roles</option>
+          <option value="">{{ __('messages.all_roles') }}</option>
           @foreach($roles as $role)
             <option value="{{ $role->name }}" @selected(request('role') === $role->name)>
               {{ ucfirst($role->name) }}
@@ -77,24 +77,24 @@
         </select>
       </div>
       <div class="col-md-2">
-        <label class="form-label mb-1" style="font-size:12px;color:#666">Status</label>
+        <label class="form-label mb-1" style="font-size:12px;color:#666">{{ __('messages.status') }}</label>
         <select name="status" class="form-select form-select-sm">
-          <option value="">All statuses</option>
-          <option value="active"   @selected(request('status') === 'active')>Active</option>
-          <option value="inactive" @selected(request('status') === 'inactive')>Inactive</option>
+          <option value="">{{ __('messages.all_statuses') }}</option>
+          <option value="active"   @selected(request('status') === 'active')>{{ __('messages.active') }}</option>
+          <option value="inactive" @selected(request('status') === 'inactive')>{{ __('messages.inactive') }}</option>
         </select>
       </div>
       <div class="col-md-2">
-        <label class="form-label mb-1" style="font-size:12px;color:#666">Sort by</label>
+        <label class="form-label mb-1" style="font-size:12px;color:#666">{{ __('messages.sort_by') }}</label>
         <select name="sort" class="form-select form-select-sm">
-          <option value="newest"      @selected(request('sort') === 'newest')>Newest first</option>
-          <option value="name"        @selected(request('sort') === 'name')>Name A–Z</option>
-          <option value="last_active" @selected(request('sort') === 'last_active')>Last active</option>
+          <option value="newest"      @selected(request('sort') === 'newest')>{{ __('messages.newest_first') }}</option>
+          <option value="name"        @selected(request('sort') === 'name')>{{ __('messages.name_az') }}</option>
+          <option value="last_active" @selected(request('sort') === 'last_active')>{{ __('messages.last_active') }}</option>
         </select>
       </div>
       <div class="col-md-2 d-flex gap-2">
         <button type="submit" class="btn btn-sm btn-primary w-100" style="background:#1A6FBF;border-color:#1A6FBF">
-          <i class="bi bi-funnel-fill me-1"></i>Filter
+          <i class="bi bi-funnel-fill me-1"></i>{{ __('messages.filter') }}
         </button>
         <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-outline-secondary">
           <i class="bi bi-x-lg"></i>
@@ -108,17 +108,17 @@
 <div class="card border-0 shadow-sm">
   <div class="card-header bg-white d-flex justify-content-between align-items-center py-3" style="border-bottom:1px solid #E8F1FA">
     <span style="font-weight:600;color:#0D4A8A">
-      Users
+      {{ __('messages.users') }}
       @if($users->total())
         <span class="badge rounded-pill ms-2" style="background:#E8F1FA;color:#1A6FBF;font-size:11px">{{ $users->total() }}</span>
       @endif
     </span>
     <div class="d-flex gap-2">
       <a href="{{ route('admin.users.analytics') }}" class="btn btn-sm btn-outline-primary shadow-sm d-flex align-items-center px-3" style="border-radius:6px">
-        <i class="bi bi-bar-chart-fill me-2"></i>View Analytics
+        <i class="bi bi-bar-chart-fill me-2"></i>{{ __('messages.view_analytics') }}
       </a>
       <button type="button" class="btn btn-sm btn-primary shadow-sm d-flex align-items-center px-3" style="background:#1A6FBF;color:#fff;border-radius:6px" data-bs-toggle="modal" data-bs-target="#createUserModal">
-        <i class="bi bi-plus-lg me-1"></i>Add user
+        <i class="bi bi-plus-lg me-1"></i>{{ __('messages.add_user') }}
       </button>
     </div>
   </div>
@@ -128,12 +128,12 @@
         <thead style="background:#F0F6FF">
           <tr>
             <th style="width:44px"></th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Last active</th>
-            <th style="width:110px">Actions</th>
+            <th>{{ __('messages.name') }}</th>
+            <th>{{ __('messages.email') }}</th>
+            <th>{{ __('messages.role') }}</th>
+            <th>{{ __('messages.status') }}</th>
+            <th>{{ __('messages.last_active') }}</th>
+            <th style="width:110px">{{ __('messages.actions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -156,9 +156,9 @@
             </td>
             <td>
               @if($user->is_active)
-                <span class="badge bg-success-subtle text-success">Active</span>
+                <span class="badge bg-success-subtle text-success">{{ __('messages.active') }}</span>
               @else
-                <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
+                <span class="badge bg-secondary-subtle text-secondary">{{ __('messages.inactive') }}</span>
               @endif
             </td>
             <td class="text-muted" style="font-size:12px" title="{{ $user->last_active_at }}">
@@ -170,7 +170,7 @@
                 <button type="button"
                         class="btn btn-sm btn-outline-info p-0 d-flex align-items-center justify-content-center view-user-btn shadow-sm"
                         style="width:34px;height:34px;border-radius:8px"
-                        title="View details"
+                        title="{{ __('messages.view_details') }}"
                         data-bs-toggle="modal"
                         data-bs-target="#userDetailModal"
                         data-user="{{ json_encode([
@@ -195,7 +195,7 @@
                 {{-- Edit --}}
                 <a href="{{ route('admin.users.edit', $user) }}"
                    class="btn btn-sm btn-outline-primary p-0 d-flex align-items-center justify-content-center shadow-sm"
-                   style="width:34px;height:34px;border-radius:8px" title="Edit">
+                   style="width:34px;height:34px;border-radius:8px" title="{{ __('messages.edit') }}">
                   <i class="bi bi-pencil-fill" style="font-size:14px"></i>
                 </a>
 
@@ -205,7 +205,7 @@
                   <button type="submit"
                           class="btn btn-sm p-0 d-flex align-items-center justify-content-center shadow-sm {{ $user->is_active ? 'btn-outline-warning' : 'btn-outline-success' }}"
                           style="width:34px;height:34px;border-radius:8px"
-                          title="{{ $user->is_active ? 'Deactivate' : 'Activate' }}">
+                          title="{{ $user->is_active ? __('messages.deactivate') : __('messages.activate') }}">
                     <i class="bi bi-{{ $user->is_active ? 'person-x-fill' : 'person-check-fill' }}" style="font-size:16px"></i>
                   </button>
                 </form>
@@ -216,7 +216,7 @@
                       onsubmit="return confirm('Delete {{ $user->name }}? This cannot be undone.')">
                   @csrf @method('DELETE')
                   <button type="submit" class="btn btn-sm btn-outline-danger p-0 d-flex align-items-center justify-content-center shadow-sm"
-                          style="width:34px;height:34px;border-radius:8px" title="Delete">
+                          style="width:34px;height:34px;border-radius:8px" title="{{ __('messages.delete') }}">
                     <i class="bi bi-trash3-fill" style="font-size:15px"></i>
                   </button>
                 </form>
@@ -228,7 +228,7 @@
           <tr>
             <td colspan="9" class="text-center text-muted py-5">
               <i class="bi bi-people" style="font-size:40px;opacity:.3;display:block;margin-bottom:8px"></i>
-              No users found matching your filters.
+              {{ __('messages.no_users_found') }}
             </td>
           </tr>
           @endforelse
@@ -252,7 +252,7 @@
     <div class="modal-content border-0 shadow">
       <div class="modal-header" style="background:#0D4A8A;border-radius:8px 8px 0 0">
         <h5 class="modal-title text-white" style="font-size:15px">
-          <i class="bi bi-person-badge me-2"></i>User details
+          <i class="bi bi-person-badge me-2"></i>{{ __('messages.user_details') }}
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
@@ -274,35 +274,35 @@
           <table class="table table-borderless mb-0" style="font-size:13px">
             <tbody>
               <tr>
-                <td class="text-muted ps-0" style="width:130px">Email</td>
+                <td class="text-muted ps-0" style="width:130px">{{ __('messages.email') }}</td>
                 <td id="modal-email" class="fw-500"></td>
               </tr>
               <tr>
-                <td class="text-muted ps-0">Phone</td>
+                <td class="text-muted ps-0">{{ __('messages.phone_number') }}</td>
                 <td id="modal-phone"></td>
               </tr>
               <tr>
-                <td class="text-muted ps-0">Gender</td>
+                <td class="text-muted ps-0">{{ __('messages.gender') }}</td>
                 <td id="modal-gender" class="text-capitalize"></td>
               </tr>
               <tr>
-                <td class="text-muted ps-0">Address</td>
+                <td class="text-muted ps-0">{{ __('messages.physical_address') }}</td>
                 <td id="modal-address"></td>
               </tr>
               <tr>
-                <td class="text-muted ps-0">Last active</td>
+                <td class="text-muted ps-0">{{ __('messages.last_active') }}</td>
                 <td id="modal-last-active"></td>
               </tr>
               <tr>
-                <td class="text-muted ps-0">Joined</td>
+                <td class="text-muted ps-0">{{ __('messages.joined') }}</td>
                 <td id="modal-joined"></td>
               </tr>
               <tr>
-                <td class="text-muted ps-0">Devices assigned</td>
+                <td class="text-muted ps-0">{{ __('messages.devices_assigned') }}</td>
                 <td id="modal-devices"></td>
               </tr>
               <tr>
-                <td class="text-muted ps-0">Commands sent</td>
+                <td class="text-muted ps-0">{{ __('messages.commands_sent') }}</td>
                 <td id="modal-commands"></td>
               </tr>
             </tbody>
@@ -311,9 +311,9 @@
       </div>
       <div class="modal-footer bg-white" style="border-top:1px solid #E8F1FA">
         <a id="modal-edit-btn" href="#" class="btn btn-sm" style="background:#1A6FBF;color:#fff">
-          <i class="bi bi-pencil me-1"></i>Edit user
+          <i class="bi bi-pencil me-1"></i>{{ __('messages.edit_user') }}
         </a>
-        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">{{ __('messages.close') }}</button>
       </div>
     </div>
   </div>
@@ -325,7 +325,7 @@
     <div class="modal-content border-0 shadow">
       <div class="modal-header bg-primary text-white" style="border-radius:8px 8px 0 0">
         <h5 class="modal-title" style="font-size:16px">
-          <i class="bi bi-person-plus-fill me-2"></i>Create New User
+          <i class="bi bi-person-plus-fill me-2"></i>{{ __('messages.add_new_user') }}
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
@@ -341,31 +341,31 @@
                 </label>
                 <input type="file" id="createAvatar" name="avatar" class="d-none" accept="image/*" onchange="previewCreateImage(this)">
               </div>
-              <div class="small text-muted mt-1">Upload profile picture (optional)</div>
+              <div class="small text-muted mt-1">{{ __('messages.upload_picture') }}</div>
             </div>
 
             <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted">Full Name</label>
+              <label class="form-label small fw-bold text-muted">{{ __('messages.full_name') }}</label>
               <input type="text" class="form-control form-control-sm @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" placeholder="John Doe" required>
               @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted">Email Address</label>
+              <label class="form-label small fw-bold text-muted">{{ __('messages.email_address') }}</label>
               <input type="email" class="form-control form-control-sm @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="john@example.com" required>
               @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted">Phone Number</label>
+              <label class="form-label small fw-bold text-muted">{{ __('messages.phone_number') }}</label>
               <input type="tel" class="form-control form-control-sm @error('phone_number') is-invalid @enderror" name="phone_number" value="{{ old('phone_number') }}" placeholder="+216 XX XXX XXX">
               @error('phone_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted">Assign Role</label>
+              <label class="form-label small fw-bold text-muted">{{ __('messages.role') }}</label>
               <select class="form-select form-select-sm @error('role') is-invalid @enderror" name="role" required>
-                <option value="" disabled selected>Select a role</option>
+                <option value="" disabled selected>{{ __('messages.all_roles') }}</option>
                 @foreach($roles as $role)
                   <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>{{ ucfirst($role->name) }}</option>
                 @endforeach
@@ -374,39 +374,39 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted">Gender</label>
+              <label class="form-label small fw-bold text-muted">{{ __('messages.gender') }}</label>
               <select class="form-select form-select-sm" name="gender">
                 <option value="" selected disabled>Select gender</option>
-                <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
-                <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
-                <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other</option>
+                <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>{{ __('messages.male') }}</option>
+                <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>{{ __('messages.female') }}</option>
+                <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>{{ __('messages.other') }}</option>
               </select>
             </div>
 
             <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted">Initial Status</label>
+              <label class="form-label small fw-bold text-muted">{{ __('messages.status') }}</label>
               <div class="form-check form-switch mt-1">
                 <input class="form-check-input" type="checkbox" name="is_active" value="1" id="createIsActive" checked>
-                <label class="form-check-label" for="createIsActive">Active</label>
+                <label class="form-check-label" for="createIsActive">{{ __('messages.active') }}</label>
               </div>
             </div>
 
             <div class="col-md-12">
-              <label class="form-label small fw-bold text-muted">Physical Address</label>
+              <label class="form-label small fw-bold text-muted">{{ __('messages.physical_address') }}</label>
               <textarea class="form-control form-control-sm" name="address" rows="2" placeholder="Street, City, Postal Code...">{{ old('address') }}</textarea>
             </div>
 
             <div class="col-md-12">
               <div class="alert alert-info d-flex align-items-start gap-2 py-2 px-3 mb-0" style="font-size:12px;border-color:#B5D4F4;background:#E8F1FA">
                 <i class="bi bi-info-circle-fill mt-1" style="color:#1A6FBF"></i>
-                <span>Credentials will be automatically generated and sent to the provided email.</span>
+                <span>{{ __('messages.credentials_notice') }}</span>
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer bg-light border-0">
-          <button type="button" class="btn btn-sm btn-light px-3" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-sm btn-primary px-4">Create Account</button>
+          <button type="button" class="btn btn-sm btn-light px-3" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+          <button type="submit" class="btn btn-sm btn-primary px-4">{{ __('messages.create_account') }}</button>
         </div>
       </form>
     </div>
@@ -433,8 +433,8 @@ document.querySelectorAll('.view-user-btn').forEach(btn => {
         document.getElementById('modal-gender').textContent = u.gender;
         document.getElementById('modal-address').textContent = u.address;
         document.getElementById('modal-joined').textContent = u.joined;
-        document.getElementById('modal-devices').textContent = u.devices + ' device(s)';
-        document.getElementById('modal-commands').textContent = u.commands + ' command(s)';
+        document.getElementById('modal-devices').textContent = `{{ __('messages.devices_count_label', ['count' => '${u.devices}']) }}`.replace('${u.devices}', u.devices);
+        document.getElementById('modal-commands').textContent = `{{ __('messages.commands_count_label', ['count' => '${u.commands}']) }}`.replace('${u.commands}', u.commands);
         document.getElementById('modal-last-active').innerHTML =
             `<span title="${u.last_active_full}">${u.last_active}</span>`;
 
@@ -443,8 +443,8 @@ document.querySelectorAll('.view-user-btn').forEach(btn => {
 
         const statusBadge = document.getElementById('modal-status-badge');
         statusBadge.innerHTML = u.status === 'Active'
-            ? '<span class="badge bg-success">Active</span>'
-            : '<span class="badge bg-secondary">Inactive</span>';
+            ? '<span class="badge bg-success">{{ __('messages.active') }}</span>'
+            : '<span class="badge bg-secondary">{{ __('messages.inactive') }}</span>';
 
         document.getElementById('modal-edit-btn').href = `/admin/users/${u.id}/edit`;
     });

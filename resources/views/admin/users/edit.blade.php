@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Edit User')
+@section('title', __('messages.edit_user'))
 
 @section('content')
 <div class="mb-4">
     <a href="{{ route('admin.users.index') }}" class="text-decoration-none text-muted small fw-bold text-uppercase">
-        <i class="bi bi-arrow-left me-1"></i> Back to Users
+        <i class="bi bi-arrow-left me-1"></i> {{ __('messages.back_to_users') }}
     </a>
 </div>
 <div class="row justify-content-center">
@@ -25,14 +25,14 @@
                                 </label>
                                 <input type="file" id="avatar" name="avatar" class="d-none" accept="image/*" onchange="previewImage(this)">
                             </div>
-                            <div class="small text-muted mt-2">Upload a new avatar to replace current</div>
+                            <div class="small text-muted mt-2">{{ __('messages.upload_avatar_notice') }}</div>
                             @error('avatar')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $user->name) }}" required>
-                                <label for="name">Full Name</label>
+                                <label for="name">{{ __('messages.full_name') }}</label>
                                 @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -40,7 +40,7 @@
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $user->email) }}" required>
-                                <label for="email">Email address</label>
+                                <label for="email">{{ __('messages.email_address') }}</label>
                                 @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="tel" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}" placeholder="+216 XX XXX XXX">
-                                <label for="phone_number">Phone Number</label>
+                                <label for="phone_number">{{ __('messages.phone_number') }}</label>
                                 @error('phone_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                                     <option value="female" {{ old('gender', $user->gender) == 'female' ? 'selected' : '' }}>Female</option>
                                     <option value="other" {{ old('gender', $user->gender) == 'other' ? 'selected' : '' }}>Other</option>
                                 </select>
-                                <label for="gender">Gender</label>
+                                <label for="gender">{{ __('messages.gender') }}</label>
                                 @error('gender')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Leave blank to keep current">
-                                <label for="password">New Password (optional)</label>
+                                <label for="password">{{ __('messages.new_password') }} ({{ __('messages.optional') }})</label>
                                 @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -81,7 +81,7 @@
                                         <option value="{{ $role->name }}" {{ (old('role') ?? $user->roles->first()?->name) == $role->name ? 'selected' : '' }}>{{ ucfirst($role->name) }}</option>
                                     @endforeach
                                 </select>
-                                <label for="role">Assign Role</label>
+                                <label for="role">{{ __('messages.assign_role') }}</label>
                                 @error('role')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                         <div class="col-md-12">
                             <div class="form-floating">
                                 <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" style="height: 100px" placeholder="Address">{{ old('address', $user->address) }}</textarea>
-                                <label for="address">Address</label>
+                                <label for="address">{{ __('messages.physical_address') }}</label>
                                 @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -97,13 +97,13 @@
                         <div class="col-md-12">
                             <div class="form-check form-switch mt-2">
                                 <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }} {{ auth()->id() === $user->id ? 'disabled' : '' }}>
-                                <label class="form-check-label" for="is_active">User is active</label>
+                                <label class="form-check-label" for="is_active">{{ __('messages.user_is_active') }}</label>
                             </div>
                         </div>
 
                         <div class="col-md-12 mt-4 d-flex justify-content-end gap-2">
-                            <a href="{{ route('admin.users.index') }}" class="btn btn-light">Cancel</a>
-                            <button type="submit" class="btn btn-primary px-4">Update User</button>
+                            <a href="{{ route('admin.users.index') }}" class="btn btn-light">{{ __('messages.cancel') }}</a>
+                            <button type="submit" class="btn btn-primary px-4">{{ __('messages.update_user') }}</button>
                         </div>
                     </div>
                 </form>
@@ -115,13 +115,13 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="mb-1 fw-bold text-danger">Reset User Password</h6>
-                        <p class="text-muted mb-0 small">This will generate a new random password and email it directly to the user.</p>
+                        <h6 class="mb-1 fw-bold text-danger">{{ __('messages.reset_user_password') }}</h6>
+                        <p class="text-muted mb-0 small">{{ __('messages.reset_password_notice') }}</p>
                     </div>
-                    <form action="{{ route('admin.users.reset-password', $user) }}" method="POST" onsubmit="return confirm('Are you sure you want to reset the password for {{ $user->name }}? A new password will be generated and emailed to them immediately.')">
+                    <form action="{{ route('admin.users.reset-password', $user) }}" method="POST" onsubmit="return confirm('{{ __('messages.confirm_reset_password', ['name' => $user->name]) }}')">
                         @csrf
                         <button type="submit" class="btn btn-outline-danger btn-sm px-3">
-                            <i class="bi bi-shield-lock me-1"></i> Reset Password
+                            <i class="bi bi-shield-lock me-1"></i> {{ __('messages.generate_new_password') }}
                         </button>
                     </form>
                 </div>

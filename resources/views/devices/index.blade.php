@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Devices Management')
+@section('title', __('messages.devices'))
 
 @section('content')
 {{-- Stats Section --}}
@@ -8,11 +8,11 @@
         <div class="card border-0 shadow-sm bg-primary text-white h-100">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0 fw-bold">Active Devices</h6>
+                    <h6 class="mb-0 fw-bold">{{ __('messages.active_devices') }}</h6>
                     <i class="bi bi-broadcast fs-4"></i>
                 </div>
                 <h2 class="fw-bold mb-1">{{ $activePercentage }}%</h2>
-                <p class="small mb-0 opacity-75">{{ $activeDevices }} of {{ $totalDevices }} online</p>
+                <p class="small mb-0 opacity-75">{{ __('messages.active_devices_count', ['active' => $activeDevices, 'total' => $totalDevices]) }}</p>
                 <div class="progress mt-3 bg-white bg-opacity-25" style="height: 4px;">
                     <div class="progress-bar bg-white" style="width: {{ $activePercentage }}%"></div>
                 </div>
@@ -23,14 +23,14 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-gear-wide-connected me-2 text-primary"></i>Platform Overview</h6>
+                    <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-gear-wide-connected me-2 text-primary"></i>{{ __('messages.platform_overview') }}</h6>
                     @role('admin')
                     <div class="d-flex gap-2">
                         <a href="{{ route('admin.devices.analytics') }}" class="btn btn-outline-primary d-flex align-items-center gap-2 px-3 rounded-pill shadow-sm">
-                            <i class="bi bi-pie-chart"></i> Fleet Analytics
+                            <i class="bi bi-pie-chart"></i> {{ __('messages.fleet_analytics') }}
                         </a>
                         <button type="button" class="btn btn-primary d-flex align-items-center gap-2 px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#createDeviceModal">
-                            <i class="bi bi-plus-lg"></i> Add New Device
+                            <i class="bi bi-plus-lg"></i> {{ __('messages.add_new_device') }}
                         </button>
                     </div>
                     @endrole
@@ -39,12 +39,12 @@
                     <div class="col-md-5">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i class="bi bi-search"></i></span>
-                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Search by name, serial, or operator..." value="{{ request('search') }}" style="font-size: 0.9rem; height: 42px;">
+                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="{{ __('messages.search') }}..." value="{{ request('search') }}" style="font-size: 0.9rem; height: 42px;">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <select name="type" class="form-select form-select-sm border-secondary-subtle" style="height: 42px; font-size: 0.85rem;">
-                            <option value="">All Types</option>
+                            <option value="">{{ __('messages.all_types') }}</option>
                             @foreach($deviceTypes as $type)
                                 <option value="{{ $type->id }}" {{ request('type') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
                             @endforeach
@@ -52,16 +52,16 @@
                     </div>
                     <div class="col-md-2">
                         <select name="status" class="form-select form-select-sm border-secondary-subtle" style="height: 42px; font-size: 0.85rem;">
-                            <option value="">All Statuses</option>
-                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            <option value="maintenance" {{ request('status') == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
+                            <option value="">{{ __('messages.all_statuses') }}</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('messages.active') }}</option>
+                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('messages.inactive') }}</option>
+                            <option value="maintenance" {{ request('status') == 'maintenance' ? 'selected' : '' }}>{{ __('messages.maintenance') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center px-3" style="height: 42px; min-width: 100px;">
-                                <i class="bi bi-funnel me-2"></i>Filter
+                                <i class="bi bi-funnel me-2"></i>{{ __('messages.filter') }}
                             </button>
                             @if(request()->anyFilled(['search', 'type', 'status']))
                                 <a href="{{ request()->url() }}" class="btn btn-light border d-flex align-items-center justify-content-center px-3" style="height: 42px;" title="Reset">
@@ -81,14 +81,14 @@
         <table class="table tg-table mb-0">
             <thead>
                 <tr>
-                    <th class="ps-4">Device Details</th>
-                    <th>Type</th>
-                    <th>Status</th>
+                    <th class="ps-4">{{ __('messages.device_details') }}</th>
+                    <th>{{ __('messages.type') }}</th>
+                    <th>{{ __('messages.status') }}</th>
                     @role('admin')
-                    <th>Assigned Operator</th>
+                    <th>{{ __('messages.assigned_operator') }}</th>
                     @endrole
-                    <th>Last Activity</th>
-                    <th class="text-end pe-4">Actions</th>
+                    <th>{{ __('messages.last_activity') }}</th>
+                    <th class="text-end pe-4">{{ __('messages.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -129,7 +129,7 @@
                         @else
                             <div class="d-flex align-items-center text-muted opacity-50">
                                 <i class="bi bi-person-dash me-2"></i>
-                                <span class="small">Unassigned</span>
+                                <span class="small">{{ __('messages.unassigned') }}</span>
                             </div>
                         @endif
                     </td>
@@ -146,7 +146,7 @@
                     </td>
                     <td class="text-end pe-4">
                         <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ auth()->user()->hasRole('admin') ? route('admin.devices.show', $device) : route('operator.devices.show', $device) }}" class="btn btn-sm btn-outline-info shadow-sm" title="Intelligence Dashboard">
+                            <a href="{{ auth()->user()->hasRole('admin') ? route('admin.devices.show', $device) : route('operator.devices.show', $device) }}" class="btn btn-sm btn-outline-info shadow-sm" title="{{ __('messages.intelligence_dashboard') }}">
                                 <i class="bi bi-graph-up"></i>
                             </a>
                             
@@ -155,7 +155,7 @@
                             <form action="{{ route('admin.devices.toggle-status', $device) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="btn btn-sm {{ $device->status === 'active' ? 'btn-outline-warning' : 'btn-outline-success' }} shadow-sm" title="{{ $device->status === 'active' ? 'Deactivate' : 'Activate' }}">
+                                <button type="submit" class="btn btn-sm {{ $device->status === 'active' ? 'btn-outline-warning' : 'btn-outline-success' }} shadow-sm" title="{{ $device->status === 'active' ? __('messages.deactivate') : __('messages.activate') }}">
                                     <i class="bi bi-{{ $device->status === 'active' ? 'power' : 'lightning-charge' }}"></i>
                                 </button>
                             </form>
@@ -163,7 +163,7 @@
                             {{-- Edit Modal Trigger --}}
                             <button type="button" 
                                     class="btn btn-sm btn-outline-primary shadow-sm edit-device-btn" 
-                                    title="Modify Device"
+                                    title="{{ __('messages.edit') }}"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#editDeviceModal"
                                     data-device="{{ json_encode([
@@ -181,7 +181,7 @@
                             @endcan
                             
                             @can('delete', $device)
-                            <form action="{{ route('admin.devices.destroy', $device) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this device permanently?');">
+                            <form action="{{ route('admin.devices.destroy', $device) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.confirm_delete') }}');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm">
@@ -196,7 +196,7 @@
                 <tr>
                     <td colspan="{{ auth()->user()->hasRole('admin') ? 6 : 5 }}" class="text-center py-5 text-muted">
                         <i class="bi bi-broadcast-pin display-4 opacity-25 mb-3 d-block"></i>
-                        No devices match your current filters.
+                        {{ __('messages.no_devices_found') }}
                     </td>
                 </tr>
                 @endforelse
@@ -207,7 +207,7 @@
     @if($devices->hasPages())
     <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
         <span class="text-muted small">
-            Monitoring {{ $devices->firstItem() }}–{{ $devices->lastItem() }} of {{ $devices->total() }} devices
+            {{ __('messages.monitoring_count', ['first' => $devices->firstItem(), 'last' => $devices->lastItem(), 'total' => $devices->total()]) }}
         </span>
         {{ $devices->links() }}
     </div>
@@ -223,60 +223,60 @@
                 @csrf
                 <div class="modal-header border-0 p-4">
                     <div>
-                        <h5 class="modal-title fw-bold text-primary">Provision New Device</h5>
-                        <p class="text-muted small mb-0">Register a new IoT asset to the gateway</p>
+                        <h5 class="modal-title fw-bold text-primary">{{ __('messages.provision_new_device') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('messages.register_asset_notice') }}</p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4 pt-0">
                     <div class="row g-4">
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Device Identity</label>
+                            <label class="form-label small fw-bold">{{ __('messages.name') }}</label>
                             <input type="text" name="name" class="form-control" placeholder="e.g. Gateway #01" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Serial Number</label>
+                            <label class="form-label small fw-bold">{{ __('messages.serial_number') }}</label>
                             <input type="text" name="serial_number" class="form-control" placeholder="e.g. TG-XXXX-XXXX" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Model/Type</label>
+                            <label class="form-label small fw-bold">{{ __('messages.type') }}</label>
                             <select name="device_type_id" class="form-select" required>
-                                <option value="">Select Type</option>
+                                <option value="">{{ __('messages.all_types') }}</option>
                                 @foreach($deviceTypes as $type)
                                     <option value="{{ $type->id }}">{{ $type->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Assign Operator</label>
+                            <label class="form-label small fw-bold">{{ __('messages.assigned_operator') }}</label>
                             <select name="user_id" class="form-select">
-                                <option value="">Unassigned</option>
+                                <option value="">{{ __('messages.unassigned') }}</option>
                                 @foreach($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Initial Status</label>
+                            <label class="form-label small fw-bold">{{ __('messages.status') }}</label>
                             <select name="status" class="form-select" required>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="maintenance">Maintenance</option>
+                                <option value="active">{{ __('messages.active') }}</option>
+                                <option value="inactive">{{ __('messages.inactive') }}</option>
+                                <option value="maintenance">{{ __('messages.maintenance') }}</option>
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Device Avatar</label>
+                            <label class="form-label small fw-bold">{{ __('messages.device_avatar') }}</label>
                             <input type="file" name="avatar" class="form-control" accept="image/*">
                         </div>
                         <div class="col-12">
-                            <label class="form-label small fw-bold">Internal Notes</label>
-                            <textarea name="description" class="form-control" rows="3" placeholder="Additional deployment details..."></textarea>
+                            <label class="form-label small fw-bold">{{ __('messages.description') }}</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="{{ __('messages.deployment_details_placeholder') }}"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0 mt-3">
-                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow">Register Device</button>
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow">{{ __('messages.register_device') }}</button>
                 </div>
             </form>
         </div>
@@ -293,8 +293,8 @@
                 @method('PUT')
                 <div class="modal-header border-0 p-4">
                     <div>
-                        <h5 class="modal-title fw-bold text-primary">Modify Device Configuration</h5>
-                        <p class="text-muted small mb-0">Update the parameters for this IoT asset</p>
+                        <h5 class="modal-title fw-bold text-primary">{{ __('messages.modify_device') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('messages.update_parameters_notice') }}</p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -311,15 +311,15 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Device Name</label>
+                            <label class="form-label small fw-bold">{{ __('messages.name') }}</label>
                             <input type="text" name="name" id="edit_name" class="form-control" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Serial Number</label>
+                            <label class="form-label small fw-bold">{{ __('messages.serial_number') }}</label>
                             <input type="text" name="serial_number" id="edit_serial" class="form-control" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Model/Type</label>
+                            <label class="form-label small fw-bold">{{ __('messages.type') }}</label>
                             <select name="device_type_id" id="edit_type" class="form-select" required>
                                 @foreach($deviceTypes as $type)
                                     <option value="{{ $type->id }}">{{ $type->name }}</option>
@@ -327,31 +327,31 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold">Assigned Operator</label>
+                            <label class="form-label small fw-bold">{{ __('messages.assigned_operator') }}</label>
                             <select name="user_id" id="edit_user" class="form-select">
-                                <option value="">Unassigned</option>
+                                <option value="">{{ __('messages.unassigned') }}</option>
                                 @foreach($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label small fw-bold">Current Status</label>
+                            <label class="form-label small fw-bold">{{ __('messages.status') }}</label>
                             <select name="status" id="edit_status" class="form-select" required>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="maintenance">Maintenance</option>
+                                <option value="active">{{ __('messages.active') }}</option>
+                                <option value="inactive">{{ __('messages.inactive') }}</option>
+                                <option value="maintenance">{{ __('messages.maintenance') }}</option>
                             </select>
                         </div>
                         <div class="col-12">
-                            <label class="form-label small fw-bold">Internal Notes</label>
+                            <label class="form-label small fw-bold">{{ __('messages.description') }}</label>
                             <textarea name="description" id="edit_description" class="form-control" rows="3"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0 mt-3">
-                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow">Update Configuration</button>
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+                    <button type="submit" class="btn btn-primary px-5 rounded-pill shadow">{{ __('messages.update_device') }}</button>
                 </div>
             </form>
         </div>

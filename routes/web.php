@@ -21,6 +21,13 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// ─── Language Switcher ────────────────────────────────────────────────────────
+use App\Http\Controllers\LanguageController;
+
+Route::post('/lang/{locale}', [LanguageController::class, 'switch'])
+    ->name('lang.switch')
+    ->where('locale', 'fr|en');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     
     // Global dashboard redirect

@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Device Fleet Intelligence')
+@section('title', __('messages.device_fleet_intelligence'))
 
 @section('content')
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <a href="{{ route('admin.devices.index') }}" class="btn btn-sm btn-light border">
-        <i class="bi bi-arrow-left me-1"></i> Back to Fleet
+        <i class="bi bi-arrow-left me-1"></i> {{ __('messages.back_to_fleet') }}
     </a>
     <a href="{{ route('admin.devices.export') }}" class="btn btn-sm btn-dark shadow-sm">
         <i class="bi bi-download me-1"></i> Export Data (CSV)
@@ -15,7 +15,7 @@
     <div class="col-md-6">
         <div class="card tg-card border-0 h-100">
             <div class="card-header bg-white p-4 border-bottom">
-                <h6 class="fw-bold mb-0">Connectivity Status</h6>
+                <h6 class="fw-bold mb-0">{{ __('messages.connectivity_status') }}</h6>
             </div>
             <div class="card-body p-4">
                 <canvas id="statusChart" style="max-height: 250px;"></canvas>
@@ -26,7 +26,7 @@
     <div class="col-md-6">
         <div class="card tg-card border-0 h-100">
             <div class="card-header bg-white p-4 border-bottom">
-                <h6 class="fw-bold mb-0">Hardware Composition</h6>
+                <h6 class="fw-bold mb-0">{{ __('messages.hardware_composition') }}</h6>
             </div>
             <div class="card-body p-4">
                 <canvas id="typeChart" style="max-height: 250px;"></canvas>
@@ -39,17 +39,17 @@
     <div class="col-md-12">
         <div class="tg-table-container">
             <div class="p-4 border-bottom bg-white d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold">Fleet Real-time Overview</h6>
-                <div class="small text-muted">Total Hardware: {{ $totalDevices }} Assets</div>
+                <h6 class="mb-0 fw-bold">{{ __('messages.fleet_realtime_overview') }}</h6>
+                <div class="small text-muted">{{ __('messages.total_hardware_assets', ['count' => $totalDevices]) }}</div>
             </div>
             <div class="table-responsive">
                 <table class="table tg-table mb-0">
                     <thead>
                         <tr>
-                            <th>Asset</th>
-                            <th>Category</th>
-                            <th>Operator</th>
-                            <th>Health Status</th>
+                            <th>{{ __('messages.asset') }}</th>
+                            <th>{{ __('messages.category') }}</th>
+                            <th>{{ __('messages.operator') }}</th>
+                            <th>{{ __('messages.health_status') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,7 +71,7 @@
                                 @if($device->user)
                                     <div class="small fw-medium">{{ $device->user->name }}</div>
                                 @else
-                                    <span class="text-muted small">Unassigned</span>
+                                    <span class="text-muted small">{{ __('messages.unassigned') }}</span>
                                 @endif
                             </td>
                             <td>{!! $device->status_badge !!}</td>
@@ -93,10 +93,20 @@
         new Chart(statusCtx, {
             type: 'pie',
             data: {
-                labels: @json($statusDistribution->pluck('status')),
+                labels: [
+                    '{{ __('messages.active') }}', 
+                    '{{ __('messages.inactive') }}', 
+                    '{{ __('messages.maintenance') }}',
+                    '{{ __('messages.other') }}'
+                ],
                 datasets: [{
-                    data: @json($statusDistribution->pluck('total')),
-                    backgroundColor: ['#198754', '#dc3545', '#ffc107', '#0dcaf0'],
+                    data: [
+                        {{ $statusDistribution->where('status', 'active')->first()->total ?? 0 }},
+                        {{ $statusDistribution->where('status', 'inactive')->first()->total ?? 0 }},
+                        {{ $statusDistribution->where('status', 'maintenance')->first()->total ?? 0 }},
+                        {{ $statusDistribution->whereNotIn('status', ['active', 'inactive', 'maintenance'])->sum('total') }}
+                    ],
+                    backgroundColor: ['#198754', '#6c757d', '#ffc107', '#0dcaf0'],
                     borderWidth: 2,
                     borderColor: '#ffffff'
                 }]
@@ -116,7 +126,7 @@
             data: {
                 labels: @json($typeDistribution->pluck('name')),
                 datasets: [{
-                    label: 'Device Count',
+                    label: '{{ __('messages.devices_count') }}',
                     data: @json($typeDistribution->pluck('total')),
                     backgroundColor: '#1A6FBF',
                     borderRadius: 8

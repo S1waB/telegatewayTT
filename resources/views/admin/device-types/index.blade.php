@@ -1,17 +1,17 @@
 @extends('layouts.app')
-@section('title', 'Device Types')
+@section('title', __('messages.device_types'))
 
 @section('content')
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="mb-0 fw-bold">Device Types Library</h5>
+            <h5 class="mb-0 fw-bold">{{ __('messages.device_types_library') }}</h5>
             <div class="d-flex gap-2">
                 <a href="{{ route('admin.device-types.analytics') }}" class="btn btn-outline-primary d-flex align-items-center gap-2">
-                    <i class="bi bi-collection-play"></i> Type Analytics
+                    <i class="bi bi-collection-play"></i> {{ __('messages.type_analytics') }}
                 </a>
                 <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#createTypeModal">
-                    <i class="bi bi-plus-lg"></i> Add New Type
+                    <i class="bi bi-plus-lg"></i> {{ __('messages.add_new_type') }}
                 </button>
             </div>
         </div>
@@ -21,15 +21,15 @@
             <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search by name or description..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control border-start-0" placeholder="{{ __('messages.search') }}..." value="{{ request('search') }}">
                 </div>
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-outline-primary w-100">Search</button>
+                <button type="submit" class="btn btn-outline-primary w-100">{{ __('messages.search') }}</button>
             </div>
             @if(request('search'))
                 <div class="col-md-1">
-                    <a href="{{ route('admin.device-types.index') }}" class="btn btn-light w-100" title="Clear Filters"><i class="bi bi-x-lg"></i></a>
+                    <a href="{{ route('admin.device-types.index') }}" class="btn btn-light w-100" title="{{ __('messages.clear_filters') }}"><i class="bi bi-x-lg"></i></a>
                 </div>
             @endif
         </form>
@@ -39,11 +39,11 @@
                 <thead class="bg-light">
                     <tr>
                         <th style="width: 60px;">Icon</th>
-                        <th>Type Name</th>
-                        <th>Description</th>
-                        <th class="text-center">Total Devices</th>
-                        <th class="text-center">% Active</th>
-                        <th class="text-end">Actions</th>
+                        <th>{{ __('messages.type_name') }}</th>
+                        <th>{{ __('messages.description') }}</th>
+                        <th class="text-center">{{ __('messages.total_devices') }}</th>
+                        <th class="text-center">{{ __('messages.active_pct') }}</th>
+                        <th class="text-end">{{ __('messages.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,7 +68,7 @@
                         </td>
                         <td>
                             <div class="text-truncate text-muted" style="max-width: 250px;" title="{{ $type->description }}">
-                                {{ $type->description ?? 'No description' }}
+                                {{ $type->description ?? __('messages.no_description') }}
                             </div>
                         </td>
                         <td class="text-center">
@@ -90,7 +90,7 @@
                                         data-bs-toggle="modal" data-bs-target="#viewTypeModal"
                                         data-type="{{ json_encode(array_merge($type->toArray(), ['image_url' => $type->image_url])) }}"
                                         data-active-pct="{{ $activePercent }}"
-                                        title="View Details">
+                                        title="{{ __('messages.view_details') }}">
                                     <i class="bi bi-eye"></i>
                                 </button>
                                 
@@ -99,18 +99,18 @@
                                         style="width: 32px; height: 32px; border-radius: 6px;"
                                         data-bs-toggle="modal" data-bs-target="#editTypeModal"
                                         data-type="{{ json_encode(array_merge($type->toArray(), ['image_url' => $type->image_url])) }}"
-                                        title="Edit">
+                                        title="{{ __('messages.edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </button>
 
                                 {{-- Delete --}}
-                                <form action="{{ route('admin.device-types.destroy', $type) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this device type?');">
+                                <form action="{{ route('admin.device-types.destroy', $type) }}" method="POST" onsubmit="return confirm('{{ __('messages.confirm_delete') }}');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger p-0 d-flex align-items-center justify-content-center" 
                                             style="width: 32px; height: 32px; border-radius: 6px;" 
                                             {{ $type->devices_count > 0 ? 'disabled' : '' }}
-                                            title="{{ $type->devices_count > 0 ? 'Cannot delete: type in use' : 'Delete' }}">
+                                            title="{{ $type->devices_count > 0 ? __('messages.cannot_delete_in_use') : __('messages.delete') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -121,7 +121,7 @@
                     <tr>
                         <td colspan="6" class="text-center py-5 text-muted">
                             <i class="bi bi-inbox display-4 d-block mb-3 opacity-25"></i>
-                            No device types found matching your criteria.
+                            {{ __('messages.no_results_found') }}
                         </td>
                     </tr>
                     @endforelse
@@ -146,21 +146,21 @@
             <form action="{{ route('admin.device-types.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header bg-primary text-white border-0">
-                    <h5 class="modal-title fw-bold"><i class="bi bi-plus-circle me-2"></i>New Device Type</h5>
+                    <h5 class="modal-title fw-bold"><i class="bi bi-plus-circle me-2"></i>{{ __('messages.new_device_type') }}</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Type Name</label>
+                        <label class="form-label small fw-bold">{{ __('messages.type_name') }}</label>
                         <input type="text" name="name" class="form-control" placeholder="e.g. Smart Sensor" required>
                     </div>
 
                     <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
                         <li class="nav-item">
-                            <button class="nav-link active small py-2" data-bs-toggle="tab" data-bs-target="#preset-tab" type="button">Preset Icons</button>
+                            <button class="nav-link active small py-2" data-bs-toggle="tab" data-bs-target="#preset-tab" type="button">{{ __('messages.preset_icons') }}</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link small py-2" data-bs-toggle="tab" data-bs-target="#custom-tab" type="button">Custom Upload</button>
+                            <button class="nav-link small py-2" data-bs-toggle="tab" data-bs-target="#custom-tab" type="button">{{ __('messages.custom_upload') }}</button>
                         </li>
                     </ul>
 
@@ -184,22 +184,22 @@
                                         <i class="bi bi-cloud-arrow-up text-muted fs-4" id="create_preview_icon"></i>
                                         <img id="create_preview_img" class="d-none rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
-                                    <span class="small text-primary fw-bold">Click to upload image</span>
+                                    <span class="small text-primary fw-bold">{{ __('messages.upload_image_notice') }}</span>
                                 </label>
                                 <input type="file" name="custom_icon" id="custom_icon" class="d-none" accept="image/*" onchange="previewCreate(this)">
-                                <div class="text-muted small mt-1">Recommended: Square PNG/SVG</div>
+                                <div class="text-muted small mt-1">{{ __('messages.recommended_format') }}</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-3">
-                        <label class="form-label small fw-bold">Description</label>
+                        <label class="form-label small fw-bold">{{ __('messages.description') }}</label>
                         <textarea name="description" class="form-control" rows="3" placeholder="Brief explanation of this type..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary px-4">Create Type</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+                    <button type="submit" class="btn btn-primary px-4">{{ __('messages.create_type') }}</button>
                 </div>
             </form>
         </div>
@@ -214,21 +214,21 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-header bg-dark text-white border-0">
-                    <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>Edit Device Type</h5>
+                    <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>{{ __('messages.edit_device_type') }}</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Type Name</label>
+                        <label class="form-label small fw-bold">{{ __('messages.type_name') }}</label>
                         <input type="text" name="name" id="edit_name" class="form-control" required>
                     </div>
 
                     <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
                         <li class="nav-item">
-                            <button class="nav-link active small py-2" data-bs-toggle="tab" data-bs-target="#edit-preset-tab" type="button">Preset Icons</button>
+                            <button class="nav-link active small py-2" data-bs-toggle="tab" data-bs-target="#edit-preset-tab" type="button">{{ __('messages.preset_icons') }}</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link small py-2" data-bs-toggle="tab" data-bs-target="#edit-custom-tab" type="button">Custom Upload</button>
+                            <button class="nav-link small py-2" data-bs-toggle="tab" data-bs-target="#edit-custom-tab" type="button">{{ __('messages.custom_upload') }}</button>
                         </li>
                     </ul>
 
@@ -252,22 +252,22 @@
                                         <i class="bi bi-cloud-arrow-up text-muted fs-4" id="edit_preview_icon"></i>
                                         <img id="edit_preview_img" class="d-none rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
-                                    <span class="small text-primary fw-bold">Upload new image</span>
+                                    <span class="small text-primary fw-bold">{{ __('messages.upload_image_notice') }}</span>
                                 </label>
                                 <input type="file" name="custom_icon" id="edit_custom_icon" class="d-none" accept="image/*" onchange="previewEdit(this)">
-                                <div id="current_image_status" class="small text-muted mt-1">Leave empty to keep current</div>
+                                <div id="current_image_status" class="small text-muted mt-1">{{ __('messages.leave_empty_to_keep') }}</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-3">
-                        <label class="form-label small fw-bold">Description</label>
+                        <label class="form-label small fw-bold">{{ __('messages.description') }}</label>
                         <textarea name="description" id="edit_description" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-dark px-4">Update Type</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+                    <button type="submit" class="btn btn-dark px-4">{{ __('messages.update') }}</button>
                 </div>
             </form>
         </div>
@@ -279,7 +279,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-info text-white border-0">
-                <h5 class="modal-title fw-bold"><i class="bi bi-info-circle me-2"></i>Type Details</h5>
+                <h5 class="modal-title fw-bold"><i class="bi bi-info-circle me-2"></i>{{ __('messages.type_details') }}</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0">
@@ -289,31 +289,31 @@
                         <img id="view_img" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <h4 id="view_name" class="fw-bold text-dark mb-1"></h4>
-                    <span class="badge bg-info text-white px-3 py-2 rounded-pill">System Library Item</span>
+                    <span class="badge bg-info text-white px-3 py-2 rounded-pill">{{ __('messages.system_library_item') }}</span>
                 </div>
                 <div class="p-4">
                     <div class="row g-4 mb-4 text-center">
                         <div class="col-6">
                             <div class="p-3 border rounded bg-light">
-                                <div class="text-muted small mb-1">Total Devices</div>
+                                <div class="text-muted small mb-1">{{ __('messages.total_devices') }}</div>
                                 <h3 id="view_total" class="fw-bold mb-0 text-primary"></h3>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="p-3 border rounded bg-light">
-                                <div class="text-muted small mb-1">Active Pct.</div>
+                                <div class="text-muted small mb-1">{{ __('messages.active_pct') }}</div>
                                 <h3 id="view_active" class="fw-bold mb-0 text-success"></h3>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <label class="form-label small fw-bold text-muted text-uppercase mb-1">Description</label>
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1">{{ __('messages.description') }}</label>
                         <p id="view_description" class="bg-light p-3 rounded border text-muted"></p>
                     </div>
                 </div>
             </div>
             <div class="modal-footer border-0 p-4 pt-0">
-                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Close View</button>
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">{{ __('messages.close_view') }}</button>
             </div>
         </div>
     </div>

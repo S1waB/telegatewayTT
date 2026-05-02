@@ -1,19 +1,19 @@
 @extends('layouts.app')
-@section('title', 'Admin Dashboard')
+@section('title', __('messages.admin_dashboard'))
 
 @section('content')
 <div class="row g-4 mb-4">
     <div class="col-md-3">
-        <x-stat-card title="Total Users" :value="$userCount" icon="users" color="primary" />
+        <x-stat-card :title="__('messages.total_users')" :value="$userCount" icon="users" color="primary" />
     </div>
     <div class="col-md-3">
-        <x-stat-card title="Total Devices" :value="$deviceCount" icon="cpu" color="info" />
+        <x-stat-card :title="__('messages.total_devices')" :value="$deviceCount" icon="cpu" color="info" />
     </div>
     <div class="col-md-3">
-        <x-stat-card title="Active Devices" :value="$activeDevices" icon="activity" color="success" />
+        <x-stat-card :title="__('messages.active_devices')" :value="$activeDevices" icon="activity" color="success" />
     </div>
     <div class="col-md-3">
-        <x-stat-card title="Pending Commands" :value="$pendingCommands" icon="clock" color="warning" />
+        <x-stat-card :title="__('messages.pending_commands')" :value="$pendingCommands" icon="clock" color="warning" />
     </div>
 </div>
 
@@ -21,18 +21,18 @@
     <div class="col-md-8">
         <div class="tg-table-container">
             <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold">Recent Commands</h6>
-                <a href="{{ route('admin.commands.history') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                <h6 class="mb-0 fw-bold">{{ __('messages.recent_commands') }}</h6>
+                <a href="{{ route('admin.commands.history') }}" class="btn btn-sm btn-outline-primary">{{ __('messages.view_all') }}</a>
             </div>
             <div class="table-responsive">
                 <table class="table tg-table">
                     <thead>
                         <tr>
-                            <th>Device</th>
-                            <th>Sent By</th>
-                            <th>Payload</th>
-                            <th>Status</th>
-                            <th>Time</th>
+                            <th>{{ __('messages.device') }}</th>
+                            <th>{{ __('messages.sent_by') }}</th>
+                            <th>{{ __('messages.payload') }}</th>
+                            <th>{{ __('messages.status') }}</th>
+                            <th>{{ __('messages.time') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +51,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">No commands found</td>
+                            <td colspan="5" class="text-center py-4 text-muted">{{ __('messages.no_commands_found') }}</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -63,7 +63,7 @@
     <div class="col-md-4">
         <div class="card tg-card h-100">
             <div class="card-header bg-white p-4 border-bottom">
-                <h6 class="mb-0 fw-bold">Device Status</h6>
+                <h6 class="mb-0 fw-bold">{{ __('messages.device_status') }}</h6>
             </div>
             <div class="card-body d-flex justify-content-center align-items-center p-4">
                 <canvas id="deviceStatusChart" style="max-height: 250px;"></canvas>
@@ -80,7 +80,11 @@
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Active', 'Inactive', 'Maintenance'],
+                labels: [
+                    '{{ __('messages.active') }}', 
+                    '{{ __('messages.inactive') }}', 
+                    '{{ __('messages.maintenance') }}'
+                ],
                 datasets: [{
                     data: [
                         {{ $activeDevices }}, 

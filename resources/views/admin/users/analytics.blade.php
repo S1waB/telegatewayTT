@@ -1,13 +1,13 @@
 @extends('layouts.app')
-@section('title', 'User Intelligence Reports')
+@section('title', __('messages.user_intelligence_reports'))
 
 @section('content')
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-light border">
-        <i class="bi bi-arrow-left me-1"></i> Back to Users
+        <i class="bi bi-arrow-left me-1"></i> {{ __('messages.back_to_users') }}
     </a>
     <a href="{{ route('admin.users.export') }}" class="btn btn-sm btn-dark shadow-sm">
-        <i class="bi bi-download me-1"></i> Export Data (CSV)
+        <i class="bi bi-download me-1"></i> {{ __('messages.export_data_csv') }}
     </a>
 </div>
 
@@ -19,10 +19,10 @@
                 <div class="bg-primary-light text-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
                     <i class="bi bi-people fs-3"></i>
                 </div>
-                <h6 class="text-muted small text-uppercase fw-bold mb-1">Total Workforce</h6>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1">{{ __('messages.total_workforce') }}</h6>
                 <h2 class="fw-bold mb-0">{{ $totalUsers }}</h2>
                 <div class="mt-2 small text-success">
-                    <i class="bi bi-person-check me-1"></i> {{ $activeUsers }} Active
+                    <i class="bi bi-person-check me-1"></i> {{ $activeUsers }} {{ __('messages.active') }}
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
     <div class="col-md-8">
         <div class="card tg-card border-0 h-100">
             <div class="card-header bg-white p-4 border-bottom d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0">Role Distribution</h6>
+                <h6 class="fw-bold mb-0">{{ __('messages.role_distribution') }}</h6>
                 <i class="bi bi-shield-shaded text-muted"></i>
             </div>
             <div class="card-body p-4">
@@ -60,17 +60,17 @@
     <div class="col-md-12">
         <div class="tg-table-container">
             <div class="p-4 border-bottom d-flex justify-content-between align-items-center bg-white">
-                <h6 class="mb-0 fw-bold">Recent User Activity</h6>
-                <span class="badge bg-primary rounded-pill">Top 10 Active</span>
+                <h6 class="mb-0 fw-bold">{{ __('messages.recent_user_activity') }}</h6>
+                <span class="badge bg-primary rounded-pill">{{ __('messages.top_10_active') }}</span>
             </div>
             <div class="table-responsive">
                 <table class="table tg-table mb-0">
                     <thead>
                         <tr>
-                            <th>User</th>
-                            <th>Role</th>
-                            <th>Last Active</th>
-                            <th>Status</th>
+                            <th>{{ __('messages.user') }}</th>
+                            <th>{{ __('messages.role') }}</th>
+                            <th>{{ __('messages.last_active') }}</th>
+                            <th>{{ __('messages.status') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,7 +90,7 @@
                             <td class="small text-muted">{{ $user->last_active_at->diffForHumans() }}</td>
                             <td>
                                 <span class="badge bg-{{ $user->is_active ? 'success' : 'secondary' }}-subtle text-{{ $user->is_active ? 'success' : 'secondary' }} small">
-                                    {{ $user->is_active ? 'Active' : 'Inactive' }}
+                                    {{ $user->is_active ? __('messages.active') : __('messages.inactive') }}
                                 </span>
                             </td>
                         </tr>

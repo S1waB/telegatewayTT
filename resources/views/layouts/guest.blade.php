@@ -25,6 +25,9 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
 </head>
 <body class="d-flex align-items-center py-4" style="min-height: 100vh; background: linear-gradient(135deg, #1A6FBF 0%, #0D4A8A 100%);">
+    <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
+        <x-lang-switcher />
+    </div>
     
     <main class="w-100 m-auto" style="max-width: 450px;">
         @yield('content')
