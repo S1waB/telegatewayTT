@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
+use App\Services\AIService;
 
 class Device extends Model
 {
@@ -74,5 +75,23 @@ class Device extends Model
         // Placeholder for device avatar
         $name = urlencode($this->name);
         return "https://ui-avatars.com/api/?name={$name}&background=0D4A8A&color=fff";
+    }
+
+    /**
+     * AI Accessors
+     */
+    public function getAiFailureProbabilityAttribute(): int
+    {
+        return (new AIService())->predictFailureProbability($this);
+    }
+
+    public function getAiStatusAttribute(): string
+    {
+        return (new AIService())->classifyStatus($this);
+    }
+
+    public function getAiAdviceAttribute(): array
+    {
+        return (new AIService())->getAdvice($this);
     }
 }

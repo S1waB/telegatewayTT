@@ -114,7 +114,10 @@ class DeviceController extends Controller
             ->reverse()
             ->values();
 
-        return view('devices.show', compact('device', 'commands', 'chartData'));
+        $aiService = new \App\Services\AIService();
+        $telemetryAnalysis = $aiService->analyzeTelemetry($device);
+
+        return view('devices.show', compact('device', 'commands', 'chartData', 'telemetryAnalysis'));
     }
 
     public function edit(Device $device)

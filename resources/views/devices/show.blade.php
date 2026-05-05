@@ -66,8 +66,31 @@
         </div>
     </div>
     
-    <!-- Data Chart -->
+    <!-- Data Chart & AI Analysis -->
     <div class="col-md-8">
+        @if(isset($telemetryAnalysis))
+        <div class="card tg-card border-0 shadow-sm mb-4 bg-{{ $telemetryAnalysis['status'] }} bg-opacity-10 border border-{{ $telemetryAnalysis['status'] }} border-opacity-25">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-{{ $telemetryAnalysis['status'] }} p-2 rounded-circle me-3">
+                        <i class="fas fa-brain text-white"></i>
+                    </div>
+                    <h6 class="mb-0 fw-bold text-{{ $telemetryAnalysis['status'] }}">{{ __('messages.ai_telemetry_interpretation') }}</h6>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="fw-bold mb-1">{{ $telemetryAnalysis['title'] }}</h6>
+                        <p class="small text-muted mb-0">{{ $telemetryAnalysis['message'] }}</p>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <div class="small fw-bold text-uppercase text-muted mb-1">{{ __('messages.ai_advice') }}</div>
+                        <div class="badge bg-{{ $telemetryAnalysis['status'] }}">{{ $telemetryAnalysis['advice'] }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <div class="card tg-card h-100 border-0">
             <div class="card-header bg-white p-4 border-bottom d-flex justify-content-between align-items-center">
                 <h6 class="fw-bold mb-0">{{ __('messages.recent_telemetry_data') }}</h6>
