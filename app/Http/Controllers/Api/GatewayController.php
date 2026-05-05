@@ -48,14 +48,35 @@ class GatewayController extends Controller
         return response()->json(['message' => 'Data accepted for processing'], 202);
     }
 
-    /**
-     * Return global gateway and device count status.
-     */
     public function status(): JsonResponse
     {
         return response()->json([
             'gateway' => 'online',
             'devices_count' => Device::count(),
         ]);
+    }
+
+    public function getPendingCommands($device_id): JsonResponse
+    {
+        $device = Device::where('device_id', $device_id)->first();
+        if (!$device) return response()->json([]);
+
+        $commands = \App\Models\Command::where('device_id', $device->id)
+            ->whereIn('status', ['pending', 'sent'])
+            ->get();
+
+        return response()->json($commands);
+    }
+
+    public function updateCommandResponse(Request $request, $id): JsonResponse
+    {
+        $command = \App\Models\Command::findOrFail($id);
+        $command->update([
+            'status' => $request->status,
+            'response' => $request->response,
+            'response_at' => now(),
+        ]);
+
+        return response()->json(['message' => 'Response recorded']);
     }
 }

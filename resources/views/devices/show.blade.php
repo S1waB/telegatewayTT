@@ -166,9 +166,9 @@
                             <th class="text-end pe-4">{{ __('messages.response') }}</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="commandTableBody">
                         @forelse($commands as $command)
-                        <tr>
+                        <tr id="command-row-{{ $command->id }}">
                             <td class="ps-4">
                                 <span class="text-muted small">#{{ $command->id }}</span>
                             </td>
@@ -210,7 +210,7 @@
                                     @endif
                                 </div>
                             </td>
-                            <td>{!! $command->status_badge !!}</td>
+                            <td class="status-cell">{!! $command->status_badge !!}</td>
                             <td class="small">
                                 @if($command->sent_at)
                                     <div class="fw-medium">{{ $command->sent_at->diffForHumans() }}</div>
@@ -219,13 +219,13 @@
                                     <span class="text-muted">{{ __('messages.in_queue') }}</span>
                                 @endif
                             </td>
-                            <td class="text-end pe-4">
+                            <td class="text-end pe-4 response-cell">
                                 @if($command->response)
                                     <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-none border-opacity-25 d-flex align-items-center gap-1 ms-auto" data-bs-toggle="modal" data-bs-target="#responseModal{{ $command->id }}">
                                         <i class="bi bi-terminal"></i> {{ __('messages.view_result') }}
                                     </button>
                                     
-                                    <!-- Response Modal -->
+                                    <!-- Response Modal (Static for initial load) -->
                                     <div class="modal fade" id="responseModal{{ $command->id }}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-lg modal-dialog-centered">
                                             <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden text-start">
@@ -241,16 +241,18 @@
                                                 </div>
                                                 <div class="modal-body p-4 bg-light bg-opacity-50">
                                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                                        <span class="badge bg-{{ $command->status === 'success' ? 'success' : 'danger' }} bg-opacity-10 text-{{ $command->status === 'success' ? 'success' : 'danger' }} border border-{{ $command->status === 'success' ? 'success' : 'danger' }} border-opacity-25 px-3">
-                                                            <i class="bi bi-{{ $command->status === 'success' ? 'check-circle' : 'exclamation-circle' }} me-1"></i>
-                                                            {{ ucfirst($command->status) }}
+                                                        <span class="badge-status-container">
+                                                            <span class="badge bg-{{ $command->status === 'success' ? 'success' : 'danger' }} bg-opacity-10 text-{{ $command->status === 'success' ? 'success' : 'danger' }} border border-{{ $command->status === 'success' ? 'success' : 'danger' }} border-opacity-25 px-3">
+                                                                <i class="bi bi-{{ $command->status === 'success' ? 'check-circle' : 'exclamation-circle' }} me-1"></i>
+                                                                {{ ucfirst($command->status) }}
+                                                            </span>
                                                         </span>
-                                                        <span class="text-muted small">
+                                                        <span class="text-muted small response-time">
                                                             <i class="bi bi-clock me-1"></i> {{ $command->response_at ? $command->response_at->format('M d, Y H:i:s') : 'N/A' }}
                                                         </span>
                                                     </div>
                                                     <div class="bg-white rounded-3 p-3 border shadow-sm">
-                                                        <pre class="text-dark mb-0 font-monospace small text-start" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">{{ $command->response }}</pre>
+                                                        <pre class="text-dark mb-0 font-monospace small text-start response-text" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">{{ $command->response }}</pre>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
@@ -258,7 +260,7 @@
                                                         <i class="bi bi-shield-check me-1"></i> {{ __('messages.verified_iot_response') }}
                                                     </div>
                                                     <div class="d-flex gap-2">
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="navigator.clipboard.writeText(`{{ addslashes($command->response) }}`).then(() => alert('Copied to clipboard!'))">
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 copy-btn" onclick="navigator.clipboard.writeText(`{{ addslashes($command->response) }}`).then(() => alert('Copied to clipboard!'))">
                                                             <i class="bi bi-clipboard me-1"></i> {{ __('messages.copy') }}
                                                         </button>
                                                         <button type="button" class="btn btn-sm btn-dark rounded-pill px-4" data-bs-dismiss="modal">{{ __('messages.close') }}</button>
@@ -268,7 +270,7 @@
                                         </div>
                                     </div>
                                 @else
-                                    <span class="badge bg-light text-muted fw-normal border">{{ __('messages.in_flight') }}</span>
+                                    <span class="badge bg-light text-muted fw-normal border in-flight-badge">{{ __('messages.in_flight') }}</span>
                                 @endif
                             </td>
                         </tr>
@@ -339,63 +341,183 @@
 @if($chartData->count() > 0)
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // ─── Real-time Chart Logic ───
         const ctx = document.getElementById('telemetryChart').getContext('2d');
+        let telemetryChart;
         
-        // Group by metric
-        const metrics = {};
-        const labels = [];
-        
-        @foreach($chartData as $data)
-            if(!labels.includes('{{ $data->received_at->format('H:i') }}')) {
-                labels.push('{{ $data->received_at->format('H:i') }}');
-            }
+        function processData(chartData) {
+            const metrics = {};
+            const labels = [];
             
-            @foreach($data->processed_data as $metric => $value)
-                @if(is_numeric($value))
-                    if(!metrics['{{ $metric }}']) {
-                        metrics['{{ $metric }}'] = Array(labels.length - 1).fill(null);
-                    }
-                    metrics['{{ $metric }}'][labels.length - 1] = {{ $value }};
-                @endif
-            @endforeach
-        @endforeach
-        
-        const datasets = Object.keys(metrics).map((metric, index) => {
-            const colors = ['#1A6FBF', '#198754', '#ffc107', '#dc3545'];
-            const color = colors[index % colors.length];
-            
-            return {
-                label: metric.charAt(0).toUpperCase() + metric.slice(1),
-                data: metrics[metric],
-                borderColor: color,
-                backgroundColor: color + '33', // 20% opacity
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true
-            };
-        });
-        
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: false
-                    }
+            chartData.forEach(data => {
+                const time = data.received_at_formatted || new Date(data.received_at).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+                if(!labels.includes(time)) {
+                    labels.push(time);
                 }
-            }
-        });
+                
+                const processed = data.processed_data || {};
+                Object.keys(processed).forEach(metric => {
+                    const value = processed[metric];
+                    if(typeof value === 'number') {
+                        if(!metrics[metric]) {
+                            metrics[metric] = Array(labels.length - 1).fill(null);
+                        }
+                        metrics[metric][labels.length - 1] = value;
+                    }
+                });
+            });
+            
+            return { labels, metrics };
+        }
+
+        function initChart() {
+            const initialData = @json($chartData);
+            initialData.forEach(d => {
+                const date = new Date(d.received_at);
+                d.received_at_formatted = date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+            });
+
+            const { labels, metrics } = processData(initialData);
+            
+            const datasets = Object.keys(metrics).map((metric, index) => {
+                const colors = ['#1A6FBF', '#198754', '#ffc107', '#dc3545', '#6610f2', '#6f42c1'];
+                const color = colors[index % colors.length];
+                return {
+                    label: metric.charAt(0).toUpperCase() + metric.slice(1),
+                    data: metrics[metric],
+                    borderColor: color,
+                    backgroundColor: color + '20',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 3
+                };
+            });
+
+            telemetryChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 800 },
+                    plugins: { legend: { position: 'top' } },
+                    scales: { y: { beginAtZero: false } }
+                }
+            });
+        }
+
+        function updateChart() {
+            fetch(`/api/devices/{{ $device->id }}/metrics`)
+                .then(response => response.json())
+                .then(data => {
+                    const { labels, metrics } = processData(data);
+                    telemetryChart.data.labels = labels;
+                    Object.keys(metrics).forEach(metric => {
+                        let dataset = telemetryChart.data.datasets.find(ds => ds.label.toLowerCase() === metric.toLowerCase());
+                        if (dataset) {
+                            dataset.data = metrics[metric];
+                        } else {
+                            const colors = ['#1A6FBF', '#198754', '#ffc107', '#dc3545', '#6610f2', '#6f42c1'];
+                            const color = colors[telemetryChart.data.datasets.length % colors.length];
+                            telemetryChart.data.datasets.push({
+                                label: metric.charAt(0).toUpperCase() + metric.slice(1),
+                                data: metrics[metric],
+                                borderColor: color,
+                                backgroundColor: color + '20',
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: true,
+                                pointRadius: 3
+                            });
+                        }
+                    });
+                    telemetryChart.update('none');
+                });
+        }
+
+        // ─── Real-time Command History Logic ───
+        function updateCommands() {
+            fetch(`/api/commands?device_id={{ $device->id }}`)
+                .then(response => response.json())
+                .then(response => {
+                    const commands = response.data || [];
+                    commands.forEach(cmd => {
+                        const row = document.getElementById(`command-row-${cmd.id}`);
+                        if (!row) return;
+
+                        // Update Status Badge
+                        const statusCell = row.querySelector('.status-cell');
+                        if (statusCell && !statusCell.innerHTML.includes(cmd.status)) {
+                            // Simple way to refresh badge - we could generate HTML but status icons are easier
+                            const statusMap = {
+                                'success': '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2">Success</span>',
+                                'sent': '<span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2">Sent</span>',
+                                'failed': '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2">Failed</span>',
+                                'pending': '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2">Pending</span>'
+                            };
+                            statusCell.innerHTML = statusMap[cmd.status] || cmd.status;
+                        }
+
+                        // Update Response Button
+                        const responseCell = row.querySelector('.response-cell');
+                        if (responseCell && cmd.response && responseCell.querySelector('.in-flight-badge')) {
+                            // Command just finished! Refresh the cell with a "View Result" button
+                            const modalId = `responseModal${cmd.id}`;
+                            responseCell.innerHTML = `
+                                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-none border-opacity-25 d-flex align-items-center gap-1 ms-auto" data-bs-toggle="modal" data-bs-target="#${modalId}">
+                                    <i class="bi bi-terminal"></i> {{ __('messages.view_result') }}
+                                </button>
+                                <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden text-start">
+                                            <div class="modal-header bg-white border-bottom p-4">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi bi-terminal-fill fs-4 text-primary me-3"></i>
+                                                    <div>
+                                                        <h5 class="modal-title fw-bold mb-0 text-dark">{{ __('messages.execution_output') }}</h5>
+                                                        <span class="text-muted small">Asset: {{ $device->name }} | ID: #${cmd.id}</span>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body p-4 bg-light bg-opacity-50">
+                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                    <span class="badge bg-${cmd.status === 'success' ? 'success' : 'danger'} bg-opacity-10 text-${cmd.status === 'success' ? 'success' : 'danger'} border border-${cmd.status === 'success' ? 'success' : 'danger'} border-opacity-25 px-3">
+                                                        <i class="bi bi-${cmd.status === 'success' ? 'check-circle' : 'exclamation-circle'} me-1"></i>
+                                                        ${cmd.status.charAt(0).toUpperCase() + cmd.status.slice(1)}
+                                                    </span>
+                                                    <span class="text-muted small">
+                                                        <i class="bi bi-clock me-1"></i> ${new Date(cmd.response_at).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div class="bg-white rounded-3 p-3 border shadow-sm">
+                                                    <pre class="text-dark mb-0 font-monospace small text-start" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">${cmd.response}</pre>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
+                                                <div class="text-muted small">
+                                                    <i class="bi bi-shield-check me-1"></i> {{ __('messages.verified_iot_response') }}
+                                                </div>
+                                                <div class="d-flex gap-2">
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="navigator.clipboard.writeText(\`${cmd.response.replace(/`/g, '\\`')}\`).then(() => alert('Copied to clipboard!'))">
+                                                        <i class="bi bi-clipboard me-1"></i> {{ __('messages.copy') }}
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-dark rounded-pill px-4" data-bs-dismiss="modal">{{ __('messages.close') }}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                });
+        }
+
+        initChart();
+        setInterval(updateChart, 5000);
+        setInterval(updateCommands, 3000);
     });
 </script>
 @endif

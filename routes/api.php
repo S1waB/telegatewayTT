@@ -27,6 +27,9 @@ Route::prefix('auth')->group(function () {
 // ─── IoT Gateway Simulation Routes (Public for simulation) ──────────────────
 Route::post('/gateway/receive', [GatewayController::class, 'receive']);
 Route::get('/gateway/status', [GatewayController::class, 'status']);
+Route::get('/gateway/commands/{device_id}', [GatewayController::class, 'getPendingCommands']);
+Route::post('/gateway/commands/{id}/response', [GatewayController::class, 'updateCommandResponse']);
+Route::get('/devices/{device}/metrics', [DeviceController::class, 'getLatestMetrics']);
 
 Route::get('/devices', function () {
     return DeviceResource::collection(Device::all());
