@@ -5,48 +5,58 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Alert extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'user_id',
         'device_id',
+        'user_id',
         'subject',
         'description',
+        'severity',
         'status',
-        'admin_response',
+        'triggered_at',
+        'resolved_at',
     ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'triggered_at' => 'datetime',
+        'resolved_at' => 'datetime',
+    ];
+
+    /**
+     * Get the device that owns the alert.
+     */
+    public function device(): BelongsTo
+    {
+        return $this->belongsTo(Device::class, 'device_id', 'device_id');
+    }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function device(): BelongsTo
-    {
-        return $this->belongsTo(Device::class);
-    }
-
-    public function attachments(): HasMany
-    {
-        return $this->hasMany(AlertAttachment::class);
-    }
-
-    public function messages(): HasMany
-    {
-        return $this->hasMany(AlertMessage::class)->oldest();
-    }
-
     public function getStatusBadgeAttribute(): string
     {
-        return match($this->status) {
-            'not_viewed' => '<span class="badge bg-danger">Not Viewed</span>',
-            'pending' => '<span class="badge bg-warning text-dark">Pending</span>',
-            'viewed' => '<span class="badge bg-success">Viewed</span>',
-            default => '<span class="badge bg-secondary">Unknown</span>',
+        $color = match ($this->status) {
+            'viewed' => 'success',
+            'pending' => 'warning',
+            default => 'danger',
         };
+
+        return sprintf('<span class="badge bg-%s">%s</span>', $color, ucfirst(str_replace('_', ' ', $this->status)));
     }
 }

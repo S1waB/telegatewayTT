@@ -495,4 +495,8 @@ return [
     'stable_metrics_advice' => 'Continuez les opérations normales. Aucune maintenance requise.',
     'no_advice_available' => 'Aucun conseil disponible',
     'ai_telemetry_interpretation' => 'Interprétation de la télémétrie par l\'IA',
+    'unknown_device' => 'Appareil inconnu',
+    'ai_advice' => 'Conseil IA',
+    'id' => 'ID',
+    'copy' => 'Copier',
 ];

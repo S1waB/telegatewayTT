@@ -108,7 +108,7 @@ class DeviceController extends Controller
         
         // Simple data aggregation for charts
         $chartData = $device->data()
-            ->latest('recorded_at')
+            ->latest('received_at')
             ->take(20)
             ->get()
             ->reverse()

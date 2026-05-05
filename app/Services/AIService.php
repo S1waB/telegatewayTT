@@ -16,7 +16,7 @@ class AIService
     public function classifyStatus(Device $device): string
     {
         $lastSeen = $device->last_seen_at;
-        $recentAlertsCount = Alert::where('device_id', $device->id)
+        $recentAlertsCount = Alert::where('device_id', $device->device_id)
             ->where('created_at', '>=', now()->subDays(3))
             ->count();
 
@@ -47,8 +47,8 @@ class AIService
         }
 
         // Factor 2: Alerts
-        $unresolvedAlerts = Alert::where('device_id', $device->id)
-            ->whereIn('status', ['not_viewed', 'pending'])
+        $unresolvedAlerts = Alert::where('device_id', $device->device_id)
+            ->whereNull('resolved_at')
             ->count();
         $score += min($unresolvedAlerts * 10, 40); // Max 40% from alerts
 
@@ -108,7 +108,12 @@ class AIService
             return [
                 'average_health' => 100,
                 'critical_count' => 0,
-                'status_distribution' => []
+                'status_distribution' => [
+                    'active' => 0,
+                    'inactive' => 0,
+                    'maintenance' => 0
+                ],
+                'total_devices' => 0
             ];
         }
 
@@ -188,9 +193,9 @@ class AIService
         }
 
         // 3. Alert Response Analysis
-        $avgResponseTime = Alert::whereNotNull('device_id')->where('status', 'viewed')
+        $avgResponseTime = Alert::whereNotNull('device_id')->whereNotNull('resolved_at')
             ->get()
-            ->avg(fn($a) => $a->created_at->diffInMinutes($a->updated_at));
+            ->avg(fn($a) => $a->triggered_at->diffInMinutes($a->resolved_at));
 
         if ($avgResponseTime > 120) {
             $advice[] = [
@@ -228,9 +233,9 @@ class AIService
             $responseTrend['labels'][] = $date->format('M d');
             
             $avg = Alert::whereDate('created_at', $date)
-                ->where('status', 'viewed')
+                ->whereNotNull('resolved_at')
                 ->get()
-                ->avg(fn($a) => $a->created_at->diffInMinutes($a->updated_at)) ?? 0;
+                ->avg(fn($a) => $a->triggered_at->diffInMinutes($a->resolved_at)) ?? 0;
             
             $responseTrend['data'][] = round($avg);
         }
@@ -272,7 +277,7 @@ class AIService
      */
     public function analyzeTelemetry(Device $device): array
     {
-        $data = $device->data()->latest('recorded_at')->take(10)->get();
+        $data = $device->data()->latest('received_at')->take(10)->get();
         
         if ($data->isEmpty()) {
             return [
@@ -283,7 +288,15 @@ class AIService
             ];
         }
 
-        $values = $data->pluck('value');
+        // Extract values from JSON payload based on device type
+        $values = $data->map(function($m) {
+            $pd = $m->processed_data;
+            if (isset($pd['temperature'])) return $pd['temperature'];
+            if (isset($pd['bandwidth_mbps'])) return $pd['bandwidth_mbps'];
+            if (isset($pd['brightness'])) return $pd['brightness'];
+            return 0;
+        });
+
         $avg = $values->avg();
         $max = $values->max();
         $min = $values->min();
@@ -299,7 +312,7 @@ class AIService
             ];
         }
 
-        if ($avg > 80) { // Assuming 0-100 scale for simplicity in mock
+        if ($avg > 80) {
             return [
                 'status' => 'warning',
                 'title' => __('messages.high_load_detected'),

@@ -346,15 +346,18 @@
         const labels = [];
         
         @foreach($chartData as $data)
-            if(!labels.includes('{{ $data->recorded_at->format('H:i') }}')) {
-                labels.push('{{ $data->recorded_at->format('H:i') }}');
+            if(!labels.includes('{{ $data->received_at->format('H:i') }}')) {
+                labels.push('{{ $data->received_at->format('H:i') }}');
             }
             
-            if(!metrics['{{ $data->metric }}']) {
-                metrics['{{ $data->metric }}'] = [];
-            }
-            
-            metrics['{{ $data->metric }}'].push({{ $data->value }});
+            @foreach($data->processed_data as $metric => $value)
+                @if(is_numeric($value))
+                    if(!metrics['{{ $metric }}']) {
+                        metrics['{{ $metric }}'] = Array(labels.length - 1).fill(null);
+                    }
+                    metrics['{{ $metric }}'][labels.length - 1] = {{ $value }};
+                @endif
+            @endforeach
         @endforeach
         
         const datasets = Object.keys(metrics).map((metric, index) => {

@@ -4,94 +4,124 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
-use App\Services\AIService;
 
 class Device extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'name',
+        'device_id',
         'serial_number',
+        'name',
+        'category',
         'device_type_id',
-        'user_id',
         'status',
         'ip_address',
         'location',
-        'avatar',
+        'user_id',
         'last_seen_at',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
     protected $casts = [
         'last_seen_at' => 'datetime',
     ];
 
-    public function type(): BelongsTo
+    /**
+     * Get the metrics for the device.
+     */
+    public function metrics(): HasMany
     {
-        return $this->belongsTo(DeviceType::class, 'device_type_id');
+        return $this->hasMany(DeviceMetric::class, 'device_id', 'device_id');
     }
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
+    /**
+     * Get the commands for the device.
+     */
     public function commands(): HasMany
     {
         return $this->hasMany(Command::class);
     }
 
+    /**
+     * Alias for metrics to support legacy data relationship.
+     */
     public function data(): HasMany
     {
-        return $this->hasMany(DeviceData::class, 'device_id');
+        return $this->hasMany(DeviceMetric::class, 'device_id', 'device_id');
     }
 
-    public function scopeActive($query)
+    /**
+     * Get the alerts for the device.
+     */
+    public function alerts(): HasMany
     {
-        return $query->where('status', 'active');
+        return $this->hasMany(Alert::class, 'device_id', 'device_id');
     }
 
-    public function scopeByType($query, $typeId)
+    /**
+     * Get the device type (legacy relationship).
+     */
+    public function type(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $query->where('device_type_id', $typeId);
+        return $this->belongsTo(DeviceType::class, 'device_type_id');
     }
 
+    /**
+     * Get the operator assigned to the device.
+     */
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Scope for assigned devices.
+     */
     public function scopeAssignedTo($query, $userId)
     {
         return $query->where('user_id', $userId);
     }
 
-    public function getAvatarUrlAttribute(): string
+    /**
+     * Scope for active devices.
+     */
+    public function scopeActive($query)
     {
-        if ($this->avatar) {
-            return Storage::url($this->avatar);
-        }
-
-        $icon = $this->type ? $this->type->icon : 'router';
-        // Placeholder for device avatar
-        $name = urlencode($this->name);
-        return "https://ui-avatars.com/api/?name={$name}&background=0D4A8A&color=fff";
+        return $query->where('status', 'active');
     }
 
     /**
      * AI Accessors
      */
+    public function getAvatarUrlAttribute(): string
+    {
+        $name = urlencode($this->name);
+        return "https://ui-avatars.com/api/?name={$name}&background=0D4A8A&color=fff";
+    }
+
     public function getAiFailureProbabilityAttribute(): int
     {
-        return (new AIService())->predictFailureProbability($this);
+        return (new \App\Services\AIService())->predictFailureProbability($this);
     }
 
     public function getAiStatusAttribute(): string
     {
-        return (new AIService())->classifyStatus($this);
+        return (new \App\Services\AIService())->classifyStatus($this);
     }
 
     public function getAiAdviceAttribute(): array
     {
-        return (new AIService())->getAdvice($this);
+        return (new \App\Services\AIService())->getAdvice($this);
     }
 }

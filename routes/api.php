@@ -9,6 +9,10 @@ use App\Http\Controllers\Api\DeviceTypeController;
 use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\CommandController;
 use App\Http\Controllers\Api\DeviceDataController;
+use App\Http\Controllers\Api\GatewayController;
+use App\Http\Resources\DeviceResource;
+use App\Models\Device;
+use App\Models\Alert;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +22,33 @@ use App\Http\Controllers\Api\DeviceDataController;
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
+});
+
+// ─── IoT Gateway Simulation Routes (Public for simulation) ──────────────────
+Route::post('/gateway/receive', [GatewayController::class, 'receive']);
+Route::get('/gateway/status', [GatewayController::class, 'status']);
+
+Route::get('/devices', function () {
+    return DeviceResource::collection(Device::all());
+});
+
+Route::get('/devices/{device_id}', function ($device_id) {
+    $device = Device::where('device_id', $device_id)->firstOrFail();
+    return new DeviceResource($device);
+});
+
+Route::get('/alerts', function (Request $request) {
+    $query = Alert::query();
+    if ($request->status === 'open') {
+        $query->whereNull('resolved_at');
+    }
+    return $query->latest()->get();
+});
+
+Route::patch('/alerts/{id}/resolve', function ($id) {
+    $alert = Alert::findOrFail($id);
+    $alert->update(['resolved_at' => now()]);
+    return response()->json(['message' => 'Alert resolved']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -30,8 +61,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('device-types', DeviceTypeController::class);
     
-    // Devices and Data
-    Route::apiResource('devices', DeviceController::class);
+    // Devices and Data (Simulation overrides these for now)
+    // Route::apiResource('devices', DeviceController::class);
     Route::get('/devices/{device}/data', [DeviceDataController::class, 'index']);
     
     // Commands
@@ -41,5 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // IoT Callbacks (require token but no role check handled in controller)
     Route::patch('/commands/{command}/status', [CommandController::class, 'updateStatus']);
+    Route::post('/devices/{device}/data', [DeviceDataController::class, 'store']);
+
     Route::post('/devices/{device}/data', [DeviceDataController::class, 'store']);
 });

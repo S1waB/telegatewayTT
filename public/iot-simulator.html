@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IoT Gateway Simulator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f5f5f0;
+      --surface:  #ffffff;
+      --surface2: #f0efea;
+      --border:   rgba(0,0,0,0.12);
+      --border2:  rgba(0,0,0,0.22);
+      --text:     #1a1a18;
+      --muted:    #6b6b67;
+      --green:    #3B6D11;
+      --green-bg: #EAF3DE;
+      --amber:    #854F0B;
+      --amber-bg: #FAEEDA;
+      --red:      #A32D2D;
+      --red-bg:   #FCEBEB;
+      --blue:     #185FA5;
+      --blue-bg:  #E6F1FB;
+      --radius:   10px;
+      --radius-sm:6px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:       #1a1a18;
+        --surface:  #242422;
+        --surface2: #2e2e2b;
+        --border:   rgba(255,255,255,0.1);
+        --border2:  rgba(255,255,255,0.2);
+        --text:     #e8e6de;
+        --muted:    #908e85;
+        --green:    #97C459;
+        --green-bg: #1a2e08;
+        --amber:    #EF9F27;
+        --amber-bg: #2a1e06;
+        --red:      #F09595;
+        --red-bg:   #2a0808;
+        --blue:     #85B7EB;
+        --blue-bg:  #04182e;
+      }
+    }
+
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+    .pulse-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+    .header h1 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text);
+    }
+    .header-sub { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+    /* ── URL bar ── */
+    .url-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      margin-bottom: 1rem;
+    }
+    .url-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .url-bar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--text);
+      min-width: 0;
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+    .status-dot.ok  { background: var(--green); }
+    .status-dot.err { background: var(--red);   }
+
+    /* ── Auto-send row ── */
+    .auto-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .auto-row select {
+      font-family: inherit;
+      font-size: 11px;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      color: var(--text);
+    }
+    .toggle-wrap { display: flex; align-items: center; gap: 6px; }
+    .toggle {
+      position: relative; display: inline-block;
+      width: 34px; height: 20px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; cursor: pointer; inset: 0;
+      background: var(--border2); border-radius: 20px;
+      transition: background .2s;
+    }
+    .toggle-slider::before {
+      position: absolute; content: "";
+      height: 14px; width: 14px;
+      left: 3px; bottom: 3px;
+      background: white; border-radius: 50%;
+      transition: transform .2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--green); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(14px); }
+
+    /* ── Device cards grid ── */
+    .devices-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .device-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      transition: border-color .2s;
+    }
+    .device-card:hover { border-color: var(--border2); }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .card-name {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .badge {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    .badge-on  { background: var(--green-bg); color: var(--green); }
+    .badge-off { background: var(--surface2); color: var(--muted); }
+    .badge-warn{ background: var(--amber-bg); color: var(--amber); }
+    .badge-err { background: var(--red-bg);   color: var(--red);   }
+
+    .card-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+    .card-id { font-size: 10px; color: var(--muted); margin-bottom: 12px; }
+
+    /* Controls */
+    .btn-row { display: flex; gap: 6px; margin-bottom: 6px; }
+    .btn {
+      border: 0.5px solid var(--border2);
+      background: transparent;
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .12s;
+      flex: 1;
+    }
+    .btn:hover   { background: var(--surface2); }
+    .btn:active  { transform: scale(0.97); }
+    .btn-send {
+      width: 100%;
+      background: var(--surface2);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+    .btn-primary:hover { opacity: 0.85; }
+
+    /* Slider */
+    .slider-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .slider-row input[type="range"] { flex: 1; }
+    .slider-val { font-size: 11px; color: var(--muted); min-width: 48px; text-align: right; }
+
+    /* ── Global actions ── */
+    .global-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+    .global-row .btn { flex: 1; }
+
+    /* ── Log ── */
+    .log-panel {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 14px;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--surface2);
+    }
+    .log-title { font-size: 10px; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+    .log-body {
+      height: 240px;
+      overflow-y: auto;
+      padding: 8px 14px;
+    }
+    .log-entry {
+      font-size: 11px;
+      line-height: 1.9;
+      border-bottom: 0.5px solid var(--border);
+      padding: 2px 0;
+    }
+    .log-entry:last-child { border-bottom: none; }
+    .log-time  { color: var(--muted); margin-right: 8px; }
+    .log-dev   { font-weight: 600; margin-right: 6px; }
+    .log-pay   { color: var(--muted); }
+    .log-ok    { color: var(--green); margin-left: 6px; }
+    .log-err   { color: var(--red);   margin-left: 6px; }
+    .log-info  { color: var(--blue);  }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 1rem;
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="pulse-dot" id="gwDot"></div>
+    <h1>IoT Gateway Simulator</h1>
+    <span class="header-sub" id="sentCount">0 messages sent</span>
+  </div>
+
+  <!-- URL bar -->
+  <div class="url-bar">
+    <span class="url-label">Gateway URL</span>
+    <input id="gatewayUrl" value="/api/gateway/receive"
+           placeholder="/api/gateway/receive" />
+    <div class="status-dot" id="connDot" title="Connection status"></div>
+  </div>
+
+  <!-- Auto-send -->
+  <div class="auto-row">
+    <span>Auto-send every</span>
+    <select id="autoInterval">
+      <option value="3000">3s</option>
+      <option value="5000">5s</option>
+      <option value="10000" selected>10s</option>
+      <option value="30000">30s</option>
+      <option value="60000">60s</option>
+    </select>
+    <label class="toggle">
+      <input type="checkbox" id="autoToggle" />
+      <span class="toggle-slider"></span>
+    </label>
+    <span id="autoStatus">off</span>
+  </div>
+
+  <!-- Device cards -->
+  <div class="devices-grid">
+
+    <!-- Lighting Relay -->
+    <div class="device-card">
+      <div class="card-top">
+        <span class="card-name">Lighting Relay</span>
+        <span class="badge badge-off" id="badge-relay">OFF</span>
+      </div>
+      <div class="card-value" id="val-relay">OFF</div>
+      <div class="card-id">relay-001 · actuator</div>
+      <div class="btn-row">
+        <button class="btn" onclick="setRelay(1)">Turn ON</button>
+        <button class="btn" onclick="setRelay(0)">Turn OFF</button>
+      </div>
+      <button class="btn btn-send" onclick="sendDevice('relay')">↑ Send to Gateway</button>
+    </div>
+
+    <!-- Router -->
+    <div class="device-card">
+      <div class="card-top">
+        <span class="card-name">Router</span>
+        <span class="badge badge-on" id="badge-router">CONNECTED</span>
+      </div>
+      <div class="card-value" id="val-router">72 Mb/s</div>
+      <div class="card-id">router-001 · network</div>
+      <div class="slider-row">
+        <input type="range" id="routerBw" min="0" max="1000" value="72" step="1"
+          oninput="updateRouter(this.value)" />
+        <span class="slider-val" id="routerBwVal">72 Mb/s</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="setRouterStatus('connected')">Connected</button>
+        <button class="btn" onclick="setRouterStatus('degraded')">Degraded</button>
+        <button class="btn" onclick="setRouterStatus('error')">Error</button>
+      </div>
+      <button class="btn btn-send" onclick="sendDevice('router')">↑ Send to Gateway</button>
+    </div>
+
+    <!-- Lobby Temp Sensor -->
+    <div class="device-card">
+      <div class="card-top">
+        <span class="card-name">Lobby Temp Sensor</span>
+        <span class="badge badge-on" id="badge-temp">NORMAL</span>
+      </div>
+      <div class="card-value" id="val-temp">22.4 °C</div>
+      <div class="card-id">temp-001 · sensor</div>
+      <div class="slider-row">
+        <input type="range" id="tempSlider" min="-10" max="60" value="22.4" step="0.1"
+          oninput="updateTemp(this.value)" />
+        <span class="slider-val" id="tempVal">22.4 °C</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="randomTemp()">Randomize</button>
+        <button class="btn" onclick="spikeTemp()">Spike !</button>
+        <button class="btn" onclick="updateTemp(-5)">Freeze</button>
+      </div>
+      <button class="btn btn-send" onclick="sendDevice('temp')">↑ Send to Gateway</button>
+    </div>
+
+  </div>
+
+  <!-- Global actions -->
+  <div class="global-row">
+    <button class="btn btn-primary" onclick="sendAll()">↑ Send ALL devices now</button>
+    <button class="btn" onclick="pingGateway()">Ping Gateway</button>
+    <button class="btn" onclick="clearLog()">Clear log</button>
+  </div>
+
+  <!-- Log -->
+  <div class="log-panel">
+    <div class="log-header">
+      <span class="log-title">GATEWAY LOG</span>
+      <span id="logCount" style="font-size:10px;color:var(--muted)">0 entries</span>
+    </div>
+    <div class="log-body" id="logBody">
+      <div class="log-entry">
+        <span class="log-time">--:--:--</span>
+        <span class="log-info">Simulator ready. Set Gateway URL and click "Send to Gateway".</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">IoT Gateway Simulator · Laravel Integration · Sprint 2</div>
+</div>
+
+<script>
+  // ── Device state ──────────────────────────────────────────────
+  const devices = {
+    relay: {
+      device_id: 'relay-001',
+      type: 'actuator',
+      status: 'online',
+      payload: { state: 'off', brightness: 100 }
+    },
+    router: {
+      device_id: 'router-001',
+      type: 'network',
+      status: 'online',
+      payload: { bandwidth_mbps: 72, connection_status: 'connected', ip: '192.168.1.1', uptime_s: 0 }
+    },
+    temp: {
+      device_id: 'temp-001',
+      type: 'sensor',
+      status: 'online',
+      payload: { temperature: 22.4, unit: 'C', humidity: 55, alert: false }
+    }
+  };
+
+  let sentCount = 0;
+  let autoTimer = null;
+  let uptimeTimer = setInterval(() => { devices.router.payload.uptime_s++; }, 1000);
+
+  // ── Relay ──────────────────────────────────────────────────────
+  function setRelay(v) {
+    devices.relay.payload.state = v ? 'on' : 'off';
+    document.getElementById('val-relay').textContent = v ? 'ON' : 'OFF';
+    const badge = document.getElementById('badge-relay');
+    badge.textContent = v ? 'ON' : 'OFF';
+    badge.className = 'badge ' + (v ? 'badge-on' : 'badge-off');
+  }
+
+  // ── Router ─────────────────────────────────────────────────────
+  function updateRouter(v) {
+    const bw = parseInt(v);
+    devices.router.payload.bandwidth_mbps = bw;
+    document.getElementById('val-router').textContent = bw + ' Mb/s';
+    document.getElementById('routerBwVal').textContent = bw + ' Mb/s';
+  }
+
+  function setRouterStatus(s) {
+    devices.router.payload.connection_status = s;
+    devices.router.status = s === 'error' ? 'error' : 'online';
+    const badge = document.getElementById('badge-router');
+    badge.textContent = s.toUpperCase();
+    badge.className = 'badge ' + (s === 'connected' ? 'badge-on' : s === 'degraded' ? 'badge-warn' : 'badge-err');
+  }
+
+  // ── Temp ───────────────────────────────────────────────────────
+  function updateTemp(v) {
+    const t = parseFloat(v);
+    const rounded = Math.round(t * 10) / 10;
+    devices.temp.payload.temperature = rounded;
+    devices.temp.payload.alert = rounded > 35 || rounded < 0;
+    document.getElementById('val-temp').textContent = rounded.toFixed(1) + ' °C';
+    document.getElementById('tempVal').textContent = rounded.toFixed(1) + ' °C';
+    document.getElementById('tempSlider').value = rounded;
+    const badge = document.getElementById('badge-temp');
+    if (rounded > 35) { badge.textContent = 'HIGH TEMP'; badge.className = 'badge badge-err'; }
+    else if (rounded < 0) { badge.textContent = 'FREEZE'; badge.className = 'badge badge-warn'; }
+    else { badge.textContent = 'NORMAL'; badge.className = 'badge badge-on'; }
+  }
+
+  function randomTemp() {
+    updateTemp((15 + Math.random() * 15).toFixed(1));
+  }
+
+  function spikeTemp() {
+    updateTemp((38 + Math.random() * 8).toFixed(1));
+  }
+
+  // ── Build payload ──────────────────────────────────────────────
+  function buildPayload(key) {
+    const d = devices[key];
+    return {
+      device_id: d.device_id,
+      type: d.type,
+      status: d.status,
+      timestamp: new Date().toISOString(),
+      payload: { ...d.payload }
+    };
+  }
+
+  // ── Send ───────────────────────────────────────────────────────
+  async function sendDevice(key) {
+    const url = document.getElementById('gatewayUrl').value.trim();
+    const body = buildPayload(key);
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(body)
+      });
+
+      const ok = res.ok;
+      const preview = JSON.stringify(body.payload).slice(0, 70);
+      logEntry(body.device_id, preview, ok, ok ? `HTTP ${res.status} OK` : `HTTP ${res.status}`);
+      updateConnDot(ok);
+    } catch (e) {
+      const preview = JSON.stringify(body.payload).slice(0, 70);
+      logEntry(body.device_id, preview, false, 'FAILED — is php artisan serve running?');
+      updateConnDot(false);
+    }
+  }
+
+  async function sendAll() {
+    for (const key of ['relay', 'router', 'temp']) {
+      await sendDevice(key);
+    }
+  }
+
+  async function pingGateway() {
+    const url = document.getElementById('gatewayUrl').value.replace('/receive', '/status').replace('api/gateway', 'api/gateway');
+    try {
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      logEntry('ping', '', res.ok, res.ok ? `Gateway online (${res.status})` : `Gateway responded ${res.status}`);
+      updateConnDot(res.ok);
+    } catch(e) {
+      logEntry('ping', '', false, 'No response — server offline');
+      updateConnDot(false);
+    }
+  }
+
+  // ── Log ────────────────────────────────────────────────────────
+  function ts() { return new Date().toTimeString().slice(0, 8); }
+
+  function logEntry(device, payload, ok, msg) {
+    const body = document.getElementById('logBody');
+    const el = document.createElement('div');
+    el.className = 'log-entry';
+    el.innerHTML =
+      `<span class="log-time">${ts()}</span>` +
+      `<span class="log-dev">[${device}]</span>` +
+      (payload ? `<span class="log-pay">${payload}</span>` : '') +
+      `<span class="${ok ? 'log-ok' : 'log-err'}">${msg}</span>`;
+    body.insertBefore(el, body.firstChild);
+    if (body.children.length > 120) body.removeChild(body.lastChild);
+
+    sentCount++;
+    document.getElementById('sentCount').textContent = sentCount + ' messages sent';
+    document.getElementById('logCount').textContent = Math.min(body.children.length, 120) + ' entries';
+  }
+
+  function clearLog() {
+    document.getElementById('logBody').innerHTML = '';
+    document.getElementById('logCount').textContent = '0 entries';
+  }
+
+  // ── Connection dot ──────────────────────────────────────────────
+  function updateConnDot(ok) {
+    const dot = document.getElementById('connDot');
+    dot.className = 'status-dot ' + (ok ? 'ok' : 'err');
+    setTimeout(() => dot.className = 'status-dot', 3000);
+  }
+
+  // ── Auto-send ──────────────────────────────────────────────────
+  document.getElementById('autoToggle').addEventListener('change', function () {
+    if (this.checked) {
+      const ms = parseInt(document.getElementById('autoInterval').value);
+      document.getElementById('autoStatus').textContent = 'on (' + (ms/1000) + 's)';
+      autoTimer = setInterval(() => {
+        // drift temperature slightly
+        const newT = Math.max(-10, Math.min(60,
+          devices.temp.payload.temperature + (Math.random() * 1.4 - 0.7)
+        ));
+        updateTemp(newT.toFixed(1));
+        // drift bandwidth slightly
+        const newBw = Math.max(0, Math.min(1000,
+          devices.router.payload.bandwidth_mbps + Math.round(Math.random() * 30 - 15)
+        ));
+        document.getElementById('routerBw').value = newBw;
+        updateRouter(newBw);
+        sendAll();
+      }, ms);
+    } else {
+      clearInterval(autoTimer);
+      document.getElementById('autoStatus').textContent = 'off';
+    }
+  });
+</script>
+</body>
+</html>

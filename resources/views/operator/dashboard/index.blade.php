@@ -124,8 +124,8 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <x-avatar :url="$command->device->avatar_url" :size="32" class="me-2" />
-                                    <span>{{ $command->device->name }}</span>
+                                    <x-avatar :url="$command->device?->avatar_url" :size="32" class="me-2" />
+                                    <span>{{ $command->device?->name ?? __('messages.unknown_device') }}</span>
                                 </div>
                             </td>
                             <td><code class="text-secondary">{{ Str::limit(json_encode($command->payload), 40) }}</code></td>

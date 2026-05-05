@@ -2,28 +2,26 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DeviceResource extends JsonResource
 {
-    public function toArray($request)
+    /**
+     * Transform the resource into an array.
+     */
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
+            'device_id' => $this->device_id,
             'name' => $this->name,
-            'serial_number' => $this->serial_number,
+            'type' => $this->category,
             'status' => $this->status,
-            'ip_address' => $this->ip_address,
-            'location' => $this->location,
-            'avatar_url' => $this->avatar_url,
-            'last_seen_at' => $this->last_seen_at,
-            'device_type' => new DeviceTypeResource($this->whenLoaded('type')),
-            'assigned_user' => $this->whenLoaded('user', function () {
-                return [
-                    'id' => $this->user->id,
-                    'name' => $this->user->name,
-                ];
-            }),
+            'last_seen_at' => $this->last_seen_at ? $this->last_seen_at->toIso8601String() : null,
+            'latest_metric' => $this->metrics()->latest()->first(),
+            'open_alerts_count' => $this->alerts()->whereNull('resolved_at')->count(),
+            'metrics_history' => $this->metrics()->latest()->take(20)->get(),
         ];
     }
 }
