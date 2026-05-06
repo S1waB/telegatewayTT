@@ -4,7 +4,7 @@
 @section('content')
 <div class="row mb-4 align-items-center">
     <div class="col-md-4">
-        <h3 class="fw-bold mb-0 text-dark">{{ __('messages.broadcast_center') }}</h3>
+        <h3 class="fw-bold mb-0 text-body">{{ __('messages.broadcast_center') }}</h3>
         <p class="text-muted small mb-0">{{ __('messages.manage_announcements_notice') }}</p>
     </div>
     <div class="col-md-8 text-md-end mt-3 mt-md-0">
@@ -20,12 +20,12 @@
         <form action="{{ route('admin.announcements.index') }}" method="GET" class="row g-3 align-items-center">
             <div class="col-md-4">
                 <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0 bg-light" placeholder="{{ __('messages.search_announcements') }}" value="{{ request('search') }}">
+                    <span class="input-group-text bg-body-tertiary border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0 bg-body-tertiary" placeholder="{{ __('messages.search_announcements') }}" value="{{ request('search') }}">
                 </div>
             </div>
             <div class="col-md-3">
-                <select name="status" class="form-select bg-light border-0">
+                <select name="status" class="form-select bg-body-tertiary border-0">
                     <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>{{ __('messages.all_statuses') }}</option>
                     <option value="sent" {{ request('status') == 'sent' ? 'selected' : '' }}>{{ __('messages.sent') }}</option>
                     <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>{{ __('messages.scheduled') }}</option>
@@ -33,7 +33,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <select name="category" class="form-select bg-light border-0">
+                <select name="category" class="form-select bg-body-tertiary border-0">
                     <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>{{ __('messages.all_categories') }}</option>
                     <option value="General" {{ request('category') == 'General' ? 'selected' : '' }}>{{ __('messages.general') }}</option>
                     <option value="Update" {{ request('category') == 'Update' ? 'selected' : '' }}>{{ __('messages.update') }}</option>
@@ -66,13 +66,13 @@
                     @forelse($announcements as $announcement)
                         <tr>
                             <td class="ps-4 py-3">
-                                <div class="fw-semibold text-dark">{{ $announcement->subject }}</div>
+                                <div class="fw-semibold text-body">{{ $announcement->subject }}</div>
                                 @if($announcement->category)
                                     <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill mt-1" style="font-size: 10px;">{{ $announcement->category }}</span>
                                 @endif
                             </td>
                             <td class="py-3">
-                                <div class="small fw-medium text-dark">{{ $announcement->created_at->format('M d, Y') }}</div>
+                                <div class="small fw-medium text-body">{{ $announcement->created_at->format('M d, Y') }}</div>
                                 <div class="small text-muted">{{ $announcement->created_at->format('h:i A') }}</div>
                             </td>
                             <td class="py-3">
@@ -105,10 +105,10 @@
                         <tr>
                             <td colspan="5" class="text-center py-5">
                                 <div class="text-muted">
-                                    <div class="bg-light rounded-circle d-inline-flex p-4 mb-3">
+                                    <div class="bg-body-tertiary rounded-circle d-inline-flex p-4 mb-3">
                                         <i class="bi bi-inbox fs-2 text-secondary"></i>
                                     </div>
-                                    <h6 class="fw-bold text-dark">{{ __('messages.no_announcements_found') }}</h6>
+                                    <h6 class="fw-bold text-body">{{ __('messages.no_announcements_found') }}</h6>
                                     <p class="small mb-0">{{ __('messages.adjust_filters_notice') }}</p>
                                 </div>
                             </td>
@@ -140,11 +140,11 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-8">
                             <label class="form-label small fw-bold">{{ __('messages.title') }}</label>
-                            <input type="text" name="subject" class="form-control bg-light border-0 py-2" placeholder="{{ __('messages.announcement_subject_placeholder') }}" required>
+                            <input type="text" name="subject" class="form-control bg-body-tertiary border-0 py-2" placeholder="{{ __('messages.announcement_subject_placeholder') }}" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-bold">{{ __('messages.category') }}</label>
-                            <select name="category" class="form-select bg-light border-0 py-2">
+                            <select name="category" class="form-select bg-body-tertiary border-0 py-2">
                                 <option value="General">{{ __('messages.general') }}</option>
                                 <option value="Update">{{ __('messages.update') }}</option>
                                 <option value="Maintenance">{{ __('messages.maintenance') }}</option>
@@ -155,7 +155,7 @@
 
                     <div class="mb-4">
                         <label class="form-label small fw-bold">{{ __('messages.message_content') }}</label>
-                        <textarea name="message" class="form-control bg-light border-0 py-2" rows="6" placeholder="{{ __('messages.write_message_placeholder') }}" required></textarea>
+                        <textarea name="message" class="form-control bg-body-tertiary border-0 py-2" rows="6" placeholder="{{ __('messages.write_message_placeholder') }}" required></textarea>
                     </div>
 
                     <div class="mb-4">
@@ -191,7 +191,7 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">{{ __('messages.action') }}</label>
-                            <select name="status" id="statusSelect" class="form-select bg-light border-0 py-2" onchange="toggleSchedule()">
+                            <select name="status" id="statusSelect" class="form-select bg-body-tertiary border-0 py-2" onchange="toggleSchedule()">
                                 <option value="sent">{{ __('messages.send_now') }}</option>
                                 <option value="scheduled">{{ __('messages.schedule_later') }}</option>
                                 <option value="draft">{{ __('messages.save_as_draft') }}</option>
@@ -199,13 +199,13 @@
                         </div>
                         <div class="col-md-6 d-none" id="scheduleContainer">
                             <label class="form-label small fw-bold">{{ __('messages.schedule_datetime') }}</label>
-                            <input type="datetime-local" name="scheduled_at" class="form-control bg-light border-0 py-2">
+                            <input type="datetime-local" name="scheduled_at" class="form-control bg-body-tertiary border-0 py-2">
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label small fw-bold">{{ __('messages.attachments_optional') }}</label>
-                        <input type="file" name="attachments[]" class="form-control bg-light border-0 py-2" multiple>
+                        <input type="file" name="attachments[]" class="form-control bg-body-tertiary border-0 py-2" multiple>
                         <div class="form-text small">Max size: 5MB per file.</div>
                     </div>
 
@@ -231,9 +231,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <h3 id="viewSubject" class="fw-bold text-dark mb-4"></h3>
+                <h3 id="viewSubject" class="fw-bold text-body mb-4"></h3>
                 
-                <div class="d-flex align-items-center gap-4 mb-4 p-3 bg-light rounded-3">
+                <div class="d-flex align-items-center gap-4 mb-4 p-3 bg-body-tertiary rounded-3">
                     <div>
                         <div class="small text-muted text-uppercase fw-bold tracking-wider mb-1" style="font-size: 10px;">{{ __('messages.date') }}</div>
                         <div id="viewDate" class="small fw-medium"></div>
@@ -246,7 +246,7 @@
 
                 <div class="mb-4">
                     <div class="small text-muted text-uppercase fw-bold tracking-wider mb-2" style="font-size: 10px;">{{ __('messages.message') }}</div>
-                    <div id="viewMessage" class="text-dark" style="white-space: pre-wrap; font-size: 15px; line-height: 1.6;"></div>
+                    <div id="viewMessage" class="text-body" style="white-space: pre-wrap; font-size: 15px; line-height: 1.6;"></div>
                 </div>
 
                 <div id="viewAttachmentsContainer" class="d-none border-top pt-4">

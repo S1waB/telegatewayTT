@@ -49,7 +49,7 @@
     padding: 6px 12px;
     border: 1px solid var(--tg-card-border);
     border-radius: 12px;
-    background: var(--tg-bg-light);
+    background: var(--tg-bg-body-tertiary);
     color: var(--tg-text-muted);
     font-size: 12px;
     font-weight: 600;

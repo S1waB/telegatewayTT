@@ -18,7 +18,7 @@
     <!-- Health Overview & Advice -->
     <div class="col-md-4 order-md-2">
         <div class="card tg-card border-0 shadow-sm h-100">
-            <div class="card-header bg-white p-4 border-bottom">
+            <div class="card-header bg-body p-4 border-bottom">
                 <h6 class="mb-0 fw-bold">{{ __('messages.health_distribution') }}</h6>
             </div>
             <div class="card-body">
@@ -52,14 +52,14 @@
     <!-- Devices Health Table -->
     <div class="col-md-8 order-md-1">
         <div class="card tg-card border-0 shadow-sm">
-            <div class="card-header bg-white p-4 border-bottom d-flex align-items-center">
+            <div class="card-header bg-body p-4 border-bottom d-flex align-items-center">
                 <i class="fas fa-magic text-primary me-2"></i>
                 <h6 class="mb-0 fw-bold">{{ __('messages.ai_predictive_maintenance') }}</h6>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table align-middle mb-0">
-                        <thead class="bg-light">
+                        <thead class="bg-body-tertiary">
                             <tr>
                                 <th class="ps-4">{{ __('messages.device') }}</th>
                                 <th>{{ __('messages.failure_risk') }}</th>

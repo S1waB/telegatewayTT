@@ -30,7 +30,7 @@
     
     <div class="col-md-8">
         <div class="card tg-card border-0 h-100">
-            <div class="card-header bg-white p-4 border-bottom d-flex justify-content-between align-items-center">
+            <div class="card-header bg-body p-4 border-bottom d-flex justify-content-between align-items-center">
                 <h6 class="fw-bold mb-0">{{ __('messages.role_distribution') }}</h6>
                 <i class="bi bi-shield-shaded text-muted"></i>
             </div>
@@ -44,7 +44,7 @@
                             @foreach($roleDistribution as $role)
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="small fw-medium">{{ ucfirst($role->name) }}</span>
-                                    <span class="badge bg-light text-dark border">{{ $role->total }}</span>
+                                    <span class="badge bg-body-tertiary text-body border">{{ $role->total }}</span>
                                 </div>
                             @endforeach
                         </div>
@@ -59,7 +59,7 @@
     <!-- Recent Activity -->
     <div class="col-md-12">
         <div class="tg-table-container">
-            <div class="p-4 border-bottom d-flex justify-content-between align-items-center bg-white">
+            <div class="p-4 border-bottom d-flex justify-content-between align-items-center bg-body">
                 <h6 class="mb-0 fw-bold">{{ __('messages.recent_user_activity') }}</h6>
                 <span class="badge bg-primary rounded-pill">{{ __('messages.top_10_active') }}</span>
             </div>
@@ -84,7 +84,7 @@
                             </td>
                             <td>
                                 @foreach($user->roles as $role)
-                                    <span class="badge bg-light text-primary border small">{{ $role->name }}</span>
+                                    <span class="badge bg-body-tertiary text-primary border small">{{ $role->name }}</span>
                                 @endforeach
                             </td>
                             <td class="small text-muted">{{ $user->last_active_at->diffForHumans() }}</td>

@@ -60,7 +60,7 @@
       <div class="col-md-4">
         <label class="form-label mb-1" style="font-size:12px;color:#666">{{ __('messages.search') }}</label>
         <div class="input-group input-group-sm">
-          <span class="input-group-text bg-white"><i class="bi bi-search" style="color:#1A6FBF"></i></span>
+          <span class="input-group-text bg-body"><i class="bi bi-search" style="color:#1A6FBF"></i></span>
           <input type="text" name="search" value="{{ request('search') }}"
                  class="form-control" placeholder="{{ __('messages.name') }}, {{ __('messages.email') }}...">
         </div>
@@ -106,7 +106,7 @@
 
 {{-- ── Table header row ── --}}
 <div class="card border-0 shadow-sm">
-  <div class="card-header bg-white d-flex justify-content-between align-items-center py-3" style="border-bottom:1px solid #E8F1FA">
+  <div class="card-header bg-body d-flex justify-content-between align-items-center py-3" style="border-bottom:1px solid #E8F1FA">
     <span style="font-weight:600;color:#0D4A8A">
       {{ __('messages.users') }}
       @if($users->total())
@@ -237,7 +237,7 @@
     </div>
   </div>
   @if($users->hasPages())
-  <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
+  <div class="card-footer bg-body d-flex justify-content-between align-items-center py-3">
     <span class="text-muted" style="font-size:12px">
       Showing {{ $users->firstItem() }}–{{ $users->lastItem() }} of {{ $users->total() }} users
     </span>
@@ -309,7 +309,7 @@
           </table>
         </div>
       </div>
-      <div class="modal-footer bg-white" style="border-top:1px solid #E8F1FA">
+      <div class="modal-footer bg-body" style="border-top:1px solid #E8F1FA">
         <a id="modal-edit-btn" href="#" class="btn btn-sm" style="background:#1A6FBF;color:#fff">
           <i class="bi bi-pencil me-1"></i>{{ __('messages.edit_user') }}
         </a>
@@ -404,7 +404,7 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer bg-light border-0">
+        <div class="modal-footer bg-body-tertiary border-0">
           <button type="button" class="btn btn-sm btn-light px-3" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
           <button type="submit" class="btn btn-sm btn-primary px-4">{{ __('messages.create_account') }}</button>
         </div>

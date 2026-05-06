@@ -90,7 +90,7 @@
                 <form action="{{ request()->url() }}" method="GET" class="row g-3 mt-3">
                     <div class="col-md-5">
                         <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i class="bi bi-search"></i></span>
+                            <span class="input-group-text bg-body border-end-0 text-muted ps-3"><i class="bi bi-search"></i></span>
                             <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="{{ __('messages.search') }}..." value="{{ request('search') }}" style="height: 45px;">
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                 <tr>
                     <td class="ps-4">
                         <div>
-                            <div class="fw-bold text-dark">{{ $alert->subject }}</div>
+                            <div class="fw-bold text-body">{{ $alert->subject }}</div>
                             <div class="small text-muted">by {{ $alert->user->name }}</div>
                         </div>
                     </td>
@@ -181,7 +181,7 @@
         </table>
     </div>
     @if($alerts->hasPages())
-    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
+    <div class="card-footer bg-body d-flex justify-content-between align-items-center py-3 border-top">
         <span class="text-muted small">
             Displaying {{ $alerts->firstItem() }}–{{ $alerts->lastItem() }} of {{ $alerts->total() }} alerts
         </span>

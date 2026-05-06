@@ -36,7 +36,7 @@
     <div class="col-md-8">
         {{-- Account Settings --}}
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white py-3">
+            <div class="card-header bg-body py-3">
                 <h6 class="mb-0 fw-bold"><i class="bi bi-person-gear me-2"></i>{{ __('messages.account_information') }}</h6>
             </div>
             <div class="card-body p-4">
@@ -99,7 +99,7 @@
 
         {{-- Security Settings --}}
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white py-3">
+            <div class="card-header bg-body py-3">
                 <h6 class="mb-0 fw-bold"><i class="bi bi-shield-lock me-2"></i>{{ __('messages.security_password') }}</h6>
             </div>
             <div class="card-body p-4">

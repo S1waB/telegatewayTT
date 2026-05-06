@@ -23,7 +23,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--tg-bg-light);
+            background-color: var(--tg-bg-body-tertiary);
         }
         .error-card {
             max-width: 500px;

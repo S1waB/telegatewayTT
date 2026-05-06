@@ -14,7 +14,7 @@
 <div class="row g-4 mb-4">
     <div class="col-md-6">
         <div class="card tg-card border-0 h-100">
-            <div class="card-header bg-white p-4 border-bottom">
+            <div class="card-header bg-body p-4 border-bottom">
                 <h6 class="fw-bold mb-0">{{ __('messages.connectivity_status') }}</h6>
             </div>
             <div class="card-body p-4">
@@ -25,7 +25,7 @@
     
     <div class="col-md-6">
         <div class="card tg-card border-0 h-100">
-            <div class="card-header bg-white p-4 border-bottom">
+            <div class="card-header bg-body p-4 border-bottom">
                 <h6 class="fw-bold mb-0">{{ __('messages.hardware_composition') }}</h6>
             </div>
             <div class="card-body p-4">
@@ -38,7 +38,7 @@
 <div class="row g-4">
     <div class="col-md-12">
         <div class="tg-table-container">
-            <div class="p-4 border-bottom bg-white d-flex justify-content-between align-items-center">
+            <div class="p-4 border-bottom bg-body d-flex justify-content-between align-items-center">
                 <h6 class="mb-0 fw-bold">{{ __('messages.fleet_realtime_overview') }}</h6>
                 <div class="small text-muted">{{ __('messages.total_hardware_assets', ['count' => $totalDevices]) }}</div>
             </div>
@@ -65,7 +65,7 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-light text-dark border">{{ $device->type->name }}</span>
+                                <span class="badge bg-body-tertiary text-body border">{{ $device->type->name }}</span>
                             </td>
                             <td>
                                 @if($device->user)

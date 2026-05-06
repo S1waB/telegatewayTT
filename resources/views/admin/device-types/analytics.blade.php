@@ -14,7 +14,7 @@
 <div class="row g-4 mb-4">
     <div class="col-md-12">
         <div class="card tg-card border-0">
-            <div class="card-header bg-white p-4 border-bottom">
+            <div class="card-header bg-body p-4 border-bottom">
                 <h6 class="fw-bold mb-0">{{ __('messages.hardware_utilization_by_category') }}</h6>
             </div>
             <div class="card-body p-4">
@@ -34,7 +34,7 @@
                         <i class="bi bi-{{ $type->icon ?? 'cpu' }} fs-4"></i>
                     </div>
                     <div>
-                        <h6 class="fw-bold mb-0 text-dark">{{ $type->name }}</h6>
+                        <h6 class="fw-bold mb-0 text-body">{{ $type->name }}</h6>
                         <div class="small text-muted">ID: #{{ $type->id }}</div>
                     </div>
                 </div>

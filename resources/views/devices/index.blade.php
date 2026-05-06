@@ -13,8 +13,8 @@
                 </div>
                 <h2 class="fw-bold mb-1">{{ $activePercentage }}%</h2>
                 <p class="small mb-0 opacity-75">{{ __('messages.active_devices_count', ['active' => $activeDevices, 'total' => $totalDevices]) }}</p>
-                <div class="progress mt-3 bg-white bg-opacity-25" style="height: 4px;">
-                    <div class="progress-bar bg-white" style="width: {{ $activePercentage }}%"></div>
+                <div class="progress mt-3 bg-body bg-opacity-25" style="height: 4px;">
+                    <div class="progress-bar bg-body" style="width: {{ $activePercentage }}%"></div>
                 </div>
             </div>
         </div>
@@ -23,7 +23,7 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-gear-wide-connected me-2 text-primary"></i>{{ __('messages.platform_overview') }}</h6>
+                    <h6 class="mb-0 fw-bold text-body"><i class="bi bi-gear-wide-connected me-2 text-primary"></i>{{ __('messages.platform_overview') }}</h6>
                     @role('admin')
                     <div class="d-flex gap-2">
                         <a href="{{ route('admin.devices.analytics') }}" class="btn btn-outline-primary d-flex align-items-center gap-2 px-3 rounded-pill shadow-sm">
@@ -38,7 +38,7 @@
                 <form action="{{ request()->url() }}" method="GET" class="row g-2 align-items-center mt-2">
                     <div class="col-md-5">
                         <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i class="bi bi-search"></i></span>
+                            <span class="input-group-text bg-body border-end-0 text-muted ps-3"><i class="bi bi-search"></i></span>
                             <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="{{ __('messages.search') }}..." value="{{ request('search') }}" style="font-size: 0.9rem; height: 42px;">
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <div class="bg-light p-2 rounded-2 me-2">
+                            <div class="bg-body-tertiary p-2 rounded-2 me-2">
                                 <i class="bi bi-{{ $device->type->icon ?? 'cpu' }} text-primary"></i>
                             </div>
                             {{ $device->type->name }}
@@ -122,7 +122,7 @@
                         @if($device->user)
                             <div class="d-flex align-items-center">
                                 <x-avatar :url="$device->user->avatar_url" :size="24" class="rounded-circle me-2 border shadow-sm" />
-                                <div class="badge bg-light text-primary border px-2 py-1 fw-semibold" style="font-size: 11px;">
+                                <div class="badge bg-body-tertiary text-primary border px-2 py-1 fw-semibold" style="font-size: 11px;">
                                     {{ $device->user->name }}
                                 </div>
                             </div>
@@ -205,7 +205,7 @@
     </div>
     
     @if($devices->hasPages())
-    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
+    <div class="card-footer bg-body d-flex justify-content-between align-items-center py-3 border-top">
         <span class="text-muted small">
             {{ __('messages.monitoring_count', ['first' => $devices->firstItem(), 'last' => $devices->lastItem(), 'total' => $devices->total()]) }}
         </span>

@@ -23,7 +23,7 @@
                 
                 <div class="text-start">
                     <div class="mb-3 d-flex align-items-center">
-                        <div class="bg-light p-2 rounded me-3 text-primary"><i data-feather="{{ $device->type->icon ?? 'box' }}"></i></div>
+                        <div class="bg-body-tertiary p-2 rounded me-3 text-primary"><i data-feather="{{ $device->type->icon ?? 'box' }}"></i></div>
                         <div>
                             <div class="small text-muted">{{ __('messages.type') }}</div>
                             <div class="fw-medium">{{ $device->type->name }}</div>
@@ -31,7 +31,7 @@
                     </div>
                     
                     <div class="mb-3 d-flex align-items-center">
-                        <div class="bg-light p-2 rounded me-3 text-primary"><i data-feather="map-pin"></i></div>
+                        <div class="bg-body-tertiary p-2 rounded me-3 text-primary"><i data-feather="map-pin"></i></div>
                         <div>
                             <div class="small text-muted">{{ __('messages.location') }}</div>
                             <div class="fw-medium">{{ $device->location ?? 'Not specified' }}</div>
@@ -39,7 +39,7 @@
                     </div>
                     
                     <div class="mb-3 d-flex align-items-center">
-                        <div class="bg-light p-2 rounded me-3 text-primary"><i data-feather="wifi"></i></div>
+                        <div class="bg-body-tertiary p-2 rounded me-3 text-primary"><i data-feather="wifi"></i></div>
                         <div>
                             <div class="small text-muted">{{ __('messages.ip_address') }}</div>
                             <div class="fw-medium">{{ $device->ip_address ?? 'Not specified' }}</div>
@@ -47,7 +47,7 @@
                     </div>
                     
                     <div class="d-flex align-items-center">
-                        <div class="bg-light p-2 rounded me-3 text-primary"><i data-feather="user"></i></div>
+                        <div class="bg-body-tertiary p-2 rounded me-3 text-primary"><i data-feather="user"></i></div>
                         <div>
                             <div class="small text-muted">{{ __('messages.assigned_to') }}</div>
                             <div class="fw-medium">{{ $device->user ? $device->user->name : __('messages.unassigned') }}</div>
@@ -57,7 +57,7 @@
             </div>
             
             @can('sendCommand', $device)
-            <div class="card-footer bg-white p-3 border-top">
+            <div class="card-footer bg-body p-3 border-top">
                 <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#sendCommandModal">
                     <i data-feather="terminal" class="me-2" style="width: 16px;"></i> {{ __('messages.send_command') }}
                 </button>
@@ -92,12 +92,12 @@
         @endif
 
         <div class="card tg-card h-100 border-0">
-            <div class="card-header bg-white p-4 border-bottom d-flex justify-content-between align-items-center">
+            <div class="card-header bg-body p-4 border-bottom d-flex justify-content-between align-items-center">
                 <h6 class="fw-bold mb-0">{{ __('messages.recent_telemetry_data') }}</h6>
                 @if($device->last_seen_at)
-                    <span class="badge bg-light text-dark border">{{ __('messages.last_seen') }}: {{ $device->last_seen_at->diffForHumans() }}</span>
+                    <span class="badge bg-body-tertiary text-body border">{{ __('messages.last_seen') }}: {{ $device->last_seen_at->diffForHumans() }}</span>
                 @else
-                    <span class="badge bg-light text-dark border">{{ __('messages.never_seen') }}</span>
+                    <span class="badge bg-body-tertiary text-body border">{{ __('messages.never_seen') }}</span>
                 @endif
             </div>
             <div class="card-body p-4">
@@ -118,7 +118,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="tg-table-container shadow-sm border-0">
-            <div class="p-4 border-bottom bg-white rounded-top-4">
+            <div class="p-4 border-bottom bg-body rounded-top-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="mb-0 fw-bold">{{ __('messages.command_history') }}</h6>
                     <div class="text-muted small">
@@ -180,9 +180,9 @@
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-light border px-2 py-1 rounded small d-flex align-items-center overflow-hidden" style="max-width: 180px;">
+                                    <div class="bg-body-tertiary border px-2 py-1 rounded small d-flex align-items-center overflow-hidden" style="max-width: 180px;">
                                         <i class="bi bi-code-slash text-muted me-2"></i>
-                                        <code class="text-dark text-truncate" style="font-size: 0.75rem;">
+                                        <code class="text-body text-truncate" style="font-size: 0.75rem;">
                                             {{ $payloadJson = json_encode($command->payload) }}
                                         </code>
                                     </div>
@@ -200,7 +200,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body p-4">
-                                                        <div class="bg-light text-dark p-3 rounded-3 font-monospace small mb-0" style="white-space: pre-wrap; word-break: break-all;">
+                                                        <div class="bg-body-tertiary text-body p-3 rounded-3 font-monospace small mb-0" style="white-space: pre-wrap; word-break: break-all;">
                                                             {{ json_encode($command->payload, JSON_PRETTY_PRINT) }}
                                                         </div>
                                                     </div>
@@ -229,17 +229,17 @@
                                     <div class="modal fade" id="responseModal{{ $command->id }}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-lg modal-dialog-centered">
                                             <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden text-start">
-                                                <div class="modal-header bg-white border-bottom p-4">
+                                                <div class="modal-header bg-body border-bottom p-4">
                                                     <div class="d-flex align-items-center">
                                                         <i class="bi bi-terminal-fill fs-4 text-primary me-3"></i>
                                                         <div>
-                                                            <h5 class="modal-title fw-bold mb-0 text-dark">{{ __('messages.execution_output') }}</h5>
+                                                            <h5 class="modal-title fw-bold mb-0 text-body">{{ __('messages.execution_output') }}</h5>
                                                             <span class="text-muted small">Asset: {{ $device->name }} | ID: #{{ $command->id }}</span>
                                                         </div>
                                                     </div>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <div class="modal-body p-4 bg-light bg-opacity-50">
+                                                <div class="modal-body p-4 bg-body-tertiary bg-opacity-50">
                                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                                         <span class="badge-status-container">
                                                             <span class="badge bg-{{ $command->status === 'success' ? 'success' : 'danger' }} bg-opacity-10 text-{{ $command->status === 'success' ? 'success' : 'danger' }} border border-{{ $command->status === 'success' ? 'success' : 'danger' }} border-opacity-25 px-3">
@@ -251,11 +251,11 @@
                                                             <i class="bi bi-clock me-1"></i> {{ $command->response_at ? $command->response_at->format('M d, Y H:i:s') : 'N/A' }}
                                                         </span>
                                                     </div>
-                                                    <div class="bg-white rounded-3 p-3 border shadow-sm">
-                                                        <pre class="text-dark mb-0 font-monospace small text-start response-text" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">{{ $command->response }}</pre>
+                                                    <div class="bg-body rounded-3 p-3 border shadow-sm">
+                                                        <pre class="text-body mb-0 font-monospace small text-start response-text" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">{{ $command->response }}</pre>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
+                                                <div class="modal-footer bg-body border-top p-3 d-flex justify-content-between align-items-center">
                                                     <div class="text-muted small">
                                                         <i class="bi bi-shield-check me-1"></i> {{ __('messages.verified_iot_response') }}
                                                     </div>
@@ -270,7 +270,7 @@
                                         </div>
                                     </div>
                                 @else
-                                    <span class="badge bg-light text-muted fw-normal border in-flight-badge">{{ __('messages.in_flight') }}</span>
+                                    <span class="badge bg-body-tertiary text-muted fw-normal border in-flight-badge">{{ __('messages.in_flight') }}</span>
                                 @endif
                             </td>
                         </tr>
@@ -287,7 +287,7 @@
             </div>
             
             @if($commands->hasPages())
-            <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top rounded-bottom-4">
+            <div class="card-footer bg-body d-flex justify-content-between align-items-center py-3 border-top rounded-bottom-4">
                 <div class="text-muted small">
                     {{ __('messages.showing_count', ['first' => $commands->firstItem(), 'last' => $commands->lastItem(), 'total' => $commands->total()]) }}
                 </div>
@@ -464,17 +464,17 @@
                                 <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden text-start">
-                                            <div class="modal-header bg-white border-bottom p-4">
+                                            <div class="modal-header bg-body border-bottom p-4">
                                                 <div class="d-flex align-items-center">
                                                     <i class="bi bi-terminal-fill fs-4 text-primary me-3"></i>
                                                     <div>
-                                                        <h5 class="modal-title fw-bold mb-0 text-dark">{{ __('messages.execution_output') }}</h5>
+                                                        <h5 class="modal-title fw-bold mb-0 text-body">{{ __('messages.execution_output') }}</h5>
                                                         <span class="text-muted small">Asset: {{ $device->name }} | ID: #${cmd.id}</span>
                                                     </div>
                                                 </div>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body p-4 bg-light bg-opacity-50">
+                                            <div class="modal-body p-4 bg-body-tertiary bg-opacity-50">
                                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                                     <span class="badge bg-${cmd.status === 'success' ? 'success' : 'danger'} bg-opacity-10 text-${cmd.status === 'success' ? 'success' : 'danger'} border border-${cmd.status === 'success' ? 'success' : 'danger'} border-opacity-25 px-3">
                                                         <i class="bi bi-${cmd.status === 'success' ? 'check-circle' : 'exclamation-circle'} me-1"></i>
@@ -484,11 +484,11 @@
                                                         <i class="bi bi-clock me-1"></i> ${new Date(cmd.response_at).toLocaleString()}
                                                     </span>
                                                 </div>
-                                                <div class="bg-white rounded-3 p-3 border shadow-sm">
-                                                    <pre class="text-dark mb-0 font-monospace small text-start" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">${cmd.response}</pre>
+                                                <div class="bg-body rounded-3 p-3 border shadow-sm">
+                                                    <pre class="text-body mb-0 font-monospace small text-start" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">${cmd.response}</pre>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
+                                            <div class="modal-footer bg-body border-top p-3 d-flex justify-content-between align-items-center">
                                                 <div class="text-muted small">
                                                     <i class="bi bi-shield-check me-1"></i> {{ __('messages.verified_iot_response') }}
                                                 </div>

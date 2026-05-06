@@ -43,7 +43,7 @@
         <!-- Topbar -->
         <header class="tg-topbar d-flex align-items-center justify-content-between px-4 sticky-top">
             <div class="d-flex align-items-center gap-3">
-                <button type="button" class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                <button type="button" class="btn btn-link text-body p-0 d-lg-none" id="sidebarToggle">
                     <i class="bi bi-list fs-2"></i>
                 </button>
                 <h5 class="mb-0 text-muted fw-bold">@yield('title', __('messages.dashboard'))</h5>
@@ -63,7 +63,7 @@
                         </span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-0" aria-labelledby="notificationDropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
-                        <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                        <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-body-tertiary">
                             <h6 class="mb-0 fw-bold">{{ __('messages.notifications') }}</h6>
                             <span id="notificationCountText" class="badge bg-primary rounded-pill">0 {{ __('messages.new') }}</span>
                         </li>
@@ -77,7 +77,7 @@
                 </div>
                 
                 <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-body" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                         <x-avatar :url="auth()->user()->avatar_url" :size="32" class="me-2" />
                         <span class="d-none d-md-inline ms-2 fw-medium">{{ auth()->user()->name }}</span>
                     </a>
@@ -237,7 +237,7 @@
                                                 <i class="bi bi-info-circle"></i>
                                             </div>
                                             <div>
-                                                <p class="mb-1 small text-dark fw-medium" style="line-height: 1.4;">${data.message}</p>
+                                                <p class="mb-1 small text-body fw-medium" style="line-height: 1.4;">${data.message}</p>
                                                 <span class="text-muted" style="font-size: 10px;">${date}</span>
                                             </div>
                                         </div>
@@ -248,7 +248,7 @@
                         });
                         
                         list.append(`
-                            <li><a class="dropdown-item text-center small text-primary fw-bold py-2 bg-light" href="#">{{ __('messages.view_all') }}</a></li>
+                            <li><a class="dropdown-item text-center small text-primary fw-bold py-2 bg-body-tertiary" href="#">{{ __('messages.view_all') }}</a></li>
                         `);
                     } else {
                         list.append(`

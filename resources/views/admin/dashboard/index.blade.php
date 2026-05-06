@@ -25,7 +25,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <div class="d-flex align-items-center mb-2">
-                            <div class="bg-white bg-opacity-25 p-2 rounded-3 me-3">
+                            <div class="bg-body bg-opacity-25 p-2 rounded-3 me-3">
                                 <i class="fas fa-brain fa-2x"></i>
                             </div>
                             <h4 class="mb-0 fw-bold">{{ __('messages.ai_fleet_health') }}</h4>
@@ -34,7 +34,7 @@
                         
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <div class="bg-white bg-opacity-10 p-3 rounded-3 border border-white border-opacity-10">
+                                <div class="bg-body bg-opacity-10 p-3 rounded-3 border border-white border-opacity-10">
                                     <div class="text-white text-opacity-50 small mb-1">{{ __('messages.fleet_health_score') }}</div>
                                     <div class="h3 mb-0">{{ $aiFleetInsights['average_health'] }}%</div>
                                     <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.1);">
@@ -43,7 +43,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="bg-white bg-opacity-10 p-3 rounded-3 border border-white border-opacity-10">
+                                <div class="bg-body bg-opacity-10 p-3 rounded-3 border border-white border-opacity-10">
                                     <div class="text-white text-opacity-50 small mb-1">{{ __('messages.critical_risk_alerts') }}</div>
                                     <div class="h3 mb-0 text-{{ $aiFleetInsights['critical_count'] > 0 ? 'danger' : 'white' }}">
                                         {{ $aiFleetInsights['critical_count'] }}
@@ -54,7 +54,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="bg-white bg-opacity-10 p-3 rounded-3 border border-white border-opacity-10">
+                                <div class="bg-body bg-opacity-10 p-3 rounded-3 border border-white border-opacity-10">
                                     <div class="text-white text-opacity-50 small mb-1">{{ __('messages.predicted_maintenance') }}</div>
                                     <div class="h3 mb-0">{{ $aiFleetInsights['status_distribution']['maintenance'] }}</div>
                                     <div class="small mt-1 text-warning">{{ __('messages.upcoming_interventions') }}</div>
@@ -81,7 +81,7 @@
 <div class="row g-4 mb-4">
     <div class="col-md-12">
         <div class="card tg-card border-0 shadow-sm">
-            <div class="card-header bg-white p-4 border-bottom d-flex align-items-center">
+            <div class="card-header bg-body p-4 border-bottom d-flex align-items-center">
                 <i class="fas fa-lightbulb text-warning me-2"></i>
                 <h6 class="mb-0 fw-bold">{{ __('messages.ai_strategic_advisor') }}</h6>
             </div>
@@ -168,7 +168,7 @@
     
     <div class="col-md-4">
         <div class="card tg-card h-100">
-            <div class="card-header bg-white p-4 border-bottom">
+            <div class="card-header bg-body p-4 border-bottom">
                 <h6 class="mb-0 fw-bold">{{ __('messages.device_status') }}</h6>
             </div>
             <div class="card-body d-flex justify-content-center align-items-center p-4">

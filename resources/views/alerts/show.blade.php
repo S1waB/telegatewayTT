@@ -57,7 +57,7 @@
                                     <span class="fw-bold small text-primary">System Resolution</span>
                                     <span class="text-muted" style="font-size: 10px;">{{ $alert->updated_at->format('M d, H:i') }}</span>
                                 </div>
-                                <p class="mb-0 small text-dark" style="white-space: pre-line;">{{ $alert->admin_response }}</p>
+                                <p class="mb-0 small text-body" style="white-space: pre-line;">{{ $alert->admin_response }}</p>
                             </div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                             <x-avatar :url="$message->user->avatar_url" :size="40" class="shadow-sm border" />
                         </div>
                         <div class="flex-grow-1" style="max-width: 80%;">
-                            <div class="p-3 rounded-3 shadow-sm {{ $message->user_id === auth()->id() ? 'bg-primary text-white' : 'bg-light border' }}">
+                            <div class="p-3 rounded-3 shadow-sm {{ $message->user_id === auth()->id() ? 'bg-primary text-white' : 'bg-body-tertiary border' }}">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                     <span class="fw-bold small {{ $message->user_id === auth()->id() ? 'text-white' : 'text-primary' }}">
                                         {{ $message->user->name }}
@@ -99,7 +99,7 @@
                 <form action="{{ route('alerts.messages.store', $alert) }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <textarea name="message" class="form-control bg-light border-0" rows="3" placeholder="Type your message here..." required style="resize: none;"></textarea>
+                        <textarea name="message" class="form-control bg-body-tertiary border-0" rows="3" placeholder="Type your message here..." required style="resize: none;"></textarea>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm">
@@ -120,8 +120,8 @@
                 <div class="mb-4">
                     <div class="small text-muted mb-1">Related Device</div>
                     @if($alert->device)
-                        <div class="d-flex align-items-center p-3 bg-light rounded-3 border">
-                            <div class="bg-white p-2 rounded-2 shadow-sm me-3">
+                        <div class="d-flex align-items-center p-3 bg-body-tertiary rounded-3 border">
+                            <div class="bg-body p-2 rounded-2 shadow-sm me-3">
                                 <i class="bi bi-cpu text-primary"></i>
                             </div>
                             <div>

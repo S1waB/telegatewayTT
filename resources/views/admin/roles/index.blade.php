@@ -3,10 +3,10 @@
 
 @section('content')
 <div class="tg-table-container">
-    <div class="p-4 border-bottom bg-white">
+    <div class="p-4 border-bottom bg-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h5 class="mb-0 fw-bold text-dark">{{ __('messages.access_control') }}</h5>
+                <h5 class="mb-0 fw-bold text-body">{{ __('messages.access_control') }}</h5>
                 <p class="text-muted small mb-0">{{ __('messages.permissions_notice') }}</p>
             </div>
             <button type="button" class="btn btn-primary d-flex align-items-center gap-2 px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#createRoleModal">
@@ -14,10 +14,10 @@
             </button>
         </div>
         
-        <form action="{{ route('admin.roles.index') }}" method="GET" class="row g-3 bg-light p-3 rounded-3">
+        <form action="{{ route('admin.roles.index') }}" method="GET" class="row g-3 bg-body-tertiary p-3 rounded-3">
             <div class="col-md-5">
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <span class="input-group-text bg-body border-end-0"><i class="bi bi-search text-muted"></i></span>
                     <input type="text" name="search" class="form-control border-start-0" placeholder="{{ __('messages.search') }}..." value="{{ request('search') }}">
                 </div>
             </div>
@@ -58,13 +58,13 @@
                 <tr>
                     <td class="ps-4">
                         <div>
-                            <div class="fw-bold text-dark">{{ ucfirst($role->name) }}</div>
+                            <div class="fw-bold text-body">{{ ucfirst($role->name) }}</div>
                             <div class="text-muted small">{{ __('messages.system_role') }}</div>
                         </div>
                     </td>
                     <td class="text-muted">{{ $role->description ?? __('messages.no_detailed_description') }}</td>
                     <td class="text-center">
-                        <span class="badge bg-light text-dark border rounded-pill px-3">{{ $role->users_count }}</span>
+                        <span class="badge bg-body-tertiary text-body border rounded-pill px-3">{{ $role->users_count }}</span>
                     </td>
                     <td>
                         @if($role->name === 'admin')
@@ -75,7 +75,7 @@
                                     <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 small px-2 py-1" style="font-size: 10px;">{{ $permission->name }}</span>
                                 @endforeach
                                 @if($role->permissions->count() > 3)
-                                    <span class="badge bg-white text-muted border small px-2" style="font-size: 10px;">+{{ $role->permissions->count() - 3 }}</span>
+                                    <span class="badge bg-body text-muted border small px-2" style="font-size: 10px;">+{{ $role->permissions->count() - 3 }}</span>
                                 @endif
                             </div>
                         @endif
@@ -112,7 +112,7 @@
     </div>
     
     @if($roles->hasPages())
-    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
+    <div class="card-footer bg-body d-flex justify-content-between align-items-center py-3 border-top">
         <span class="text-muted small">
             Displaying {{ $roles->firstItem() }}–{{ $roles->lastItem() }} of {{ $roles->total() }} roles
         </span>
@@ -139,15 +139,15 @@
                         <div class="col-md-6">
                             <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ __('messages.role_identity') }}</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-tag text-muted"></i></span>
-                                <input type="text" name="name" class="form-control border-start-0 bg-light" placeholder="e.g. Technician" required>
+                                <span class="input-group-text bg-body-tertiary border-end-0"><i class="bi bi-tag text-muted"></i></span>
+                                <input type="text" name="name" class="form-control border-start-0 bg-body-tertiary" placeholder="e.g. Technician" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ __('messages.functional_description') }}</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-card-text text-muted"></i></span>
-                                <input type="text" name="description" class="form-control border-start-0 bg-light" placeholder="Role responsibilities...">
+                                <span class="input-group-text bg-body-tertiary border-end-0"><i class="bi bi-card-text text-muted"></i></span>
+                                <input type="text" name="description" class="form-control border-start-0 bg-body-tertiary" placeholder="Role responsibilities...">
                             </div>
                         </div>
                     </div>
@@ -155,14 +155,14 @@
                     <div class="col-12">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <label class="form-label small fw-bold text-muted text-uppercase mb-0">{{ __('messages.permission_matrix') }}</label>
-                            <span class="badge bg-light text-muted border fw-normal">{{ __('messages.select_permissions_notice') }}</span>
+                            <span class="badge bg-body-tertiary text-muted border fw-normal">{{ __('messages.select_permissions_notice') }}</span>
                         </div>
                         <div class="row g-3">
                             @foreach($permissions->groupBy(fn($p) => explode('-', $p->name)[1] ?? 'other') as $group => $groupPermissions)
                                 <div class="col-md-3">
-                                    <div class="card border-0 shadow h-100 bg-white">
-                                        <div class="card-header bg-light bg-opacity-50 border-0 py-2 d-flex justify-content-between align-items-center">
-                                            <h6 class="fw-bold mb-0 text-dark" style="font-size: 11px; letter-spacing: 0.5px;">{{ strtoupper($group) }}</h6>
+                                    <div class="card border-0 shadow h-100 bg-body">
+                                        <div class="card-header bg-body-tertiary bg-opacity-50 border-0 py-2 d-flex justify-content-between align-items-center">
+                                            <h6 class="fw-bold mb-0 text-body" style="font-size: 11px; letter-spacing: 0.5px;">{{ strtoupper($group) }}</h6>
                                             <div class="form-check form-switch m-0" style="min-height: auto;">
                                                 <input class="form-check-input select-all-group" type="checkbox" role="switch" style="width: 1.8rem; height: 0.9rem;">
                                             </div>
@@ -205,7 +205,7 @@
                 @method('PUT')
                 <div class="modal-header border-bottom-0 p-4">
                     <div>
-                        <h5 class="modal-title fw-bold text-dark">{{ __('messages.modify_role_access') }}</h5>
+                        <h5 class="modal-title fw-bold text-body">{{ __('messages.modify_role_access') }}</h5>
                         <p class="text-muted small mb-0">{{ __('messages.update_permissions_notice') }}</p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -215,15 +215,15 @@
                         <div class="col-md-6">
                             <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ __('messages.role_identity') }}</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-tag text-muted"></i></span>
-                                <input type="text" name="name" id="edit_role_name" class="form-control border-start-0 bg-light" required>
+                                <span class="input-group-text bg-body-tertiary border-end-0"><i class="bi bi-tag text-muted"></i></span>
+                                <input type="text" name="name" id="edit_role_name" class="form-control border-start-0 bg-body-tertiary" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ __('messages.functional_description') }}</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-card-text text-muted"></i></span>
-                                <input type="text" name="description" id="edit_role_description" class="form-control border-start-0 bg-light">
+                                <span class="input-group-text bg-body-tertiary border-end-0"><i class="bi bi-card-text text-muted"></i></span>
+                                <input type="text" name="description" id="edit_role_description" class="form-control border-start-0 bg-body-tertiary">
                             </div>
                         </div>
                     </div>
@@ -236,9 +236,9 @@
                         <div class="row g-3">
                             @foreach($permissions->groupBy(fn($p) => explode('-', $p->name)[1] ?? 'other') as $group => $groupPermissions)
                                 <div class="col-md-3">
-                                    <div class="card border-0 shadow h-100 bg-white">
-                                        <div class="card-header bg-light bg-opacity-50 border-0 py-2 d-flex justify-content-between align-items-center">
-                                            <h6 class="fw-bold mb-0 text-dark" style="font-size: 11px; letter-spacing: 0.5px;">{{ strtoupper($group) }}</h6>
+                                    <div class="card border-0 shadow h-100 bg-body">
+                                        <div class="card-header bg-body-tertiary bg-opacity-50 border-0 py-2 d-flex justify-content-between align-items-center">
+                                            <h6 class="fw-bold mb-0 text-body" style="font-size: 11px; letter-spacing: 0.5px;">{{ strtoupper($group) }}</h6>
                                             <div class="form-check form-switch m-0" style="min-height: auto;">
                                                 <input class="form-check-input select-all-group" type="checkbox" role="switch" style="width: 1.8rem; height: 0.9rem;">
                                             </div>

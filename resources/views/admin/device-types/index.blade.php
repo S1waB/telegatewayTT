@@ -20,7 +20,7 @@
         <form method="GET" action="{{ route('admin.device-types.index') }}" class="row g-3 mb-4">
             <div class="col-md-4">
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <span class="input-group-text bg-body border-end-0"><i class="bi bi-search text-muted"></i></span>
                     <input type="text" name="search" class="form-control border-start-0" placeholder="{{ __('messages.search') }}..." value="{{ request('search') }}">
                 </div>
             </div>
@@ -36,7 +36,7 @@
 
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
+                <thead class="bg-body-tertiary">
                     <tr>
                         <th style="width: 60px;">Icon</th>
                         <th>{{ __('messages.type_name') }}</th>
@@ -63,7 +63,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="fw-bold text-dark">{{ $type->name }}</div>
+                            <div class="fw-bold text-body">{{ $type->name }}</div>
                             <div class="text-muted small">ID: #{{ $type->id }}</div>
                         </td>
                         <td>
@@ -72,7 +72,7 @@
                             </div>
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-light text-dark border">{{ $type->devices_count }}</span>
+                            <span class="badge bg-body-tertiary text-body border">{{ $type->devices_count }}</span>
                         </td>
                         <td class="text-center">
                             <div class="d-flex align-items-center justify-content-center gap-2">
@@ -130,7 +130,7 @@
         </div>
     </div>
     @if($deviceTypes->hasPages())
-    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
+    <div class="card-footer bg-body d-flex justify-content-between align-items-center py-3 border-top">
         <span class="text-muted small">
             Showing {{ $deviceTypes->firstItem() }}–{{ $deviceTypes->lastItem() }} of {{ $deviceTypes->total() }} types
         </span>
@@ -167,7 +167,7 @@
                     <div class="tab-content">
                         {{-- Presets --}}
                         <div class="tab-pane fade show active" id="preset-tab">
-                            <div class="d-flex flex-wrap gap-2 p-2 border rounded bg-light" style="max-height: 150px; overflow-y: auto;">
+                            <div class="d-flex flex-wrap gap-2 p-2 border rounded bg-body-tertiary" style="max-height: 150px; overflow-y: auto;">
                                 @foreach($icons as $icon)
                                     <input type="radio" class="btn-check" name="icon" id="icon_{{ $icon }}" value="{{ $icon }}" {{ $loop->first ? 'checked' : '' }}>
                                     <label class="btn btn-outline-primary p-2 d-flex align-items-center justify-content-center" for="icon_{{ $icon }}" style="width: 40px; height: 40px;">
@@ -178,9 +178,9 @@
                         </div>
                         {{-- Custom --}}
                         <div class="tab-pane fade" id="custom-tab">
-                            <div class="text-center p-3 border rounded bg-light">
+                            <div class="text-center p-3 border rounded bg-body-tertiary">
                                 <label for="custom_icon" class="d-block mb-2 cursor-pointer">
-                                    <div class="bg-white rounded-circle shadow-sm mx-auto d-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px; border: 2px dashed #ddd;">
+                                    <div class="bg-body rounded-circle shadow-sm mx-auto d-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px; border: 2px dashed #ddd;">
                                         <i class="bi bi-cloud-arrow-up text-muted fs-4" id="create_preview_icon"></i>
                                         <img id="create_preview_img" class="d-none rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
@@ -235,7 +235,7 @@
                     <div class="tab-content">
                         {{-- Presets --}}
                         <div class="tab-pane fade show active" id="edit-preset-tab">
-                            <div class="d-flex flex-wrap gap-2 p-2 border rounded bg-light" style="max-height: 150px; overflow-y: auto;">
+                            <div class="d-flex flex-wrap gap-2 p-2 border rounded bg-body-tertiary" style="max-height: 150px; overflow-y: auto;">
                                 @foreach($icons as $icon)
                                     <input type="radio" class="btn-check" name="icon" id="edit_icon_{{ $icon }}" value="{{ $icon }}">
                                     <label class="btn btn-outline-primary p-2 d-flex align-items-center justify-content-center" for="edit_icon_{{ $icon }}" style="width: 40px; height: 40px;">
@@ -246,9 +246,9 @@
                         </div>
                         {{-- Custom --}}
                         <div class="tab-pane fade" id="edit-custom-tab">
-                            <div class="text-center p-3 border rounded bg-light">
+                            <div class="text-center p-3 border rounded bg-body-tertiary">
                                 <label for="edit_custom_icon" class="d-block mb-2 cursor-pointer">
-                                    <div class="bg-white rounded-circle shadow-sm mx-auto d-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px; border: 2px dashed #ddd;">
+                                    <div class="bg-body rounded-circle shadow-sm mx-auto d-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px; border: 2px dashed #ddd;">
                                         <i class="bi bi-cloud-arrow-up text-muted fs-4" id="edit_preview_icon"></i>
                                         <img id="edit_preview_img" class="d-none rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
@@ -284,23 +284,23 @@
             </div>
             <div class="modal-body p-0">
                 <div class="bg-info-subtle p-4 text-center border-bottom">
-                    <div id="view_icon_container" class="bg-white rounded-circle shadow-sm mx-auto d-flex align-items-center justify-content-center mb-3 overflow-hidden" style="width: 80px; height: 80px;">
+                    <div id="view_icon_container" class="bg-body rounded-circle shadow-sm mx-auto d-flex align-items-center justify-content-center mb-3 overflow-hidden" style="width: 80px; height: 80px;">
                         <i id="view_icon" class="bi" style="font-size: 2.5rem; color: var(--bs-info);"></i>
                         <img id="view_img" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-                    <h4 id="view_name" class="fw-bold text-dark mb-1"></h4>
+                    <h4 id="view_name" class="fw-bold text-body mb-1"></h4>
                     <span class="badge bg-info text-white px-3 py-2 rounded-pill">{{ __('messages.system_library_item') }}</span>
                 </div>
                 <div class="p-4">
                     <div class="row g-4 mb-4 text-center">
                         <div class="col-6">
-                            <div class="p-3 border rounded bg-light">
+                            <div class="p-3 border rounded bg-body-tertiary">
                                 <div class="text-muted small mb-1">{{ __('messages.total_devices') }}</div>
                                 <h3 id="view_total" class="fw-bold mb-0 text-primary"></h3>
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="p-3 border rounded bg-light">
+                            <div class="p-3 border rounded bg-body-tertiary">
                                 <div class="text-muted small mb-1">{{ __('messages.active_pct') }}</div>
                                 <h3 id="view_active" class="fw-bold mb-0 text-success"></h3>
                             </div>
@@ -308,7 +308,7 @@
                     </div>
                     <div>
                         <label class="form-label small fw-bold text-muted text-uppercase mb-1">{{ __('messages.description') }}</label>
-                        <p id="view_description" class="bg-light p-3 rounded border text-muted"></p>
+                        <p id="view_description" class="bg-body-tertiary p-3 rounded border text-muted"></p>
                     </div>
                 </div>
             </div>

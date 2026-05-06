@@ -8,7 +8,7 @@
         <div class="card border-0 shadow-sm h-100 overflow-hidden">
             <div class="card-body p-4 position-relative">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0 fw-bold text-dark opacity-75">{{ __('messages.total_operations_label') }}</h6>
+                    <h6 class="mb-0 fw-bold text-body opacity-75">{{ __('messages.total_operations_label') }}</h6>
                 </div>
                 <h2 class="fw-bold mb-0">{{ number_format($totalCommands) }}</h2>
                 <div class="text-muted small mt-1">{{ __('messages.system_wide_requests') }}</div>
@@ -19,13 +19,13 @@
         <div class="card border-0 shadow-sm h-100 overflow-hidden">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0 fw-bold text-dark opacity-75">{{ __('messages.success_rate') }}</h6>
+                    <h6 class="mb-0 fw-bold text-body opacity-75">{{ __('messages.success_rate') }}</h6>
                     <div class="bg-success bg-opacity-10 text-success rounded-3 p-2">
                         <i class="bi bi-check-circle fs-5"></i>
                     </div>
                 </div>
                 <h2 class="fw-bold mb-0 text-success">{{ $successPercentage }}%</h2>
-                <div class="progress mt-2 bg-light" style="height: 6px;">
+                <div class="progress mt-2 bg-body-tertiary" style="height: 6px;">
                     <div class="progress-bar bg-success" style="width: {{ $successPercentage }}%"></div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
         <div class="card border-0 shadow-sm h-100 overflow-hidden">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0 fw-bold text-dark opacity-75">{{ __('messages.completed') }}</h6>
+                    <h6 class="mb-0 fw-bold text-body opacity-75">{{ __('messages.completed') }}</h6>
                     <div class="bg-info bg-opacity-10 text-info rounded-3 p-2">
                         <i class="bi bi-lightning-charge fs-5"></i>
                     </div>
@@ -49,7 +49,7 @@
         <div class="card border-0 shadow-sm h-100 overflow-hidden">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0 fw-bold text-dark opacity-75">{{ __('messages.failed') }}</h6>
+                    <h6 class="mb-0 fw-bold text-body opacity-75">{{ __('messages.failed') }}</h6>
                     <div class="bg-danger bg-opacity-10 text-danger rounded-3 p-2">
                         <i class="bi bi-exclamation-triangle fs-5"></i>
                     </div>
@@ -62,7 +62,7 @@
 </div>
 
 <div class="tg-table-container shadow-sm border-0">
-    <div class="p-4 border-bottom bg-white rounded-top-4">
+    <div class="p-4 border-bottom bg-body rounded-top-4">
         <form action="{{ request()->url() }}" method="GET" class="row g-3 align-items-end">
             <div class="col-md-3">
                 <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ __('messages.device_selection') }}</label>
@@ -134,20 +134,20 @@
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <div class="bg-light rounded-3 p-2 me-3">
+                            <div class="bg-body-tertiary rounded-3 p-2 me-3">
                                 <i class="bi bi-cpu text-primary"></i>
                             </div>
                             <div>
-                                <div class="fw-bold text-dark">{{ $command->device->name }}</div>
+                                <div class="fw-bold text-body">{{ $command->device->name }}</div>
                                 <div class="text-muted small">{{ __('messages.by') }}: {{ $command->user->name }}</div>
                             </div>
                         </div>
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <div class="bg-light border px-2 py-1 rounded small d-flex align-items-center overflow-hidden" style="max-width: 180px;">
+                            <div class="bg-body-tertiary border px-2 py-1 rounded small d-flex align-items-center overflow-hidden" style="max-width: 180px;">
                                 <i class="bi bi-code-slash text-muted me-2"></i>
-                                <code class="text-dark text-truncate" style="font-size: 0.75rem;">
+                                <code class="text-body text-truncate" style="font-size: 0.75rem;">
                                     {{ $payloadJson = json_encode($command->payload) }}
                                 </code>
                             </div>
@@ -165,7 +165,7 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body p-4">
-                                                <div class="bg-light text-dark p-3 rounded-3 font-monospace small mb-0" style="white-space: pre-wrap; word-break: break-all;">
+                                                <div class="bg-body-tertiary text-body p-3 rounded-3 font-monospace small mb-0" style="white-space: pre-wrap; word-break: break-all;">
                                                     {{ json_encode($command->payload, JSON_PRETTY_PRINT) }}
                                                 </div>
                                             </div>
@@ -194,17 +194,17 @@
                             <div class="modal fade" id="responseModal{{ $command->id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                     <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-                                        <div class="modal-header bg-white border-bottom p-4">
+                                        <div class="modal-header bg-body border-bottom p-4">
                                             <div class="d-flex align-items-center">
                                                 <i class="bi bi-terminal-fill fs-4 text-primary me-3"></i>
                                                 <div>
-                                                    <h5 class="modal-title fw-bold mb-0 text-dark">{{ __('messages.execution_output') }}</h5>
+                                                    <h5 class="modal-title fw-bold mb-0 text-body">{{ __('messages.execution_output') }}</h5>
                                                     <span class="text-muted small">{{ __('messages.asset') }}: {{ $command->device->name }} | ID: #{{ $command->id }}</span>
                                                 </div>
                                             </div>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body p-4 bg-light bg-opacity-50">
+                                        <div class="modal-body p-4 bg-body-tertiary bg-opacity-50">
                                             <div class="d-flex justify-content-between align-items-center mb-3">
                                                 <span class="badge bg-{{ $command->status === 'success' ? 'success' : 'danger' }} bg-opacity-10 text-{{ $command->status === 'success' ? 'success' : 'danger' }} border border-{{ $command->status === 'success' ? 'success' : 'danger' }} border-opacity-25 px-3">
                                                     <i class="bi bi-{{ $command->status === 'success' ? 'check-circle' : 'exclamation-circle' }} me-1"></i>
@@ -214,11 +214,11 @@
                                                     <i class="bi bi-clock me-1"></i> {{ $command->response_at ? $command->response_at->format('M d, Y H:i:s') : 'N/A' }}
                                                 </span>
                                             </div>
-                                            <div class="bg-white rounded-3 p-3 border shadow-sm">
-                                                <pre class="text-dark mb-0 font-monospace small text-start" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">{{ $command->response }}</pre>
+                                            <div class="bg-body rounded-3 p-3 border shadow-sm">
+                                                <pre class="text-body mb-0 font-monospace small text-start" style="white-space: pre-wrap; word-break: break-all; min-height: 100px;">{{ $command->response }}</pre>
                                             </div>
                                         </div>
-                                        <div class="modal-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
+                                        <div class="modal-footer bg-body border-top p-3 d-flex justify-content-between align-items-center">
                                             <div class="text-muted small">
                                                 <i class="bi bi-shield-check me-1"></i> {{ __('messages.verified_iot_response') }}
                                             </div>
@@ -233,7 +233,7 @@
                                 </div>
                             </div>
                         @else
-                            <span class="badge bg-light text-muted fw-normal border">{{ __('messages.in_flight') }}</span>
+                            <span class="badge bg-body-tertiary text-muted fw-normal border">{{ __('messages.in_flight') }}</span>
                         @endif
                     </td>
                 </tr>
@@ -250,7 +250,7 @@
     </div>
     
     @if($commands->hasPages())
-    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top rounded-bottom-4">
+    <div class="card-footer bg-body d-flex justify-content-between align-items-center py-3 border-top rounded-bottom-4">
         <div class="text-muted small">
             {{ __('messages.showing_range', ['first' => $commands->firstItem(), 'last' => $commands->lastItem(), 'total' => $commands->total()]) }}
         </div>
