@@ -67,31 +67,24 @@
     </div>
     
     <!-- Data Chart & AI Analysis -->
-    <div class="col-md-8">
+    <div class="col-md-8 d-flex flex-column">
         @if(isset($telemetryAnalysis))
-        <div class="card tg-card border-0 shadow-sm mb-4 bg-{{ $telemetryAnalysis['status'] }} bg-opacity-10 border border-{{ $telemetryAnalysis['status'] }} border-opacity-25">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-{{ $telemetryAnalysis['status'] }} p-2 rounded-circle me-3">
-                        <i class="fas fa-brain text-white"></i>
-                    </div>
-                    <h6 class="mb-0 fw-bold text-{{ $telemetryAnalysis['status'] }}">{{ __('messages.ai_telemetry_interpretation') }}</h6>
+        <div class="alert alert-{{ $telemetryAnalysis['status'] }} shadow-sm mb-4 border-0 d-flex flex-column flex-md-row gap-3">
+            <div class="d-flex align-items-center gap-3 flex-grow-1">
+                <i class="bi bi-robot fs-1 opacity-75"></i>
+                <div>
+                    <h6 class="mb-1 fw-bold">{{ __('messages.ai_telemetry_interpretation') }}: {{ $telemetryAnalysis['title'] }}</h6>
+                    <p class="mb-0 small opacity-75">{{ $telemetryAnalysis['message'] }}</p>
                 </div>
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h6 class="fw-bold mb-1">{{ $telemetryAnalysis['title'] }}</h6>
-                        <p class="small text-muted mb-0">{{ $telemetryAnalysis['message'] }}</p>
-                    </div>
-                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                        <div class="small fw-bold text-uppercase text-muted mb-1">{{ __('messages.ai_advice') }}</div>
-                        <div class="badge bg-{{ $telemetryAnalysis['status'] }}">{{ $telemetryAnalysis['advice'] }}</div>
-                    </div>
-                </div>
+            </div>
+            <div class="text-md-end d-flex flex-column justify-content-center border-top border-md-0 pt-3 pt-md-0 ps-md-3">
+                <div class="small fw-bold text-uppercase opacity-75 mb-1">{{ __('messages.ai_advice') }}</div>
+                <div class="badge text-bg-{{ $telemetryAnalysis['status'] }} px-3 py-2 text-wrap text-start" style="max-width: 300px; line-height: 1.4;">{{ $telemetryAnalysis['advice'] }}</div>
             </div>
         </div>
         @endif
 
-        <div class="card tg-card h-100 border-0">
+        <div class="card tg-card flex-grow-1 border-0">
             <div class="card-header bg-body p-4 border-bottom d-flex justify-content-between align-items-center">
                 <h6 class="fw-bold mb-0">{{ __('messages.recent_telemetry_data') }}</h6>
                 @if($device->last_seen_at)
@@ -102,7 +95,9 @@
             </div>
             <div class="card-body p-4">
                 @if($chartData->count() > 0)
-                    <canvas id="telemetryChart" style="min-height: 300px; max-height: 400px;"></canvas>
+                    <div style="position: relative; height: 100%; min-height: 300px; width: 100%;">
+                        <canvas id="telemetryChart"></canvas>
+                    </div>
                 @else
                     <div class="d-flex flex-column align-items-center justify-content-center h-100 py-5 text-muted">
                         <i data-feather="bar-chart-2" style="width: 48px; height: 48px; opacity: 0.2;" class="mb-3"></i>
