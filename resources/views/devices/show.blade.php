@@ -370,6 +370,14 @@
             return { labels, metrics };
         }
 
+        function getChartColors() {
+            const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+            return {
+                text: isDark ? '#94A3B8' : '#64748B',
+                grid: isDark ? '#1E293B' : '#E2E8F0'
+            };
+        }
+
         function initChart() {
             const initialData = @json($chartData);
             initialData.forEach(d => {
@@ -394,6 +402,7 @@
                 };
             });
 
+            const colors = getChartColors();
             telemetryChart = new Chart(ctx, {
                 type: 'line',
                 data: { labels, datasets },
@@ -401,10 +410,43 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: { duration: 800 },
-                    plugins: { legend: { position: 'top' } },
-                    scales: { y: { beginAtZero: false } }
+                    plugins: { 
+                        legend: { 
+                            position: 'top',
+                            labels: { color: colors.text }
+                        } 
+                    },
+                    scales: { 
+                        y: { 
+                            beginAtZero: false,
+                            ticks: { color: colors.text },
+                            grid: { color: colors.grid, borderColor: colors.grid }
+                        },
+                        x: {
+                            ticks: { color: colors.text },
+                            grid: { color: colors.grid, borderColor: colors.grid }
+                        }
+                    }
                 }
             });
+
+            // Listen for theme changes
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === "data-bs-theme" && telemetryChart) {
+                        const newColors = getChartColors();
+                        telemetryChart.options.scales.x.ticks.color = newColors.text;
+                        telemetryChart.options.scales.y.ticks.color = newColors.text;
+                        telemetryChart.options.scales.x.grid.color = newColors.grid;
+                        telemetryChart.options.scales.x.grid.borderColor = newColors.grid;
+                        telemetryChart.options.scales.y.grid.color = newColors.grid;
+                        telemetryChart.options.scales.y.grid.borderColor = newColors.grid;
+                        telemetryChart.options.plugins.legend.labels.color = newColors.text;
+                        telemetryChart.update();
+                    }
+                });
+            });
+            observer.observe(document.documentElement, { attributes: true });
         }
 
         function updateChart() {
