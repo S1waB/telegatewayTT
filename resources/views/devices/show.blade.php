@@ -449,14 +449,7 @@
                         // Update Status Badge
                         const statusCell = row.querySelector('.status-cell');
                         if (statusCell && !statusCell.innerHTML.includes(cmd.status)) {
-                            // Simple way to refresh badge - we could generate HTML but status icons are easier
-                            const statusMap = {
-                                'success': '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2">Success</span>',
-                                'sent': '<span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2">Sent</span>',
-                                'failed': '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2">Failed</span>',
-                                'pending': '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2">Pending</span>'
-                            };
-                            statusCell.innerHTML = statusMap[cmd.status] || cmd.status;
+                            statusCell.innerHTML = cmd.status_badge;
                         }
 
                         // Update Response Button

@@ -557,6 +557,7 @@
   }
 
   // ── Send ───────────────────────────────────────────────────────
+  // ── Send ───────────────────────────────────────────────────────
   async function sendDevice(key) {
     const url = document.getElementById('gatewayUrl').value.trim();
     const body = buildPayload(key);
@@ -573,9 +574,15 @@
       });
 
       const ok = res.ok;
+      const data = ok ? await res.json() : null;
       const preview = JSON.stringify(body.payload).slice(0, 70);
       logEntry(body.device_id, preview, ok, ok ? `HTTP ${res.status} OK` : `HTTP ${res.status}`);
       updateConnDot(ok);
+
+      // Handle immediate commands if present in response
+      if (ok && data && data.commands && data.commands.length > 0) {
+        handleIncomingCommands(data.commands, key);
+      }
     } catch (e) {
       const preview = JSON.stringify(body.payload).slice(0, 70);
       logEntry(body.device_id, preview, false, 'FAILED — is php artisan serve running?');
@@ -590,7 +597,7 @@
   }
 
   async function pingGateway() {
-    const url = document.getElementById('gatewayUrl').value.replace('/receive', '/status').replace('api/gateway', 'api/gateway');
+    const url = document.getElementById('gatewayUrl').value.replace('/receive', '/status');
     try {
       const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
       logEntry('ping', '', res.ok, res.ok ? `Gateway online (${res.status})` : `Gateway responded ${res.status}`);
@@ -648,7 +655,8 @@
         const newBw = Math.max(0, Math.min(1000,
           devices.router.payload.bandwidth_mbps + Math.round(Math.random() * 30 - 15)
         ));
-        document.getElementById('routerBw').value = newBw;
+        const rbw = document.getElementById('routerBw');
+        if (rbw) rbw.value = newBw;
         updateRouter(newBw);
         sendAll();
       }, ms);
@@ -658,30 +666,34 @@
     }
   });
 
-  // ── Command Polling ─────────────────────────────────────────────
+  // ── Command Handling ─────────────────────────────────────────────
+  function handleIncomingCommands(commands, key) {
+    if (!commands || commands.length === 0) return;
+    
+    renderCommands(commands, key);
+    
+    // Auto-execute logic
+    if (document.getElementById('autoExecuteToggle').checked) {
+      commands.forEach(cmd => {
+        setTimeout(() => {
+          respondToCommand(cmd.id, key);
+        }, 1000); // 1s delay for visibility
+      });
+    }
+  }
+
   async function pollCommands() {
+    const gatewayUrl = document.getElementById('gatewayUrl').value.trim();
+    const baseUrl = gatewayUrl.replace('/receive', '');
+    
     for (const key of ['relay', 'router', 'temp']) {
       const deviceId = devices[key].device_id;
       try {
-        const res = await fetch(`/api/gateway/commands/${deviceId}`);
+        const res = await fetch(`${baseUrl}/commands/${deviceId}`);
         const commands = await res.json();
-        
-        if (commands.length > 0) {
-          renderCommands(commands, key);
-          
-          // Auto-execute logic
-          if (document.getElementById('autoExecuteToggle').checked) {
-            commands.forEach(cmd => {
-              setTimeout(() => {
-                respondToCommand(cmd.id, key);
-              }, 1500); // 1.5s delay for realism
-            });
-          }
-        } else {
-          checkEmptyInbox();
-        }
+        handleIncomingCommands(commands, key);
       } catch (e) {
-        console.error('Polling failed for ' + deviceId);
+        // console.error('Polling failed for ' + deviceId);
       }
     }
   }
@@ -712,24 +724,40 @@
   }
 
   async function respondToCommand(id, key) {
-    const btn = event.target;
-    btn.disabled = true;
-    btn.textContent = '...';
-
-    const responses = {
-      'reboot': 'Device rebooted successfully',
-      'diagnostics': 'All systems nominal',
-      'reset': 'Configuration reset complete',
-      'default': 'Command executed'
-    };
-
     const cmdItem = document.querySelector(`.command-item[data-id="${id}"]`);
+    if (!cmdItem) return; // Already processed
+    
+    const btn = cmdItem.querySelector('.command-btn');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '...';
+    }
+
     const payload = JSON.parse(cmdItem.querySelector('.command-payload').textContent);
     const action = payload.action || 'default';
-    const responseMsg = responses[action] || responses['default'];
+    
+    let responseMsg = 'Command executed successfully';
+    
+    // Actually perform the action in the simulator
+    if (key === 'relay') {
+      if (action === 'toggle') {
+        const newState = devices.relay.payload.state === 'on' ? 0 : 1;
+        setRelay(newState);
+        responseMsg = `Relay toggled to ${newState ? 'ON' : 'OFF'}`;
+      } else if (action === 'set_state') {
+        const target = payload.state === 'on' ? 1 : 0;
+        setRelay(target);
+        responseMsg = `Relay set to ${target ? 'ON' : 'OFF'}`;
+      }
+    } else if (key === 'temp') {
+        if (action === 'ping') responseMsg = 'Pong! Sensor active.';
+    }
+
+    const gatewayUrl = document.getElementById('gatewayUrl').value.trim();
+    const baseUrl = gatewayUrl.replace('/receive', '');
 
     try {
-      const res = await fetch(`/api/gateway/commands/${id}/response`, {
+      const res = await fetch(`${baseUrl}/commands/${id}/response`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -742,17 +770,18 @@
         logEntry(devices[key].device_id, 'REPLIED: ' + responseMsg, true, 'OK');
         cmdItem.remove();
         checkEmptyInbox();
+      } else {
+        if (btn) { btn.disabled = false; btn.textContent = 'Retry'; }
       }
     } catch (e) {
       logEntry(devices[key].device_id, 'REPLY FAILED', false, 'ERR');
-      btn.disabled = false;
-      btn.textContent = 'Retry';
+      if (btn) { btn.disabled = false; btn.textContent = 'Retry'; }
     }
   }
 
   function checkEmptyInbox() {
     const list = document.getElementById('commandList');
-    if (list.children.length === 0) {
+    if (!list.querySelector('.command-item')) {
       list.innerHTML = '<div class="no-commands">No pending commands for active devices.</div>';
     }
   }

@@ -61,6 +61,14 @@ class SimulateIoT extends Command
                 try {
                     $response = Http::post(url('/api/gateway/receive'), $envelope);
                     $status = $response->status();
+
+                    // Handle commands in response
+                    if ($response->successful()) {
+                        $commands = $response->json('commands', []);
+                        foreach ($commands as $cmd) {
+                            $this->executeCommand($id, $cmd);
+                        }
+                    }
                 } catch (\Exception $e) {
                     $status = 'ERROR';
                     Log::error("Simulation Error for $id: " . $e->getMessage());
@@ -76,6 +84,49 @@ class SimulateIoT extends Command
         }
 
         $this->info("Simulation complete.");
+    }
+
+    /**
+     * Execute a command received from the gateway.
+     */
+    protected function executeCommand(string $deviceId, array $command): void
+    {
+        $this->warn("   [COMMAND] Device $deviceId executing: " . json_encode($command['payload']));
+        
+        // Simulate execution delay
+        usleep(500000); // 0.5s
+
+        // Determine result based on command
+        $payload = $command['payload'];
+        $action = $payload['action'] ?? 'unknown';
+        
+        $result = [
+            'status' => 'success',
+            'executed_at' => now()->toIso8601String(),
+            'message' => "Action '$action' executed successfully on $deviceId",
+        ];
+
+        // Apply state changes to simulation if applicable
+        if (isset($this->devices[$deviceId])) {
+            if ($action === 'toggle') {
+                $this->devices[$deviceId]['state'] = ($this->devices[$deviceId]['state'] === 'on') ? 'off' : 'on';
+                $result['message'] .= ". New state: " . $this->devices[$deviceId]['state'];
+            } elseif ($action === 'set_state' && isset($payload['state'])) {
+                $this->devices[$deviceId]['state'] = $payload['state'];
+                $result['message'] .= ". New state: " . $payload['state'];
+            }
+        }
+
+        // Send response back to gateway
+        try {
+            Http::post(url("/api/gateway/commands/{$command['id']}/response"), [
+                'status' => 'success',
+                'response' => json_encode($result),
+            ]);
+            $this->info("   [RESPONSE] Sent back to gateway for command #{$command['id']}");
+        } catch (\Exception $e) {
+            $this->error("   [ERROR] Failed to send response for command #{$command['id']}: " . $e->getMessage());
+        }
     }
 
     /**

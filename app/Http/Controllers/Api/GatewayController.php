@@ -31,7 +31,7 @@ class GatewayController extends Controller
         $data = $validator->validated();
 
         // Find or create the device record
-        Device::firstOrCreate(
+        $device = Device::firstOrCreate(
             ['device_id' => $data['device_id']],
             [
                 'name' => 'Device ' . $data['device_id'],
@@ -42,10 +42,29 @@ class GatewayController extends Controller
             ]
         );
 
+        // Update last seen
+        $device->update(['last_seen_at' => now()]);
+
         // Dispatch background processing job
         ProcessDeviceData::dispatch($data);
 
-        return response()->json(['message' => 'Data accepted for processing'], 202);
+        // Fetch pending commands to deliver them immediately
+        $pendingCommands = \App\Models\Command::where('device_id', $device->id)
+            ->where('status', 'pending')
+            ->get();
+
+        // Mark them as sent
+        foreach ($pendingCommands as $command) {
+            $command->update([
+                'status' => 'sent',
+                'sent_at' => now(),
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Data accepted for processing',
+            'commands' => $pendingCommands
+        ], 202);
     }
 
     public function status(): JsonResponse
