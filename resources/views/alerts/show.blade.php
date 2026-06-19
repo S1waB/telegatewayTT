@@ -22,18 +22,6 @@
             <div class="card-body p-4">
                 <p class="mb-4" style="white-space: pre-line;">{{ $alert->description }}</p>
 
-                @if($alert->attachments->count() > 0)
-                    <h6 class="fw-bold mb-3 small text-uppercase text-muted">Attachments ({{ $alert->attachments->count() }})</h6>
-                    <div class="row g-3">
-                        @foreach($alert->attachments as $attachment)
-                            <div class="col-md-4 col-6">
-                                <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="d-block card h-100 border-0 shadow-sm hover-lift">
-                                    <img src="{{ Storage::url($attachment->file_path) }}" class="card-img-top rounded shadow-sm" style="height: 120px; object-fit: cover;">
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
             </div>
         </div>
 

@@ -55,7 +55,7 @@ class AlertController extends Controller
 
         $totalAlerts = (clone $statsQuery)->count();
         $viewedAlerts = (clone $statsQuery)->whereIn('status', ['pending', 'viewed'])->count();
-        $respondedAlerts = (clone $statsQuery)->whereNotNull('admin_response')->count();
+        $respondedAlerts = (clone $statsQuery)->whereNotNull('resolved_at')->count();
         
         $viewedPercentage = $totalAlerts > 0 ? round(($viewedAlerts / $totalAlerts) * 100) : 0;
         $responseRate = $totalAlerts > 0 ? round(($respondedAlerts / $totalAlerts) * 100) : 0;
@@ -111,7 +111,7 @@ class AlertController extends Controller
     {
         $this->authorizeView($alert);
         
-        $alert->load(['user', 'device', 'attachments']);
+        $alert->load(['user', 'device']);
         
         // If admin views a 'not_viewed' alert, mark as 'viewed' or 'pending'?
         // The user asked for "not viewed, pending, viewed".

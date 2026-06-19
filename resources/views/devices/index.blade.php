@@ -111,7 +111,7 @@
                             <div class="bg-body-tertiary p-2 rounded-2 me-2">
                                 <i class="bi bi-{{ $device->type->icon ?? 'cpu' }} text-primary"></i>
                             </div>
-                            {{ $device->type->name }}
+                            {{ $device->type->name ?? 'Aucun type' }}
                         </div>
                     </td>
                     <td>
