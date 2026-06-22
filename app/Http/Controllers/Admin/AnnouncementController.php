@@ -98,13 +98,23 @@ class AnnouncementController extends Controller
             'sent_by' => auth()->id() ?? 1, 
         ]);
 
-        // Send Email if status is 'sent'
+        // Send Email if status is 'sent' (handle mail errors gracefully)
         if ($request->status === 'sent') {
+            $sent = 0;
+            $failed = 0;
             foreach ($recipients as $email) {
-                Mail::to($email)->send(new AnnouncementMail($request->subject, $request->message));
-                // Note: to send attachments via email, the AnnouncementMail mailable needs to be updated.
+                try {
+                    Mail::to($email)->send(new AnnouncementMail($request->subject, $request->message));
+                    $sent++;
+                } catch (\Throwable $e) {
+                    \Log::error('Announcement email failed', ['email' => $email, 'error' => $e->getMessage()]);
+                    $failed++;
+                }
             }
-            return back()->with('success', 'Announcement sent successfully to ' . count($recipients) . ' recipient(s).');
+            $msg = 'Announcement saved.';
+            if ($sent > 0) $msg .= " Sent to {$sent} recipient(s).";
+            if ($failed > 0) $msg .= " Failed to send to {$failed} recipient(s). Check mail configuration and logs.";
+            return back()->with('success', $msg);
         }
 
         $message = $request->status === 'draft' ? 'saved as draft' : 'scheduled';
