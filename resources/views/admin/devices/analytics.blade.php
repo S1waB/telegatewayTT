@@ -65,7 +65,7 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-body-tertiary text-body border">{{ optional($device->type)->name ?? 'Aucun type' }}</span>
+                                <span class="badge bg-body-tertiary text-body border">{{ $device->type?->name ?? __('messages.unknown') }}</span>
                             </td>
                             <td>
                                 @if($device->user)

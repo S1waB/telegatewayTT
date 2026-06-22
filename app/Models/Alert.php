@@ -22,6 +22,7 @@ class Alert extends Model
         'description',
         'severity',
         'status',
+        'admin_response',
         'triggered_at',
         'resolved_at',
     ];

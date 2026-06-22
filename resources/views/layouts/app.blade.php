@@ -35,18 +35,25 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
 </head>
 <body>
-    
+
+    <!-- Animated Background Blobs -->
+    <div class="tg-blob-wrapper">
+        <div class="tg-blob tg-blob-1"></div>
+        <div class="tg-blob tg-blob-2"></div>
+        <div class="tg-blob tg-blob-3"></div>
+    </div>
+
     @include('layouts.sidebar')
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="main-content">
         <!-- Topbar -->
-        <header class="tg-topbar d-flex align-items-center justify-content-between px-4 sticky-top">
+        <header class="tg-topbar d-flex align-items-center justify-content-between px-4">
             <div class="d-flex align-items-center gap-3">
-                <button type="button" class="btn btn-link text-body p-0 d-lg-none" id="sidebarToggle">
-                    <i class="bi bi-list fs-2"></i>
+                <button type="button" class="btn p-0 d-lg-none" id="sidebarToggle" style="color:var(--tg-text);background:none;border:none;">
+                    <i class="bi bi-list" style="font-size:1.6rem;"></i>
                 </button>
-                <h5 class="mb-0 text-muted fw-bold">@yield('title', __('messages.dashboard'))</h5>
+                <h5 class="mb-0 fw-bold" style="font-size:1rem;background:linear-gradient(135deg,var(--tg-brand),var(--tg-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">@yield('title', __('messages.dashboard'))</h5>
             </div>
             <div class="d-flex align-items-center gap-3">
                 <div class="theme-switch shadow-sm" id="themeToggler" title="{{ __('messages.toggle_theme') }}">

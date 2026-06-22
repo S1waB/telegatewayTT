@@ -23,10 +23,10 @@
                 
                 <div class="text-start">
                     <div class="mb-3 d-flex align-items-center">
-                        <div class="bg-body-tertiary p-2 rounded me-3 text-primary"><i data-feather="{{ $device->type->icon ?? 'box' }}"></i></div>
+                        <div class="bg-body-tertiary p-2 rounded me-3 text-primary"><i data-feather="{{ $device->type?->icon ?? 'box' }}"></i></div>
                         <div>
                             <div class="small text-muted">{{ __('messages.type') }}</div>
-                            <div class="fw-medium">{{ $device->type->name }}</div>
+                            <div class="fw-medium">{{ $device->type?->name ?? __('messages.unknown') }}</div>
                         </div>
                     </div>
                     

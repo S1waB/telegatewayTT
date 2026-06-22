@@ -24,6 +24,7 @@ return new class extends Migration
             $table->enum('status', ['not_viewed', 'pending', 'viewed'])->default('not_viewed');
             $table->timestamp('triggered_at');
             $table->timestamp('resolved_at')->nullable();
+            $table->text('admin_response')->nullable();
             $table->timestamps();
 
             $table->foreign('device_id')->references('device_id')->on('devices')->onDelete('cascade');

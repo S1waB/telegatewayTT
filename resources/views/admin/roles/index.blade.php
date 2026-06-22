@@ -91,10 +91,10 @@
                             </button>
                             
                             @if($role->name !== 'admin')
-                            <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.confirm_delete_role') }}');">
+                            <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="d-inline delete-role-form" data-confirm="{{ __('messages.confirm_delete_role') }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger border-0 shadow-none">
+                                <button type="submit" class="btn btn-sm btn-outline-danger border-0 shadow-none" title="{{ __('messages.delete') }}">
                                     <i class="bi bi-trash3" style="font-size: 1.1rem;"></i>
                                 </button>
                             </form>
@@ -120,6 +120,7 @@
     </div>
     @endif
 </div>
+
 
 {{-- ── Create Role Modal ── --}}
 <div class="modal fade" id="createRoleModal" tabindex="-1" aria-hidden="true">
@@ -274,6 +275,16 @@
 
 @push('scripts')
 <script>
+    // Handle Delete Confirmation
+    document.querySelectorAll('.delete-role-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (confirm(this.dataset.confirm)) {
+                this.submit();
+            }
+        });
+    });
+
     // Handle Edit Modal Population
     document.querySelectorAll('.edit-role-btn').forEach(btn => {
         btn.addEventListener('click', function() {

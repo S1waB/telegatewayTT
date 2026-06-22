@@ -85,9 +85,16 @@ class AlertController extends Controller
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
         ]);
 
+        // Resolve numeric device id to the device_id string (FK references devices.device_id)
+        $deviceId = null;
+        if ($request->filled('device_id')) {
+            $device = Device::find($request->device_id);
+            $deviceId = $device?->device_id;
+        }
+
         $alert = Alert::create([
             'user_id' => auth()->id(),
-            'device_id' => $request->device_id,
+            'device_id' => $deviceId,
             'subject' => $request->subject,
             'description' => $request->description,
             'status' => 'not_viewed',

@@ -52,8 +52,8 @@
 <div class="card tg-card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+            <table class="table tg-table table-hover align-middle mb-0">
+                <thead>
                     <tr>
                         <th class="ps-4 border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">{{ __('messages.title') }}</th>
                         <th class="border-0 text-uppercase small fw-bold text-muted tracking-wider py-3">{{ __('messages.date') }}</th>

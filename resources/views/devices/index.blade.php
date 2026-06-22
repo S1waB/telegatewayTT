@@ -109,9 +109,9 @@
                     <td>
                         <div class="d-flex align-items-center">
                             <div class="bg-body-tertiary p-2 rounded-2 me-2">
-                                <i class="bi bi-{{ $device->type->icon ?? 'cpu' }} text-primary"></i>
+                                <i class="bi bi-{{ $device->type?->icon ?? 'cpu' }} text-primary"></i>
                             </div>
-                            {{ $device->type->name ?? 'Aucun type' }}
+                            {{ $device->type?->name ?? __('messages.unknown') }}
                         </div>
                     </td>
                     <td>
@@ -181,7 +181,7 @@
                             @endcan
                             
                             @can('delete', $device)
-                            <form action="{{ route('admin.devices.destroy', $device) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.confirm_delete') }}');">
+                            <form action="{{ route('admin.devices.destroy', $device) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ addslashes(__('messages.confirm_delete')) }}');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm">

@@ -17,6 +17,7 @@ class DeviceSeeder extends Seeder
         $relayType = DeviceType::where('name', 'Relay Module')->first();
 
         Device::create([
+            'device_id' => 'router-001',
             'name' => 'Main Office Router',
             'serial_number' => 'RT-10001',
             'device_type_id' => $routerType->id,
@@ -28,6 +29,7 @@ class DeviceSeeder extends Seeder
         ]);
 
         Device::create([
+            'device_id' => 'sensor-001',
             'name' => 'Warehouse Temp Sensor',
             'serial_number' => 'TS-20001',
             'device_type_id' => $sensorType->id,
@@ -39,6 +41,7 @@ class DeviceSeeder extends Seeder
         ]);
 
         Device::create([
+            'device_id' => 'sensor-002',
             'name' => 'Lobby Temp Sensor',
             'serial_number' => 'TS-20002',
             'device_type_id' => $sensorType->id,
@@ -50,6 +53,7 @@ class DeviceSeeder extends Seeder
         ]);
 
         Device::create([
+            'device_id' => 'relay-001',
             'name' => 'Lighting Relay 1',
             'serial_number' => 'RL-30001',
             'device_type_id' => $relayType->id,
@@ -61,6 +65,7 @@ class DeviceSeeder extends Seeder
         ]);
 
         Device::create([
+            'device_id' => 'relay-002',
             'name' => 'HVAC Relay',
             'serial_number' => 'RL-30002',
             'device_type_id' => $relayType->id,

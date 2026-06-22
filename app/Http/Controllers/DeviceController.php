@@ -232,7 +232,7 @@ class DeviceController extends Controller
                     $device->id,
                     $device->name,
                     $device->serial_number,
-                    $device->type->name,
+                    $device->type?->name ?? 'Unknown',
                     ucfirst($device->status),
                     $device->user ? $device->user->name : 'Unassigned',
                     $device->created_at->format('Y-m-d')

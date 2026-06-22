@@ -74,6 +74,7 @@ class RoleController extends Controller
         return redirect()->route('admin.roles.index');
     }
 
+
     public function destroy(Role $role)
     {
         if ($role->name === 'admin') {
