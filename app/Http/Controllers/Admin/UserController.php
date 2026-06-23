@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewUserWelcomeMail;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class UserController extends Controller
 {
@@ -57,9 +58,13 @@ class UserController extends Controller
         $user->assignRole($request->role);
 
         // Send welcome email with credentials
-        Mail::to($user->email)->queue(new NewUserWelcomeMail($user, $plainPassword));
+        try {
+            Mail::to($user->email)->queue(new NewUserWelcomeMail($user, $plainPassword));
+            session()->flash('success', "User {$user->name} created. Welcome email sent to {$user->email}.");
+        } catch (TransportExceptionInterface $exception) {
+            session()->flash('warning', "User {$user->name} created, but the welcome email could not be sent. Please verify the mail configuration.");
+        }
 
-        session()->flash('success', "User {$user->name} created. Welcome email sent to {$user->email}.");
         return redirect()->route('admin.users.index');
     }
 

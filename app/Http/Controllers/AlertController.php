@@ -85,6 +85,7 @@ class AlertController extends Controller
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
         ]);
 
+<<<<<<< HEAD
         // Resolve numeric device id to the device_id string (FK references devices.device_id)
         $deviceId = null;
         if ($request->filled('device_id')) {
@@ -95,10 +96,25 @@ class AlertController extends Controller
         $alert = Alert::create([
             'user_id' => auth()->id(),
             'device_id' => $deviceId,
+=======
+        $deviceId = $request->input('device_id');
+        if ($deviceId === 'null' || $deviceId === '') {
+            $deviceId = null;
+        }
+
+        $alertData = [
+            'user_id' => auth()->id(),
+>>>>>>> bbdaf4e (Sprint 3 updates and fixes)
             'subject' => $request->subject,
             'description' => $request->description,
             'status' => 'not_viewed',
-        ]);
+        ];
+
+        if (!is_null($deviceId)) {
+            $alertData['device_id'] = $deviceId;
+        }
+
+        $alert = Alert::create($alertData);
 
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
@@ -118,7 +134,7 @@ class AlertController extends Controller
     {
         $this->authorizeView($alert);
         
-        $alert->load(['user', 'device']);
+        $alert->load(['user', 'device', 'messages.user']);
         
         // If admin views a 'not_viewed' alert, mark as 'viewed' or 'pending'?
         // The user asked for "not viewed, pending, viewed".

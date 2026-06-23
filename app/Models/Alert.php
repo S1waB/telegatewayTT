@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\AlertMessage;
 
 class Alert extends Model
 {
@@ -48,6 +50,11 @@ class Alert extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(AlertMessage::class)->with('user')->orderBy('created_at');
     }
 
     public function getStatusBadgeAttribute(): string
