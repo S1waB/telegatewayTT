@@ -343,7 +343,7 @@
   <!-- URL bar -->
   <div class="url-bar">
     <span class="url-label">Gateway URL</span>
-    <input id="gatewayUrl" value="/api/gateway/receive"
+    <input id="gatewayUrl" value=""
            placeholder="/api/gateway/receive" />
     <div class="status-dot" id="connDot" title="Connection status"></div>
   </div>
@@ -495,6 +495,15 @@
   let sentCount = 0;
   let autoTimer = null;
   let uptimeTimer = setInterval(() => { devices.router.payload.uptime_s++; }, 1000);
+
+  function getDefaultGatewayUrl() {
+    const origin = window.location.origin;
+    const path = window.location.pathname.replace(/\/iot-simulator\.html$/, '');
+    return `${origin}${path}/api/gateway/receive`;
+  }
+
+  const gatewayInput = document.getElementById('gatewayUrl');
+  gatewayInput.value = gatewayInput.value.trim() || getDefaultGatewayUrl();
 
   // ── Relay ──────────────────────────────────────────────────────
   function setRelay(v) {

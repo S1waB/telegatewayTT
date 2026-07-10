@@ -585,6 +585,7 @@ body {
   backdrop-filter: blur(4px);
 }
 .sidebar-overlay.show { display: block; }
+body.modal-open .sidebar-overlay { display: none !important; }
 
 /* ── Responsive ────────────────────────────────────────────────────── */
 @media (max-width: 991.98px) {
@@ -603,7 +604,13 @@ body {
   border: 1px solid var(--tg-border);
   backdrop-filter: blur(12px);
 }
-
+/* Ensure Bootstrap modals appear above custom overlays */
+.modal-backdrop {
+  z-index: 1060 !important;
+}
+.modal {
+  z-index: 1065 !important;
+}
 /* ── Pagination ────────────────────────────────────────────────────── */
 .pagination .page-link {
   border-radius: 0.6rem;

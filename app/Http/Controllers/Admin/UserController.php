@@ -57,12 +57,16 @@ class UserController extends Controller
         $user = User::create($validated);
         $user->assignRole($request->role);
 
-        // Send welcome email with credentials
+        // Send welcome email with credentials (send synchronously for reliable dev feedback)
         try {
             Mail::to($user->email)->queue(new NewUserWelcomeMail($user, $plainPassword));
-            session()->flash('success', "User {$user->name} created. Welcome email sent to {$user->email}.");
-        } catch (TransportExceptionInterface $exception) {
-            session()->flash('warning', "User {$user->name} created, but the welcome email could not be sent. Please verify the mail configuration.");
+            session()->flash('success', "User {$user->name} created. Welcome email queued to {$user->email}.");
+        } catch (\Throwable $exception) {
+            \Log::error('Failed to queue welcome email', [
+                'email' => $user->email,
+                'error' => $exception->getMessage(),
+            ]);
+            session()->flash('warning', "User {$user->name} created, but the welcome email could not be queued. Check logs for details.");
         }
 
         return redirect()->route('admin.users.index');

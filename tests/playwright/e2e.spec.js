@@ -5,7 +5,7 @@ test.describe('TeleGateway E2E', () => {
     await page.goto('http://127.0.0.1:8000/login');
     await page.fill('input[name="email"]', 'admin@telegateway.io');
     await page.fill('input[name="password"]', 'password');
-    await page.click('button:has-text("Sign in")');
+    await page.click('form[action*="login"] button[type="submit"]');
     await page.waitForURL('**/admin/**', { timeout: 10000 });
   });
 

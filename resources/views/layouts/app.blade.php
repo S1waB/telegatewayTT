@@ -163,6 +163,44 @@
                     toast.hide();
                 });
             }, 3000);
+
+            function cleanupModalState() {
+                var backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(function(backdrop) { backdrop.remove(); });
+
+                var openModals = document.querySelectorAll('.modal.show');
+                if (openModals.length === 0) {
+                    document.body.classList.remove('modal-open');
+                }
+
+                var overlay = document.querySelector('.sidebar-overlay');
+                if (overlay) {
+                    overlay.classList.remove('show');
+                }
+            }
+
+            document.addEventListener('hidden.bs.modal', cleanupModalState);
+            document.addEventListener('show.bs.modal', cleanupModalState);
+
+            document.body.addEventListener('click', function(event) {
+                if (event.target.matches('[data-bs-dismiss="modal"]') || event.target.closest('[data-bs-dismiss="modal"]')) {
+                    setTimeout(cleanupModalState, 50);
+                }
+            });
+
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal-backdrop')) {
+                    cleanupModalState();
+                }
+            });
+
+            window.addEventListener('error', function(event) {
+                console.error('Page error:', event.error || event.message, event.filename + ':' + event.lineno + ':' + event.colno);
+            });
+
+            window.addEventListener('unhandledrejection', function(event) {
+                console.error('Unhandled promise rejection:', event.reason);
+            });
         });
         // Sidebar Toggle Logic
         const sidebarToggle = document.getElementById('sidebarToggle');

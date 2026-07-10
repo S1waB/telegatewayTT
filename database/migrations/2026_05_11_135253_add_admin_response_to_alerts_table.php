@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('alerts', function (Blueprint $table) {
-            $table->text('admin_response')->nullable()->after('status');
-        });
+        if (! Schema::hasColumn('alerts', 'admin_response')) {
+            Schema::table('alerts', function (Blueprint $table) {
+                $table->text('admin_response')->nullable()->after('status');
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('alerts', function (Blueprint $table) {
-            $table->dropColumn('admin_response');
-        });
+        if (Schema::hasColumn('alerts', 'admin_response')) {
+            Schema::table('alerts', function (Blueprint $table) {
+                $table->dropColumn('admin_response');
+            });
+        }
     }
 };

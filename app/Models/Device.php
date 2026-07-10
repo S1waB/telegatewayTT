@@ -66,7 +66,7 @@ class Device extends Model
      */
     public function alerts(): HasMany
     {
-        return $this->hasMany(Alert::class, 'device_id', 'device_id');
+        return $this->hasMany(Alert::class);
     }
 
     /**
